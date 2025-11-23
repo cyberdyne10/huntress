@@ -157,31 +157,6 @@
             justify-content: center;
             color: var(--primary-color);
         }
-
-        /* Testimonial */
-        .testimonial-section {
-            background: linear-gradient(to right, var(--secondary-light), var(--secondary-color));
-            text-align: center;
-        }
-
-        .testimonial-quote {
-            font-size: 2rem;
-            font-weight: 300;
-            font-style: italic;
-            max-width: 800px;
-            margin: 0 auto 30px;
-            line-height: 1.4;
-        }
-
-        .testimonial-author {
-            color: var(--primary-color);
-            font-weight: 700;
-        }
-
-        /* Glitch effect placeholder text */
-        .glitch-text {
-            position: relative;
-        }
     </style>
 </head>
 <body>
@@ -348,16 +323,97 @@
             </div>
         </section>
 
-        <!-- Testimonials -->
-        <section class="section-padding testimonial-section">
-            <div class="container">
-                <blockquote class="testimonial-quote">
-                    "With the CYBER-LOGIC SOC, we have some of the best minds in cybersecurity at our disposal.
-                    They help us validate incidents, handle them and also level up our own knowledge."
-                </blockquote>
-                <div class="testimonial-author">
-                    — Dylan Sauce, Chief Innovation Officer
+        <!-- Testimonial Slider -->
+        <section class="testimonial-section">
+            <div class="testimonial-header">
+                <h2>Protecting Businesses Like Yours</h2>
+            </div>
+
+            <div class="testimonial-container">
+                <button class="slider-prev">&lt;</button>
+                <div class="testimonial-track-wrapper">
+                    <div class="testimonial-track">
+
+                        <!-- Card 1 -->
+                        <div class="testimonial-card">
+                            <span class="quote-icon">“</span>
+                            <p class="testimonial-text">
+                                Security training is never a one-and-done. Employees need to be part of the SOC 2 conversation from the get-go.
+                                [CYBER-LOGIC Managed SAT] is a compelling way to make security education fun so employees actually learn from their training.
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar"></div> <!-- Placeholder for avatar -->
+                                <div class="author-info">
+                                    <h4>Adam Machowit</h4>
+                                    <p>CISO, Zense</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="testimonial-card">
+                            <span class="quote-icon">“</span>
+                            <p class="testimonial-text">
+                                I sleep better when my clients are being protected with CYBER-LOGIC. They help us by looking for persistent footholds in a network that antivirus just doesn't catch. We're getting a lot at the benefits of a bigger EDR platform for an extremely reasonable price.
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar"></div>
+                                <div class="author-info">
+                                    <h4>Dylan Sauce</h4>
+                                    <p>Chief Innovation Officer, Innovative Comm. Systems</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 (Active initially via JS) -->
+                        <div class="testimonial-card">
+                            <span class="quote-icon">“</span>
+                            <p class="testimonial-text">
+                                With the CYBER-LOGIC SOC, we have some of the best minds in cybersecurity at our disposal. They help us validate incidents, handle them and also level up our own knowledge. With the context and information included in their personalized reports, any tier one technician can easily understand what threats have been detected and take the appropriate next steps – it’s been a great force multiplier for us.
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar"></div>
+                                <div class="author-info">
+                                    <h4>Anthony Cabral</h4>
+                                    <p>Cisco Discloses Partners</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div class="testimonial-card">
+                            <span class="quote-icon">“</span>
+                            <p class="testimonial-text">
+                                The value that we get with CYBER-LOGIC far exceeds what we're getting with SentinelOne. CYBER-LOGIC has allowed us to deliver a solution that is monitoring 24/7 from an EDR perspective, while also adding that critical SOC component.
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar"></div>
+                                <div class="author-info">
+                                    <h4>Andy Warner</h4>
+                                    <p>CEO, ConnectingPoint</p>
+                                </div>
+                            </div>
+                        </div>
+
+                         <!-- Card 5 -->
+                         <div class="testimonial-card">
+                            <span class="quote-icon">“</span>
+                            <p class="testimonial-text">
+                                CYBER-LOGIC combines cutting-edge technology with human expertise in a way no other solution does. It’s reliable, cost-effective, and invaluable for any organization looking to strengthen their cyber defenses.
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar"></div>
+                                <div class="author-info">
+                                    <h4>Kevin Walker</h4>
+                                    <p>Founder, Black Swan Cyber Security Solutions</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
+                <button class="slider-next">&gt;</button>
+                <div class="slider-dots"></div>
             </div>
         </section>
 
@@ -378,5 +434,6 @@
     <div id="footer-placeholder"></div>
 
     <script src="js/components.js"></script>
+    <script src="js/slider.js"></script>
 </body>
 </html>

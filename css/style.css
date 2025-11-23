@@ -224,20 +224,78 @@ footer {
     }
 
     nav ul.main-nav {
-        display: none; /* Mobile menu implementation needed if time permits */
-        width: 100%;
-        flex-direction: column;
-        gap: 0;
-        background: var(--secondary-light);
-        position: absolute;
-        top: var(--header-height);
-        left: 0;
-        padding: 20px;
+        display: none;
+    }
+
+    .cta-group {
+        display: none; /* Hide desktop CTA on mobile if needed, or keep it. Huntress screenshot doesn't show it in the closed state, but usually keeps it. Wait, the screenshot 2025-11-23 205316.png shows the button. So we keep it in the header. */
     }
 
     .mobile-menu-toggle {
         display: block;
+        margin-left: auto; /* Push to right if cta-group is hidden or just layout flex */
     }
+}
+
+/* Mobile Overlay Styles */
+.mobile-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1a202c; /* Dark background matching screenshot */
+    z-index: 2000;
+    padding: 20px;
+    overflow-y: auto;
+}
+
+.mobile-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+}
+
+.mobile-menu-list {
+    list-style: none;
+    padding: 0;
+}
+
+.mobile-menu-list li {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-menu-list li:first-child {
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-menu-list li a {
+    display: block;
+    padding: 20px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: white;
+    text-decoration: none;
+}
+
+/* Flex layout for li to hold text and chevron */
+.mobile-menu-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+}
+
+.mobile-menu-list li a {
+    flex-grow: 1;
+}
+
+.mobile-chevron {
+    color: #22d3ee; /* Cyan color from screenshot/theme accent */
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-left: 10px;
 }
 
 /* Why Us / Value Prop Section */
@@ -315,4 +373,162 @@ footer {
 
 .why-us-link:hover {
     transform: translateX(5px);
+}
+
+/* Testimonial Slider */
+.testimonial-section {
+    padding: 80px 0;
+    overflow: hidden; /* Hide overflow from slider */
+    background: var(--secondary-color);
+}
+
+.testimonial-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.testimonial-header h2 {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.testimonial-container {
+    position: relative;
+    max-width: 100vw;
+    margin: 0 auto;
+}
+
+.testimonial-track-wrapper {
+    overflow: hidden;
+    padding: 40px 0; /* Space for scaling */
+}
+
+.testimonial-track {
+    display: flex;
+    gap: 30px;
+    transition: transform 0.5s ease;
+    width: max-content;
+}
+
+.testimonial-card {
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Grey border default */
+    border-radius: 4px;
+    padding: 30px;
+    width: 400px; /* Fixed width */
+    flex-shrink: 0;
+    transition: all 0.5s ease;
+    opacity: 0.5;
+    transform: scale(0.9);
+    position: relative;
+}
+
+.testimonial-card.active {
+    border-color: var(--accent-color); /* Blue for active tech feel */
+    box-shadow: 0 0 20px rgba(0, 151, 217, 0.2);
+    opacity: 1;
+    transform: scale(1);
+}
+
+.quote-icon {
+    font-size: 4rem;
+    line-height: 1;
+    color: var(--accent-color);
+    position: absolute;
+    top: -20px;
+    left: 20px;
+    background: var(--secondary-color);
+    padding: 0 10px;
+}
+
+.testimonial-text {
+    font-size: 0.95rem;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-style: italic;
+    color: var(--text-light);
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.author-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--secondary-light);
+    object-fit: cover;
+}
+
+.author-info h4 {
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+}
+
+.author-info p {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* Slider Controls */
+.slider-prev, .slider-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--secondary-light);
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s;
+}
+
+.slider-prev:hover, .slider-next:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+/* Position relative to the center active card is tricky with pure CSS if width varies.
+   But we can put them fixed relative to the viewport or container.
+   The screenshot shows them on the sides of the ACTIVE card.
+   We will just put them on the sides of the container or center them.
+   Let's put them absolute to the container wrapper.
+*/
+
+.slider-prev { left: 20px; }
+.slider-next { right: 20px; }
+
+/* Or better, strictly around the center area if possible.
+   For now, side of screen/container is safer. */
+
+.slider-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.slider-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.slider-dot.active {
+    background: var(--accent-color);
 }
