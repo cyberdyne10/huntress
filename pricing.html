@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pricing | CYBER-LOGIC NETWORKS</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        .hero {
+            padding: 80px 0;
+            background: linear-gradient(to right, #0f172a, #1e293b);
+            text-align: center;
+        }
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+            margin-bottom: 60px;
+        }
+        .pricing-card {
+            background: var(--secondary-light);
+            padding: 40px;
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.05);
+            text-align: center;
+        }
+        .pricing-card h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        .price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+        }
+        .features-list {
+            text-align: left;
+            margin-bottom: 30px;
+        }
+        .features-list li {
+            margin-bottom: 10px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+    <div id="header-placeholder"></div>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h1>Simple, Transparent Pricing</h1>
+                <p class="lead" style="color: var(--text-muted);">
+                    Enterprise-grade security without the enterprise price tag.
+                </p>
+            </div>
+        </section>
+
+        <section class="container">
+            <div class="pricing-grid">
+                <div class="pricing-card">
+                    <h3>Managed EDR</h3>
+                    <div class="price">Contact Us</div>
+                    <p style="margin-bottom: 20px;">For comprehensive endpoint protection.</p>
+                    <ul class="features-list">
+                        <li>24/7 Human-Led SOC</li>
+                        <li>Automated Remediation</li>
+                        <li>Ransomware Canaries</li>
+                        <li>Easy Deployment</li>
+                    </ul>
+                    <a href="/about/contact.html" class="btn btn-outline">Get a Quote</a>
+                </div>
+
+                <div class="pricing-card" style="border-color: var(--primary-color);">
+                    <h3>Platform Bundle</h3>
+                    <div class="price">Best Value</div>
+                    <p style="margin-bottom: 20px;">Complete protection for your organization.</p>
+                    <ul class="features-list">
+                        <li>Everything in Managed EDR</li>
+                        <li>Managed ITDR (M365)</li>
+                        <li>Security Awareness Training</li>
+                        <li>Unified Reporting</li>
+                    </ul>
+                    <a href="/about/contact.html" class="btn btn-primary">Get a Quote</a>
+                </div>
+
+                <div class="pricing-card">
+                    <h3>Managed SIEM</h3>
+                    <div class="price">Contact Us</div>
+                    <p style="margin-bottom: 20px;">Compliance and advanced logging.</p>
+                    <ul class="features-list">
+                        <li>Log Retention</li>
+                        <li>Compliance Reporting</li>
+                        <li>Smart Filtering</li>
+                        <li>24/7 Monitoring</li>
+                    </ul>
+                    <a href="/about/contact.html" class="btn btn-outline">Get a Quote</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div id="footer-placeholder"></div>
+    <script src="js/components.js"></script>
+</body>
+</html>

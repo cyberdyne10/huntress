@@ -1,0 +1,241 @@
+:root {
+    --primary-color: #00e5ff; /* Cyan/Teal - similar to Huntress but vibrant */
+    --secondary-color: #0f172a; /* Dark Slate - Background */
+    --secondary-light: #1e293b; /* Slightly lighter background */
+    --accent-color: #3b82f6; /* Blue */
+    --text-light: #f8fafc;
+    --text-muted: #94a3b8;
+    --font-main: 'Inter', system-ui, -apple-system, sans-serif;
+    --container-width: 1200px;
+    --header-height: 80px;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--secondary-color);
+    color: var(--text-light);
+    line-height: 1.6;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.3s;
+}
+
+ul {
+    list-style: none;
+}
+
+/* Container Utility */
+.container {
+    max-width: var(--container-width);
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+.btn-primary:hover {
+    background-color: #fff;
+    transform: translateY(-2px);
+}
+
+.btn-outline {
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+}
+
+.btn-outline:hover {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+/* Header */
+header {
+    background-color: rgba(15, 23, 42, 0.95);
+    height: var(--header-height);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+}
+
+.logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.logo span {
+    color: var(--primary-color);
+}
+
+nav ul.main-nav {
+    display: flex;
+    gap: 30px;
+}
+
+nav ul.main-nav > li {
+    position: relative;
+}
+
+nav ul.main-nav > li > a {
+    font-weight: 500;
+    font-size: 0.95rem;
+    padding: 10px 0;
+}
+
+nav ul.main-nav > li > a:hover {
+    color: var(--primary-color);
+}
+
+/* Dropdowns */
+.dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: var(--secondary-light);
+    min-width: 250px;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+nav ul.main-nav > li:hover .dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.dropdown li {
+    margin-bottom: 10px;
+}
+
+.dropdown li a {
+    display: block;
+    color: var(--text-muted);
+}
+
+.dropdown li a:hover {
+    color: var(--primary-color);
+    padding-left: 5px;
+}
+
+.dropdown-section-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--primary-color);
+    margin-bottom: 10px;
+    display: block;
+    font-weight: 700;
+    opacity: 0.8;
+}
+
+/* Footer */
+footer {
+    background-color: var(--secondary-light);
+    padding: 60px 0 20px;
+    margin-top: 60px;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.footer-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 40px;
+    margin-bottom: 40px;
+}
+
+.footer-col h4 {
+    color: var(--primary-color);
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
+.footer-col ul li {
+    margin-bottom: 10px;
+}
+
+.footer-col ul li a {
+    color: var(--text-muted);
+}
+
+.footer-col ul li a:hover {
+    color: var(--text-light);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+/* Typography Utilities */
+.text-primary { color: var(--primary-color); }
+.text-center { text-align: center; }
+.mb-1 { margin-bottom: 1rem; }
+.mb-2 { margin-bottom: 2rem; }
+.mt-2 { margin-top: 2rem; }
+
+/* Responsive */
+@media (max-width: 768px) {
+    .header-container {
+        flex-wrap: wrap;
+    }
+
+    nav ul.main-nav {
+        display: none; /* Mobile menu implementation needed if time permits */
+        width: 100%;
+        flex-direction: column;
+        gap: 0;
+        background: var(--secondary-light);
+        position: absolute;
+        top: var(--header-height);
+        left: 0;
+        padding: 20px;
+    }
+
+    .mobile-menu-toggle {
+        display: block;
+    }
+}
