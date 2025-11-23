@@ -13,7 +13,7 @@ function loadHeader() {
     <header>
         <div class="container header-container">
             <a href="/index.html" class="logo">
-                <img src="/images/logo.png" alt="Cyber-Logic Networks Logo" height="60" style="height: 60px; width: auto;">
+                <img src="https://raw.githubusercontent.com/cyberdyne10/huntress/refs/heads/cyber-logic-networks-v1/images/logo.png" alt="Cyber-Logic Networks Logo" height="60" style="height: 60px; width: auto;">
             </a>
 
             <nav>
