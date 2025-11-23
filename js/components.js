@@ -88,55 +88,9 @@ function loadHeader() {
                 <a href="/demo.html" class="btn btn-primary">Get a Demo</a>
             </div>
 
-            <button class="mobile-menu-toggle" style="display:none; background:none; border:none; color: white; font-size: 1.5rem; cursor: pointer;">
-                <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="3" y1="12" x2="21" y2="12"></line>
-                    <line x1="3" y1="6" x2="21" y2="6"></line>
-                    <line x1="3" y1="18" x2="21" y2="18"></line>
-                </svg>
+            <button class="mobile-menu-toggle" style="display:none; background:none; border:none; color: white; font-size: 1.5rem;">
+                ☰
             </button>
-        </div>
-
-        <!-- Mobile Overlay -->
-        <div class="mobile-overlay" style="display: none;">
-            <div class="mobile-menu-header">
-                <a href="/index.html" class="logo">
-                    <img src="${logoPath}" alt="Cyber-Logic Networks Logo" height="50" style="height: 50px; width: auto;">
-                </a>
-                <button class="mobile-close-btn" style="background:none; border:none; color: white; cursor: pointer;">
-                    <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="18" y1="6" x2="6" y2="18"></line>
-                        <line x1="6" y1="6" x2="18" y2="18"></line>
-                    </svg>
-                </button>
-            </div>
-            <ul class="mobile-menu-list">
-                <li>
-                    <a href="#">Platform</a>
-                    <span class="mobile-chevron">&rsaquo;</span>
-                </li>
-                <li>
-                    <a href="#">Solutions</a>
-                    <span class="mobile-chevron">&rsaquo;</span>
-                </li>
-                <li>
-                    <a href="#">Why Cyber-Logic</a>
-                    <span class="mobile-chevron">&rsaquo;</span>
-                </li>
-                <li>
-                    <a href="#">Resources</a>
-                    <span class="mobile-chevron">&rsaquo;</span>
-                </li>
-                <li>
-                    <a href="/pricing.html">Pricing</a>
-                    <span class="mobile-chevron">&rsaquo;</span>
-                </li>
-                <li>
-                    <a href="/about/our-story.html">About</a>
-                    <!-- No chevron for simple links usually, but screenshot shows it for Pricing/About if they have submenus or just consistency. Screenshot showed Pricing with chevron. -->
-                    <span class="mobile-chevron">&rsaquo;</span>
-                </li>
-            </ul>
         </div>
     </header>
     `;
@@ -154,21 +108,25 @@ function loadHeader() {
 
     // Mobile toggle logic
     const toggle = headerPlaceholder.querySelector('.mobile-menu-toggle');
-    const overlay = headerPlaceholder.querySelector('.mobile-overlay');
-    const closeBtn = headerPlaceholder.querySelector('.mobile-close-btn');
+    const nav = headerPlaceholder.querySelector('.main-nav');
 
     if(window.innerWidth <= 768) {
         toggle.style.display = 'block';
     }
 
     toggle.addEventListener('click', () => {
-        overlay.style.display = 'block';
-        document.body.style.overflow = 'hidden'; // Prevent scrolling
-    });
-
-    closeBtn.addEventListener('click', () => {
-        overlay.style.display = 'none';
-        document.body.style.overflow = '';
+        if (nav.style.display === 'flex') {
+            nav.style.display = 'none';
+        } else {
+            nav.style.display = 'flex';
+            nav.style.flexDirection = 'column';
+            nav.style.position = 'absolute';
+            nav.style.top = '80px';
+            nav.style.left = '0';
+            nav.style.width = '100%';
+            nav.style.background = '#0f172a';
+            nav.style.padding = '20px';
+        }
     });
 }
 
