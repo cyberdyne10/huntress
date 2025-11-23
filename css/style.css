@@ -1,8 +1,8 @@
 :root {
-    --primary-color: #00e5ff; /* Cyan/Teal - similar to Huntress but vibrant */
+    --primary-color: #ff6600; /* Orange - from logo */
     --secondary-color: #0f172a; /* Dark Slate - Background */
     --secondary-light: #1e293b; /* Slightly lighter background */
-    --accent-color: #3b82f6; /* Blue */
+    --accent-color: #0097d9; /* Blue - from logo */
     --text-light: #f8fafc;
     --text-muted: #94a3b8;
     --font-main: 'Inter', system-ui, -apple-system, sans-serif;
