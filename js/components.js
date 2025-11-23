@@ -13,12 +13,7 @@ function loadHeader() {
     <header>
         <div class="container header-container">
             <a href="/index.html" class="logo">
-                <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M20 0L37.3205 10V30L20 40L2.67949 30V10L20 0Z" fill="#00e5ff" fill-opacity="0.2"/>
-                    <path d="M20 5L32.9904 12.5V27.5L20 35L7.00962 27.5V12.5L20 5Z" stroke="#00e5ff" stroke-width="2"/>
-                    <circle cx="20" cy="20" r="5" fill="#00e5ff"/>
-                </svg>
-                CYBER-LOGIC <span>NETWORKS</span>
+                <img src="/images/logo.png" alt="Cyber-Logic Networks Logo" height="60" style="height: 60px; width: auto;">
             </a>
 
             <nav>
