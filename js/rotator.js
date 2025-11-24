@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         "Identities",
         "Business",
         "Organization",
-        "Date",
+        "Data",
         "Peace of Mind"
     ];
 
