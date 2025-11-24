@@ -21,6 +21,18 @@ body {
     background-color: var(--secondary-color);
     color: var(--text-light);
     line-height: 1.6;
+    padding-top: var(--header-height); /* Fix for fixed header */
+}
+
+/* Readability adjustments for text blocks */
+p, li {
+    max-width: 75ch;
+}
+
+/* Image optimization base */
+img, svg {
+    max-width: 100%;
+    height: auto;
 }
 
 a {
@@ -42,13 +54,17 @@ ul {
 
 /* Buttons */
 .btn {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 12px 24px;
     border-radius: 4px;
     font-weight: 600;
     cursor: pointer;
     text-align: center;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease, color 0.3s ease;
+    min-height: 48px; /* Mobile touch target size */
+    min-width: 48px;
 }
 
 .btn-primary {
@@ -75,11 +91,17 @@ ul {
 header {
     background-color: rgba(15, 23, 42, 0.95);
     height: var(--header-height);
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 1000;
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
+}
+
+.mobile-menu-toggle {
+    display: none;
 }
 
 .header-container {
@@ -219,24 +241,121 @@ footer {
 
 /* Responsive */
 @media (max-width: 768px) {
+    /* Header adjustments */
     .header-container {
-        flex-wrap: wrap;
+        flex-wrap: nowrap; /* Prevent wrapping so CTA stays on line */
     }
 
-    nav ul.main-nav {
-        display: none; /* Mobile menu implementation needed if time permits */
-        width: 100%;
-        flex-direction: column;
-        gap: 0;
-        background: var(--secondary-light);
-        position: absolute;
-        top: var(--header-height);
-        left: 0;
-        padding: 20px;
+    .logo {
+        z-index: 1002; /* Above menu overlay */
+        position: relative;
+    }
+
+    .cta-group {
+        z-index: 1002;
+        position: relative;
+        margin-left: auto; /* Push to right */
+        margin-right: 20px;
+    }
+
+    /* Hide text of CTA on very small screens if needed, or keep it */
+    .cta-group .btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+        min-height: 40px; /* Adjust slightly for header fit, still tappable */
     }
 
     .mobile-menu-toggle {
         display: block;
+        z-index: 1002; /* Above menu overlay */
+        background: none;
+        border: none;
+        color: white;
+        font-size: 2rem; /* Larger touch target */
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    /* Mobile Menu Overlay */
+    nav ul.main-nav {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background-color: var(--secondary-color);
+        flex-direction: column;
+        justify-content: center; /* Center items vertically */
+        align-items: center;
+        padding: 80px 20px;
+        z-index: 1001;
+        overflow-y: auto;
+    }
+
+    nav.mobile-menu-open ul.main-nav {
+        display: flex;
+    }
+
+    nav ul.main-nav > li {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    nav ul.main-nav > li > a {
+        font-size: 1.5rem; /* Larger font for mobile */
+        padding: 15px;
+        display: block;
+    }
+
+    /* Mobile Dropdowns - simplify or expand inline */
+    .dropdown {
+        position: static;
+        background: transparent;
+        box-shadow: none;
+        border: none;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        padding: 0;
+        display: none; /* Hidden by default, maybe toggle? or just show all */
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    /* For simplicity in this static site, let's just show top level or make them expand.
+       Given the structure, let's make them expand on click (CSS hover doesn't work well on touch).
+       Or just display them all for now if the list isn't too long,
+       but the list IS long.
+
+       Alternative: Just style them to be visible under parent.
+    */
+    nav ul.main-nav > li:hover .dropdown,
+    nav ul.main-nav > li:focus-within .dropdown {
+        display: block;
+    }
+
+    .dropdown li a {
+        font-size: 1.1rem;
+        padding: 10px;
+        color: var(--text-muted);
+    }
+}
+
+/* Large Monitors */
+@media (min-width: 1400px) {
+    .container {
+        max-width: 1400px; /* Allow wider container */
+        padding: 0 40px;
+    }
+
+    p, li {
+        font-size: 1.1rem; /* Slightly larger text */
     }
 }
 
@@ -256,12 +375,13 @@ footer {
     display: flex;
     flex-direction: column;
     text-align: center;
-    transition: transform 0.3s, border-color 0.3s;
+    transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .why-us-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
     border-color: var(--primary-color);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
 }
 
 .why-us-icon {

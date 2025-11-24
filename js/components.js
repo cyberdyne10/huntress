@@ -88,7 +88,7 @@ function loadHeader() {
                 <a href="/demo.html" class="btn btn-primary">Get a Demo</a>
             </div>
 
-            <button class="mobile-menu-toggle" style="display:none; background:none; border:none; color: white; font-size: 1.5rem;">
+            <button class="mobile-menu-toggle">
                 ☰
             </button>
         </div>
@@ -110,22 +110,24 @@ function loadHeader() {
     const toggle = headerPlaceholder.querySelector('.mobile-menu-toggle');
     const nav = headerPlaceholder.querySelector('.main-nav');
 
-    if(window.innerWidth <= 768) {
-        toggle.style.display = 'block';
-    }
+    // Initial check for mobile view visibility
+    // CSS media queries handle the display of the toggle button,
+    // but we can ensure aria-attributes are set.
+    toggle.setAttribute('aria-label', 'Toggle navigation menu');
+    toggle.setAttribute('aria-expanded', 'false');
 
     toggle.addEventListener('click', () => {
-        if (nav.style.display === 'flex') {
-            nav.style.display = 'none';
+        nav.classList.toggle('mobile-menu-open');
+        const isOpen = nav.classList.contains('mobile-menu-open');
+
+        toggle.setAttribute('aria-expanded', isOpen);
+        toggle.textContent = isOpen ? '✕' : '☰';
+
+        // Lock body scroll when menu is open
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
         } else {
-            nav.style.display = 'flex';
-            nav.style.flexDirection = 'column';
-            nav.style.position = 'absolute';
-            nav.style.top = '80px';
-            nav.style.left = '0';
-            nav.style.width = '100%';
-            nav.style.background = '#0f172a';
-            nav.style.padding = '20px';
+            document.body.style.overflow = '';
         }
     });
 }
