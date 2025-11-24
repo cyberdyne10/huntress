@@ -30,7 +30,7 @@ function loadHeader() {
     <header>
         <div class="container header-container">
             <a href="/index.html" class="logo">
-                <img src="${logoPath}" alt="Cyber-Logic Networks Logo" height="60" style="height: 60px; width: auto;">
+                <img src="${logoPath}" alt="Cyber-Logic Networks Logo" style="max-height: 60px; width: auto; object-fit: contain;">
             </a>
 
             <nav>
