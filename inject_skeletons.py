@@ -1,25 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Get a Demo | CYBER-LOGIC NETWORKS</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        .hero {
-            padding: 80px 0;
-            background: linear-gradient(to right, #0f172a, #1e293b);
-            text-align: center;
-        }
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-    </style>
-</head>
-<body>
-    <div id="header-placeholder">
+import os
+
+def inject_skeletons(root_dir):
+    header_skeleton = """
     <div class="skeleton-header container">
         <div class="skeleton-logo skeleton"></div>
         <div class="skeleton-nav">
@@ -31,25 +13,8 @@
         </div>
         <div class="skeleton-cta skeleton"></div>
     </div>
-</div>
-
-    <main>
-        <section class="hero">
-            <div class="container">
-                <h1>See Cyber-Logic in Action</h1>
-                <p class="lead" style="color: var(--text-muted); margin-bottom: 40px;">
-                    Get a personalized walkthrough of our platform and see how we can protect your organization.
-                </p>
-                <div style="background: var(--secondary-light); padding: 40px; border-radius: 8px; max-width: 500px; margin: 0 auto;">
-                     <h3 style="margin-bottom: 20px;">Request a Demo</h3>
-                     <p style="color: var(--text-muted); margin-bottom: 30px;">This is a demo page placeholder.</p>
-                     <button class="btn btn-primary">Schedule Now</button>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <div id="footer-placeholder">
+"""
+    footer_skeleton = """
     <div class="container skeleton-footer">
         <div class="skeleton-footer-grid">
             <div class="skeleton-col">
@@ -75,7 +40,37 @@
             </div>
         </div>
     </div>
-</div>
-    <script src="js/components.js"></script>
-</body>
-</html>
+"""
+
+    for dirpath, _, filenames in os.walk(root_dir):
+        if 'node_modules' in dirpath or '.git' in dirpath:
+            continue
+
+        for filename in filenames:
+            if filename.endswith('.html'):
+                filepath = os.path.join(dirpath, filename)
+                with open(filepath, 'r') as f:
+                    content = f.read()
+
+                new_content = content
+
+                # Check if skeletons are already there to avoid duplication
+                if 'skeleton-header' not in content:
+                    new_content = new_content.replace(
+                        '<div id="header-placeholder"></div>',
+                        f'<div id="header-placeholder">{header_skeleton}</div>'
+                    )
+
+                if 'skeleton-footer' not in content:
+                    new_content = new_content.replace(
+                        '<div id="footer-placeholder"></div>',
+                        f'<div id="footer-placeholder">{footer_skeleton}</div>'
+                    )
+
+                if new_content != content:
+                    print(f"Injecting skeletons into {filepath}")
+                    with open(filepath, 'w') as f:
+                        f.write(new_content)
+
+if __name__ == "__main__":
+    inject_skeletons('.')
