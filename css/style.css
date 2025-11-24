@@ -373,6 +373,21 @@ footer {
         padding: 10px;
         color: var(--text-muted);
     }
+
+    /* Mobile Slider Adjustments */
+    .testimonial-card {
+        padding: 20px;
+    }
+
+    .slider-prev, .slider-next {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+        background: rgba(15, 23, 42, 0.8);
+    }
+
+    .slider-prev { left: 5px; }
+    .slider-next { right: 5px; }
 }
 
 /* Large Monitors */
@@ -505,7 +520,7 @@ footer {
     border: 1px solid rgba(255, 255, 255, 0.2); /* Grey border default */
     border-radius: 4px;
     padding: 30px;
-    width: 400px; /* Fixed width */
+    width: min(400px, 80vw); /* Responsive width */
     flex-shrink: 0;
     transition: all 0.5s ease;
     opacity: 0.5;
