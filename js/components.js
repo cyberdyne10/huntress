@@ -108,7 +108,7 @@ function loadHeader() {
 
     // Mobile toggle logic
     const toggle = headerPlaceholder.querySelector('.mobile-menu-toggle');
-    const nav = headerPlaceholder.querySelector('.main-nav');
+    const nav = headerPlaceholder.querySelector('nav'); // Select the nav container
 
     // Initial check for mobile view visibility
     // CSS media queries handle the display of the toggle button,

@@ -282,62 +282,90 @@ footer {
 
     /* Mobile Menu Overlay */
     nav ul.main-nav {
-        display: none;
+        display: flex;
         position: fixed;
         top: 0;
         left: 0;
         width: 100%;
         height: 100vh;
-        background-color: var(--secondary-color);
+        background-color: rgba(15, 23, 42, 0.98); /* Slightly transparent dark background */
+        backdrop-filter: blur(10px);
         flex-direction: column;
-        justify-content: center; /* Center items vertically */
+        justify-content: flex-start; /* Start from top for scrolling */
         align-items: center;
-        padding: 80px 20px;
+        padding: 100px 20px 40px;
         z-index: 1001;
         overflow-y: auto;
+        transform: translateX(100%);
+        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1); /* Smooth slide in */
     }
 
     nav.mobile-menu-open ul.main-nav {
-        display: flex;
+        transform: translateX(0);
     }
 
     nav ul.main-nav > li {
         width: 100%;
         text-align: center;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.3s ease, transform 0.3s ease;
     }
+
+    nav.mobile-menu-open ul.main-nav > li {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    /* Stagger animation for menu items */
+    nav.mobile-menu-open ul.main-nav > li:nth-child(1) { transition-delay: 0.1s; }
+    nav.mobile-menu-open ul.main-nav > li:nth-child(2) { transition-delay: 0.15s; }
+    nav.mobile-menu-open ul.main-nav > li:nth-child(3) { transition-delay: 0.2s; }
+    nav.mobile-menu-open ul.main-nav > li:nth-child(4) { transition-delay: 0.25s; }
+    nav.mobile-menu-open ul.main-nav > li:nth-child(5) { transition-delay: 0.3s; }
+    nav.mobile-menu-open ul.main-nav > li:nth-child(6) { transition-delay: 0.35s; }
 
     nav ul.main-nav > li > a {
-        font-size: 1.5rem; /* Larger font for mobile */
+        font-size: 1.5rem;
+        font-weight: 700;
         padding: 15px;
         display: block;
+        color: var(--text-light);
     }
 
-    /* Mobile Dropdowns - simplify or expand inline */
+    /* Mobile Dropdowns */
     .dropdown {
         position: static;
-        background: transparent;
+        background: rgba(255, 255, 255, 0.03);
         box-shadow: none;
         border: none;
         opacity: 1;
         visibility: visible;
         transform: none;
-        padding: 0;
-        display: none; /* Hidden by default, maybe toggle? or just show all */
+        padding: 10px 0;
+        display: block; /* Always show sub-items for now to ensure visibility */
         text-align: center;
-        margin-top: 10px;
+        margin-top: 5px;
+        border-radius: 8px;
     }
 
-    /* For simplicity in this static site, let's just show top level or make them expand.
-       Given the structure, let's make them expand on click (CSS hover doesn't work well on touch).
-       Or just display them all for now if the list isn't too long,
-       but the list IS long.
+    .dropdown li {
+        margin-bottom: 5px;
+    }
 
-       Alternative: Just style them to be visible under parent.
-    */
-    nav ul.main-nav > li:hover .dropdown,
-    nav ul.main-nav > li:focus-within .dropdown {
-        display: block;
+    .dropdown li a {
+        font-size: 1rem;
+        padding: 8px;
+        color: var(--text-muted);
+        font-weight: 400;
+    }
+
+    .dropdown-section-title {
+        color: var(--primary-color);
+        margin-top: 15px;
+        margin-bottom: 5px;
+        font-size: 0.8rem;
     }
 
     .dropdown li a {
