@@ -81,6 +81,9 @@ function loadHeader() {
                      <li>
                         <a href="/about/our-story.html">About</a>
                     </li>
+                    <li class="mobile-only-link">
+                        <a href="/demo.html">Get a Demo</a>
+                    </li>
                 </ul>
             </nav>
 
