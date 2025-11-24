@@ -9,7 +9,7 @@ function loadHeader() {
     if (!headerPlaceholder) return;
 
     // Determine path to logo based on script location
-    let logoPath = '/images/logo.png'; // Fallback
+    let logoPath = 'http://cyberlogicnetwork.com/wp-content/uploads/2024/09/brand-log.png'; // Fallback
     const scripts = document.getElementsByTagName('script');
     for (let script of scripts) {
         const src = script.getAttribute('src');
