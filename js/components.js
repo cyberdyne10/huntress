@@ -9,7 +9,7 @@ function loadHeader() {
     if (!headerPlaceholder) return;
 
     // Determine path to logo based on script location
-    let logoPath = 'http://cyberlogicnetwork.com/wp-content/uploads/2024/09/brand-log.png'; // Fallback
+    let logoPath = '/images/logo.png'; // Fallback
     const scripts = document.getElementsByTagName('script');
     for (let script of scripts) {
         const src = script.getAttribute('src');
@@ -30,7 +30,7 @@ function loadHeader() {
     <header>
         <div class="container header-container">
             <a href="/index.html" class="logo">
-                <img src="${logoPath}" alt="Cyber-Logic Networks Logo" style="max-height: 60px; width: auto; object-fit: contain;">
+                <img src="http://cyberlogicnetwork.com/wp-content/uploads/2024/09/brand-log.png" alt="Cyber-Logic Networks Logo" style="max-height: 60px; width: auto; object-fit: contain;">
             </a>
 
             <nav>
