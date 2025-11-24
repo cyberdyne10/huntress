@@ -25,10 +25,23 @@
             -webkit-text-fill-color: transparent;
         }
 
-        .hero h1 span {
+        .hero h1 > span {
             color: var(--primary-color);
             -webkit-text-fill-color: var(--primary-color);
             display: block;
+        }
+
+        #word-rotator {
+            display: inline-block;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            opacity: 1;
+            transform: translateY(0);
+            /* Ensure color inheritance or explicit set if needed, but span inherits */
+        }
+
+        #word-rotator.hidden {
+            opacity: 0;
+            transform: translateY(10px);
         }
 
         .hero p.lead {
@@ -205,7 +218,7 @@
         <section class="hero">
             <div class="container">
                 <div class="hero-content">
-                    <h1>Hackers Wrecked.<br><span>Your Enterprise Secured.</span></h1>
+                    <h1>Hackers Wrecked.<br><span>Your <span id="word-rotator">Enterprise</span> Secured.</span></h1>
                     <p class="lead">
                         CYBER-LOGIC NETWORKS wrecks hackers. A purpose-built platform for organizations like yours,
                         all backed and operated by our industry-proven, 24/7 AI-assisted SOC for continuous threat protection.
@@ -498,5 +511,6 @@
 
     <script src="js/components.js"></script>
     <script src="js/slider.js"></script>
+    <script src="js/rotator.js"></script>
 </body>
 </html>
