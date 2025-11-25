@@ -1,18 +1,13 @@
 
 import os
 import pytest
-from playwright.sync_api import sync_playwright, expect
+from playwright.sync_api import Page, expect
 
-@pytest.fixture(scope="session")
-def browser_instance():
-    with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
-        yield browser
-        browser.close()
-
-def test_logo_loads_on_root_page(browser_instance):
-    page = browser_instance.new_page()
-
+def test_logo_loads_on_root_page(page: Page):
+    """
+    Tests that the logo is visible on the root page (index.html)
+    and uses a root-relative path.
+    """
     # Get the absolute path to the HTML file
     file_path = os.path.abspath('index.html')
 
@@ -27,11 +22,11 @@ def test_logo_loads_on_root_page(browser_instance):
     logo_src = logo.get_attribute('src')
     assert logo_src == '/images/logo.png', f"Expected logo src to be root-relative, but it was {logo_src}"
 
-    page.close()
-
-def test_logo_loads_on_nested_page(browser_instance):
-    page = browser_instance.new_page()
-
+def test_logo_loads_on_nested_page(page: Page):
+    """
+    Tests that the logo is visible on a nested page (about/our-story.html)
+    and uses a root-relative path, ensuring it works across directories.
+    """
     # Get the absolute path to the HTML file
     file_path = os.path.abspath('about/our-story.html')
 
@@ -45,5 +40,3 @@ def test_logo_loads_on_nested_page(browser_instance):
     # Check if the image source is root-relative
     logo_src = logo.get_attribute('src')
     assert logo_src == '/images/logo.png', f"Expected logo src to be root-relative, but it was {logo_src}"
-
-    page.close()
