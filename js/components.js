@@ -8,29 +8,13 @@ function loadHeader() {
     const headerPlaceholder = document.getElementById('header-placeholder');
     if (!headerPlaceholder) return;
 
-    // Determine path to logo based on script location
-    let logoPath = '/images/logo.png'; // Fallback
-    const scripts = document.getElementsByTagName('script');
-    for (let script of scripts) {
-        const src = script.getAttribute('src');
-        if (src && src.includes('components.js')) {
-            // If the script is loaded as "../js/components.js", logo is "../images/logo.png"
-            // If the script is loaded as "js/components.js", logo is "images/logo.png"
-            const jsIndex = src.indexOf('js/components.js');
-            if (jsIndex !== -1) {
-                const prefix = src.substring(0, jsIndex);
-                logoPath = prefix + 'images/logo.png';
-            }
-            break;
-        }
-    }
 
     // Based on Huntress.com structure
     const headerHTML = `
     <header>
         <div class="container header-container">
             <a href="/index.html" class="logo">
-                <img src="http://cyberlogicnetwork.com/wp-content/uploads/2024/09/brand-log.png" alt="Cyber-Logic Networks Logo" style="max-height: 60px; width: auto; object-fit: contain;">
+                <img src="/images/logo.png" alt="Cyber-Logic Networks Logo" style="max-height: 60px; width: auto; object-fit: contain;">
             </a>
 
             <nav>
