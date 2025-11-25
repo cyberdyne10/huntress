@@ -248,15 +248,27 @@ footer {
     /* Header adjustments */
     .header-container {
         flex-wrap: nowrap; /* Prevent wrapping so CTA stays on line */
+        gap: 15px;
     }
 
     .logo {
         z-index: 1002; /* Above menu overlay */
         position: relative;
+        flex-shrink: 1;
+        min-width: 0;
+    }
+
+    .logo img {
+        max-height: 45px;
+    }
+
+    .cta-group .btn {
+        padding: 8px 12px;
+        font-size: 0.9rem;
     }
 
     .cta-group {
-        display: none; /* Hide header CTA on mobile to prevent crowding */
+        display: block; /* Show header CTA on mobile */
     }
 
     .mobile-menu-toggle {
