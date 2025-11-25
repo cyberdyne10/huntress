@@ -14,7 +14,7 @@ function loadHeader() {
     <header>
         <div class="container header-container">
             <a href="/index.html" class="logo">
-                <img src="/images/logo.png" alt="Cyber-Logic Networks Logo" style="max-height: 60px; width: auto; object-fit: contain;">
+                <img src="https://cyberlogicnetwork.com/wp-content/uploads/2024/09/brand-log.png" alt="Cyber-Logic Networks Logo" style="max-height: 60px; width: auto; object-fit: contain;">
             </a>
 
             <nav>
@@ -86,12 +86,32 @@ function loadHeader() {
 
     // Add simple active state logic
     const currentPath = window.location.pathname;
-    const links = headerPlaceholder.querySelectorAll('a');
+    const links = headerPlaceholder.querySelectorAll('nav ul.main-nav > li > a');
+
+    // Find the link that is the best match for the current path
+    let bestMatch = null;
+    let longestMatch = 0;
+
     links.forEach(link => {
-        if (link.getAttribute('href') === currentPath) {
-            link.style.color = 'var(--primary-color)';
+        const linkHref = link.getAttribute('href');
+        // Check if the current path ends with the link's href and is a better match than the last one
+        if (currentPath.endsWith(linkHref) && linkHref.length > longestMatch) {
+            bestMatch = link;
+            longestMatch = linkHref.length;
         }
     });
+
+    // Special case for the root directory. If no other match is found and we are at the root, activate the home link.
+    if (!bestMatch && (currentPath.endsWith('/') || currentPath.endsWith('/index.html'))) {
+        const homeLink = headerPlaceholder.querySelector('nav ul.main-nav > li > a[href="/index.html"]');
+        if (homeLink) {
+            bestMatch = homeLink;
+        }
+    }
+
+    if (bestMatch) {
+        bestMatch.classList.add('active');
+    }
 
     // Mobile toggle logic
     const toggle = headerPlaceholder.querySelector('.mobile-menu-toggle');

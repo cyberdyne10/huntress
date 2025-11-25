@@ -139,7 +139,8 @@ nav ul.main-nav > li > a {
     padding: 10px 0;
 }
 
-nav ul.main-nav > li > a:hover {
+nav ul.main-nav > li > a:hover,
+nav ul.main-nav > li > a.active {
     color: var(--primary-color);
 }
 
