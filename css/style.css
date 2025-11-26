@@ -270,7 +270,7 @@ footer {
 .text-muted { color: var(--cl-text-muted); }
 .text-brand-blue { color: var(--cl-brand-blue); }
 
-.fs-1 { font-size: 3.5rem; }
+.fs-1 { font-size: 2.0rem; }
 .fs-5 { font-size: 1.25rem; }
 
 .fw-bold { font-weight: 800; }
