@@ -1,34 +1,50 @@
+
 document.addEventListener('DOMContentLoaded', () => {
     const rotator = document.getElementById('word-rotator');
     if (!rotator) return;
 
     const words = [
-        "Enterprise",
-        "Endpoints",
-        "Future",
-        "Profits",
-        "Identities",
-        "Business",
-        "Organization",
-        "Data",
-        "Peace of Mind"
+        "Chaos",
+        "Breaches",
+        "Compromise",
+        "Blindspots",
+        "Downtime",
+        "Disruption",
+        "Exposure",
+        "Liability",
+        "Intrusion",
+        "Infiltration"
     ];
 
-    let currentIndex = 0;
+    let wordIndex = 0;
+    let letterIndex = 0;
+    let isDeleting = false;
 
-    setInterval(() => {
-        // Start fade out
-        rotator.classList.add('hidden');
+    function type() {
+        const currentWord = words[wordIndex];
 
-        // Wait for fade out to complete (matching CSS transition time)
-        setTimeout(() => {
-            // Update word
-            currentIndex = (currentIndex + 1) % words.length;
-            rotator.textContent = words[currentIndex];
+        if (isDeleting) {
+            // Deleting
+            rotator.textContent = currentWord.substring(0, letterIndex - 1);
+            letterIndex--;
+        } else {
+            // Typing
+            rotator.textContent = currentWord.substring(0, letterIndex + 1);
+            letterIndex++;
+        }
 
-            // Start fade in
-            rotator.classList.remove('hidden');
-        }, 500); // 0.5s match with CSS
+        if (!isDeleting && letterIndex === currentWord.length) {
+            // Pause at the end of the word
+            setTimeout(() => { isDeleting = true; }, 2000);
+        } else if (isDeleting && letterIndex === 0) {
+            // Move to the next word
+            isDeleting = false;
+            wordIndex = (wordIndex + 1) % words.length;
+        }
 
-    }, 2500); // Change every 2.5 seconds (0.5s transition + 2s visible)
+        const typingSpeed = isDeleting ? 100 : 200;
+        setTimeout(type, typingSpeed);
+    }
+
+    type();
 });

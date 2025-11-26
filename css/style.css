@@ -999,3 +999,25 @@ footer {
 #chat-send:hover {
     background-color: color-mix(in srgb, var(--cl-brand-blue), #000 10%);
 }
+
+/* Word Rotator */
+.word-rotator-wrapper {
+    display: inline-block;
+    position: relative;
+    color: #fff;
+    -webkit-text-fill-color: #fff;
+}
+
+.cursor {
+    display: inline-block;
+    width: 2px;
+    height: 1em;
+    background-color: #fff;
+    animation: blink 0.7s infinite;
+    vertical-align: middle;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
