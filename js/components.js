@@ -137,6 +137,24 @@ function loadHeader() {
             document.body.style.overflow = '';
         }
     });
+
+    // Add a resize observer to handle the case where the user resizes the window
+    // while the mobile menu is open.
+    const resizeObserver = new ResizeObserver(entries => {
+        for (let entry of entries) {
+            if (entry.target === nav) {
+                const isMobile = window.innerWidth < 768;
+                if (!isMobile && nav.classList.contains('mobile-menu-open')) {
+                    nav.classList.remove('mobile-menu-open');
+                    toggle.setAttribute('aria-expanded', 'false');
+                    toggle.textContent = '☰';
+                    document.body.style.overflow = '';
+                }
+            }
+        }
+    });
+
+    resizeObserver.observe(nav);
 }
 
 function loadFooter() {
