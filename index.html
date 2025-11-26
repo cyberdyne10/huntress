@@ -17,7 +17,7 @@
         }
 
         .hero h1 {
-            font-size: 4rem;
+            font-size: 3.5rem;
             line-height: 1.1;
             margin-bottom: 24px;
             background: linear-gradient(90deg, #fff, #94a3b8);
@@ -141,10 +141,11 @@
         }
 
         .card {
-            background: var(--secondary-light);
+            background: rgba(31, 40, 51, 0.5); /* Semi-transparent Charcoal */
+            backdrop-filter: blur(10px);
             padding: 30px;
             border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.05);
+            border: 1px solid rgba(102, 252, 241, 0.2); /* Subtle Neon Green border */
             transition: transform 0.3s, border-color 0.3s;
         }
 
@@ -378,60 +379,100 @@
             </div>
         </section>
 
-
+        <!-- Testimonial Slider -->
         <section class="testimonial-section">
-  <div class="testimonial-header">
-    <h2>Trusted by Industry Leaders</h2>
-  </div>
+            <div class="testimonial-header">
+                <h2>Protecting Businesses Like Yours</h2>
+            </div>
 
-  <div class="testimonial-grid">
+            <div class="testimonial-container">
+                <button class="slider-prev">&lt;</button>
+                <div class="testimonial-track-wrapper">
+                    <div class="testimonial-track">
 
-    <div class="testimonial-card">
-      <span class="quote-icon">“</span>
-      <p class="quote-text">
-        We went from reactive to proactive overnight. The 24/7 monitoring gives us the coverage of a full enterprise SOC at a fraction of the cost. I can finally focus on strategy instead of worrying about a 3 AM breach.
-      </p>
-      <div class="author-block">
-        <h4 class="author-name">James Sterling</h4>
-        <p class="author-role">CISO, Meridian Logistics</p>
-      </div>
-    </div>
+                        <!-- Card 1 -->
+                        <div class="testimonial-card">
+                            <span class="quote-icon">“</span>
+                            <p class="testimonial-text">
+                                Security training is never a one-and-done. Employees need to be part of the SOC 2 conversation from the get-go.
+                                [CYBER-LOGIC Managed SAT] is a compelling way to make security education fun so employees actually learn from their training.
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar"></div> <!-- Placeholder for avatar -->
+                                <div class="author-info">
+                                    <h4>Adam Machowit</h4>
+                                    <p>CISO, Zense</p>
+                                </div>
+                            </div>
+                        </div>
 
-    <div class="testimonial-card">
-      <span class="quote-icon">“</span>
-      <p class="quote-text">
-        Deployment was incredibly fast. We rolled out the agents to 500+ endpoints in under an hour, and the dashboard immediately started providing actionable insights. It just works.
-      </p>
-      <div class="author-block">
-        <h4 class="author-name">Elena Corves</h4>
-        <p class="author-role">IT Director, Summit Financial Group</p>
-      </div>
-    </div>
+                        <!-- Card 2 -->
+                        <div class="testimonial-card">
+                            <span class="quote-icon">“</span>
+                            <p class="testimonial-text">
+                                I sleep better when my clients are being protected with CYBER-LOGIC. They help us by looking for persistent footholds in a network that antivirus just doesn't catch. We're getting a lot at the benefits of a bigger EDR platform for an extremely reasonable price.
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar"></div>
+                                <div class="author-info">
+                                    <h4>Dylan Sauce</h4>
+                                    <p>Chief Innovation Officer, Innovative Comm. Systems</p>
+                                </div>
+                            </div>
+                        </div>
 
-    <div class="testimonial-card">
-      <span class="quote-icon">“</span>
-      <p class="quote-text">
-        As a service provider, we need tools that make us look good. This platform catches threats that slip past legacy antivirus, protecting both our reputation and our clients' data.
-      </p>
-      <div class="author-block">
-        <h4 class="author-name">Robert Chen</h4>
-        <p class="author-role">CEO, NexGen Technology Partners</p>
-      </div>
-    </div>
+                        <!-- Card 3 (Active initially via JS) -->
+                        <div class="testimonial-card">
+                            <span class="quote-icon">“</span>
+                            <p class="testimonial-text">
+                                With the CYBER-LOGIC SOC, we have some of the best minds in cybersecurity at our disposal. They help us validate incidents, handle them and also level up our own knowledge. With the context and information included in their personalized reports, any tier one technician can easily understand what threats have been detected and take the appropriate next steps – it’s been a great force multiplier for us.
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar"></div>
+                                <div class="author-info">
+                                    <h4>Anthony Cabral</h4>
+                                    <p>Cisco Discloses Partners</p>
+                                </div>
+                            </div>
+                        </div>
 
-    <div class="testimonial-card">
-      <span class="quote-icon">“</span>
-      <p class="quote-text">
-        The reporting is what sets this apart. It’s not just raw data or noise; it’s a clear narrative of what was detected and exactly how to fix it. It saves my team hours of investigation time.
-      </p>
-      <div class="author-block">
-        <h4 class="author-name">Sarah Al-Fayed</h4>
-        <p class="author-role">VP of Operations, Delta Healthcare Systems</p>
-      </div>
-    </div>
+                        <!-- Card 4 -->
+                        <div class="testimonial-card">
+                            <span class="quote-icon">“</span>
+                            <p class="testimonial-text">
+                                The value that we get with CYBER-LOGIC far exceeds what we're getting with SentinelOne. CYBER-LOGIC has allowed us to deliver a solution that is monitoring 24/7 from an EDR perspective, while also adding that critical SOC component.
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar"></div>
+                                <div class="author-info">
+                                    <h4>Andy Warner</h4>
+                                    <p>CEO, ConnectingPoint</p>
+                                </div>
+                            </div>
+                        </div>
 
-  </div>
-</section>
+                         <!-- Card 5 -->
+                         <div class="testimonial-card">
+                            <span class="quote-icon">“</span>
+                            <p class="testimonial-text">
+                                CYBER-LOGIC combines cutting-edge technology with human expertise in a way no other solution does. It’s reliable, cost-effective, and invaluable for any organization looking to strengthen their cyber defenses.
+                            </p>
+                            <div class="testimonial-author">
+                                <div class="author-avatar"></div>
+                                <div class="author-info">
+                                    <h4>Kevin Walker</h4>
+                                    <p>Founder, Black Swan Cyber Security Solutions</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <button class="slider-next">&gt;</button>
+                <div class="slider-dots"></div>
+            </div>
+        </section>
+
         <!-- CTA -->
         <section class="section-padding text-center">
             <div class="container">
@@ -475,6 +516,7 @@
 </div>
 
     <script src="js/components.js"></script>
+    <script src="js/slider.js"></script>
     <script src="js/rotator.js"></script>
 </body>
 </html>

@@ -1,9 +1,9 @@
 :root {
-    --primary-color: #ff6600; /* Orange - from logo */
-    --secondary-color: #0f172a; /* Dark Slate - Background */
-    --secondary-light: #1e293b; /* Slightly lighter background */
-    --accent-color: #0097d9; /* Blue - from logo */
-    --text-light: #f8fafc;
+    --primary-color: #66FCF1; /* Neon Green */
+    --secondary-color: #0B0C10; /* Midnight Blue */
+    --secondary-light: #1F2833; /* Charcoal */
+    --accent-color: #45A29E; /* Electric Cyan */
+    --text-light: #C5C6C7;
     --text-muted: #94a3b8;
     --font-main: 'Inter', system-ui, -apple-system, sans-serif;
     --container-width: 1200px;
@@ -389,6 +389,21 @@ footer {
         padding: 10px;
         color: var(--text-muted);
     }
+
+    /* Mobile Slider Adjustments */
+    .testimonial-card {
+        padding: 20px;
+    }
+
+    .slider-prev, .slider-next {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+        background: rgba(15, 23, 42, 0.8);
+    }
+
+    .slider-prev { left: 5px; }
+    .slider-next { right: 5px; }
 }
 
 /* Large Monitors */
@@ -479,6 +494,164 @@ footer {
 
 .why-us-link:hover {
     transform: translateX(5px);
+}
+
+/* Testimonial Slider */
+.testimonial-section {
+    padding: 80px 0;
+    overflow: hidden; /* Hide overflow from slider */
+    background: var(--secondary-color);
+}
+
+.testimonial-header {
+    text-align: center;
+    margin-bottom: 60px;
+}
+
+.testimonial-header h2 {
+    font-size: 2.5rem;
+    color: white;
+}
+
+.testimonial-container {
+    position: relative;
+    max-width: 100vw;
+    margin: 0 auto;
+}
+
+.testimonial-track-wrapper {
+    overflow: hidden;
+    padding: 40px 0; /* Space for scaling */
+}
+
+.testimonial-track {
+    display: flex;
+    gap: 30px;
+    transition: transform 0.5s ease;
+    width: max-content;
+}
+
+.testimonial-card {
+    background-color: transparent;
+    border: 1px solid rgba(255, 255, 255, 0.2); /* Grey border default */
+    border-radius: 4px;
+    padding: 30px;
+    width: min(400px, 80vw); /* Responsive width */
+    flex-shrink: 0;
+    transition: all 0.5s ease;
+    opacity: 0.5;
+    transform: scale(0.9);
+    position: relative;
+}
+
+.testimonial-card.active {
+    border-color: var(--accent-color); /* Blue for active tech feel */
+    box-shadow: 0 0 20px rgba(0, 151, 217, 0.2);
+    opacity: 1;
+    transform: scale(1);
+}
+
+.quote-icon {
+    font-size: 4rem;
+    line-height: 1;
+    color: var(--accent-color);
+    position: absolute;
+    top: -20px;
+    left: 20px;
+    background: var(--secondary-color);
+    padding: 0 10px;
+}
+
+.testimonial-text {
+    font-size: 0.95rem;
+    margin-top: 10px;
+    margin-bottom: 20px;
+    font-style: italic;
+    color: var(--text-light);
+}
+
+.testimonial-author {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.author-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background-color: var(--secondary-light);
+    object-fit: cover;
+}
+
+.author-info h4 {
+    color: var(--accent-color);
+    font-size: 0.9rem;
+    margin-bottom: 2px;
+}
+
+.author-info p {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+/* Slider Controls */
+.slider-prev, .slider-next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--secondary-light);
+    color: var(--accent-color);
+    border: 1px solid var(--accent-color);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    transition: all 0.3s;
+}
+
+.slider-prev:hover, .slider-next:hover {
+    background: var(--accent-color);
+    color: white;
+}
+
+/* Position relative to the center active card is tricky with pure CSS if width varies.
+   But we can put them fixed relative to the viewport or container.
+   The screenshot shows them on the sides of the ACTIVE card.
+   We will just put them on the sides of the container or center them.
+   Let's put them absolute to the container wrapper.
+*/
+
+.slider-prev { left: 20px; }
+.slider-next { right: 20px; }
+
+/* Or better, strictly around the center area if possible.
+   For now, side of screen/container is safer. */
+
+.slider-dots {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 30px;
+}
+
+.slider-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.slider-dot.active {
+    background: var(--accent-color);
 }
 
 /* Skeleton Loading Styles */
@@ -712,72 +885,3 @@ footer {
     border-radius: 4px;
     cursor: pointer;
 }
-
-.testimonial-section {
-    background-color: #0B0C10; /* Deep dark background */
-    color: #ffffff;
-    padding: 60px 20px;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    text-align: center;
-  }
-
-  .testimonial-header h2 {
-    color: #66FCF1; /* Neon Cyan accent */
-    margin-bottom: 40px;
-    font-size: 2.5rem;
-  }
-
-  .testimonial-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-
-  .testimonial-card {
-    background-color: #1F2833; /* Slightly lighter card background */
-    padding: 30px;
-    border-radius: 8px;
-    border: 1px solid #45A29E; /* Thin subtle border */
-    text-align: left;
-    transition: transform 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-  }
-
-  .testimonial-card:hover {
-    transform: translateY(-5px); /* Slight lift on hover */
-  }
-
-  .quote-icon {
-    font-size: 2rem;
-    color: #45A29E;
-    margin-bottom: 15px;
-    display: block;
-  }
-
-  .quote-text {
-    font-size: 1.1rem;
-    line-height: 1.6;
-    color: #C5C6C7;
-    margin-bottom: 25px;
-    font-style: italic;
-  }
-
-  .author-block {
-    border-top: 1px solid #45A29E;
-    padding-top: 15px;
-  }
-
-  .author-name {
-    color: #ffffff;
-    font-weight: bold;
-    font-size: 1.1rem;
-    margin: 0;
-  }
-
-  .author-role {
-    color: #66FCF1;
-    font-size: 0.9rem;
-    margin: 5px 0 0 0;
-  }
