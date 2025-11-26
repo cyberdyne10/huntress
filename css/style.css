@@ -825,11 +825,11 @@ footer {
     position: relative;
     background: rgba(0, 20, 30, 0.6);
     border: 1px solid rgba(0, 180, 216, 0.15);
-    width: 300px;
-    padding: 25px;
+    width: 260px; /* Reduced width */
+    padding: 20px; /* Reduced padding */
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 15px; /* Reduced gap */
     transition: all 0.3s ease;
     backdrop-filter: blur(4px);
     overflow: hidden;
@@ -881,8 +881,8 @@ footer {
 
 .icon-box {
     position: relative;
-    width: 50px;
-    height: 50px;
+    width: 40px; /* Reduced size */
+    height: 40px; /* Reduced size */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -892,8 +892,8 @@ footer {
 }
 
 .icon {
-    width: 28px;
-    height: 28px;
+    width: 22px; /* Reduced size */
+    height: 22px; /* Reduced size */
     fill: #00b4d8;
     filter: drop-shadow(0 0 5px #00b4d8);
 }
@@ -923,7 +923,7 @@ footer {
 
 .number {
     font-family: 'Courier New', monospace;
-    font-size: 28px;
+    font-size: 22px; /* Reduced font size */
     font-weight: 700;
     color: #ffffff;
     letter-spacing: -1px;
@@ -931,9 +931,9 @@ footer {
 }
 
 .label {
-    font-size: 12px;
+    font-size: 10px; /* Reduced font size */
     text-transform: uppercase;
-    letter-spacing: 2px;
+    letter-spacing: 1.5px; /* Adjusted letter spacing */
     color: #64748b;
     font-weight: 600;
     margin-top: 4px;
