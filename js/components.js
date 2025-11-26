@@ -189,4 +189,42 @@ function loadFooter() {
     `;
 
     footerPlaceholder.innerHTML = footerHTML;
+
+    // Create a placeholder for the chat widget
+    const chatWidgetPlaceholder = document.createElement('div');
+    chatWidgetPlaceholder.id = 'chat-widget-placeholder';
+    document.body.appendChild(chatWidgetPlaceholder);
+
+    const chatWidgetHTML = `
+        <div id="chat-widget-container">
+            <div id="chat-bubble">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="24" height="24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"></path></svg>
+            </div>
+            <div id="chat-window">
+                <div id="chat-header">
+                    <span>AI Assistant</span>
+                    <button id="chat-close">&times;</button>
+                </div>
+                <div id="chat-log">
+                    <div class="chat-message bot">Hi there! How can I help you today?</div>
+                </div>
+                <div id="chat-input-container">
+                    <input type="text" id="chat-input" placeholder="Type a message...">
+                    <button id="chat-send">Send</button>
+                </div>
+            </div>
+        </div>
+    `;
+    chatWidgetPlaceholder.innerHTML = chatWidgetHTML;
+
+    // Load the chat script and initialize the widget once it's loaded
+    const chatScript = document.createElement('script');
+    chatScript.src = '/js/chat.js';
+    chatScript.onload = () => {
+        // This function is defined in js/chat.js
+        if (typeof initializeChatWidget === 'function') {
+            initializeChatWidget();
+        }
+    };
+    document.body.appendChild(chatScript);
 }

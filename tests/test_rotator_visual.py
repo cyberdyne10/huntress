@@ -1,4 +1,5 @@
 
+import os
 import pytest
 from playwright.sync_api import Page, expect
 
@@ -9,7 +10,8 @@ def test_rotator_smooth_fade_out(page: Page):
 
     checking for intermediate animation states.
     """
-    page.goto("file:///app/index.html")
+    file_path = os.path.abspath('index.html')
+    page.goto(f"file://{file_path}")
     rotator = page.locator("#word-rotator")
 
     # 1. Check the initial state.
