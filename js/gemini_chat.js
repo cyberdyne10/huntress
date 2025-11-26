@@ -1,6 +1,5 @@
-// IMPORTANT: Load the API key from a secure source, e.g., environment variables.
-const API_KEY = 'YOUR_API_KEY'; // Replace with a secure method of key retrieval.
-const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent';
+// URL for the Cloudflare Worker proxy. Replace with your actual worker URL.
+const API_URL = 'YOUR_CLOUDFLARE_WORKER_URL';
 
 function initializeChatWidget() {
     const chatWidget = document.getElementById('terminal-chat-widget');
@@ -47,7 +46,6 @@ function initializeChatWidget() {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'x-goog-api-key': API_KEY,
                 },
                 body: JSON.stringify({
                     contents: [{
