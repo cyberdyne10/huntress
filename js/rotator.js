@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     ];
 
     let currentIndex = 0;
+    rotator.textContent = words[currentIndex];
 
     setInterval(() => {
         // Start fade out

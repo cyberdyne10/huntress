@@ -7,513 +7,258 @@
     <link rel="stylesheet" href="css/style.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        /* Homepage specific styles */
-        .hero {
-            padding: 120px 0;
-            background: radial-gradient(circle at top right, rgba(0, 229, 255, 0.1), transparent 40%),
-                        linear-gradient(to bottom, var(--secondary-color), #000);
-            position: relative;
-            overflow: hidden;
-        }
+      /* --- CYBER-LOGIC THEME STYLES --- */
+      :root {
+        --cl-bg-dark: #0B0C10;
+        --cl-bg-card: #1F2833;
+        --cl-accent: #66FCF1;
+        --cl-secondary: #45A29E;
+        --cl-text-main: #FFFFFF;
+        --cl-text-muted: #C5C6C7;
+      }
 
-        .hero h1 {
-            font-size: 3.5rem;
-            line-height: 1.1;
-            margin-bottom: 24px;
-            background: linear-gradient(90deg, #fff, #94a3b8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: var(--cl-bg-dark);
+        color: var(--cl-text-main);
+        margin: 0;
+        padding: 0;
+      }
 
-        .hero h1 > span {
-            color: var(--primary-color);
-            -webkit-text-fill-color: var(--primary-color);
-            display: block;
-        }
+      .cl-section {
+        padding: 80px 20px;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
 
-        #word-rotator {
-            display: inline-block;
-            transition: opacity 0.5s ease, transform 0.5s ease;
-            opacity: 1;
-            transform: translateY(0);
-            /* Ensure color inheritance or explicit set if needed, but span inherits */
-        }
+      /* Typography */
+      .cl-heading {
+        font-size: 2.5rem;
+        color: var(--cl-text-main);
+        margin-bottom: 1rem;
+        font-weight: 700;
+      }
 
-        #word-rotator.hidden {
-            opacity: 0;
-            transform: translateY(10px);
-        }
+      .cl-subheading {
+        font-size: 1.2rem;
+        color: var(--cl-text-muted);
+        max-width: 700px;
+        margin: 0 auto 3rem auto;
+        line-height: 1.6;
+      }
 
-        .hero p.lead {
-            font-size: 1.25rem;
-            color: var(--text-muted);
-            max-width: 600px;
-            margin: 0 auto 40px;
-        }
+      .cl-highlight {
+        color: var(--cl-accent);
+      }
 
-        .cta-group {
-            display: flex;
-            justify-content: center;
-        }
+      /* Value Prop Section */
+      .value-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 40px;
+        margin-bottom: 60px;
+      }
 
-        /* Stats Bar */
-        .stats-bar {
-            background: var(--secondary-light);
-            padding: 40px 0;
-            border-top: 1px solid rgba(255,255,255,0.05);
-            border-bottom: 1px solid rgba(255,255,255,0.05);
-        }
+      .value-item h3 {
+        color: var(--cl-secondary);
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+      }
 
-        .stats-grid {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 20px;
-        }
+      .value-item p {
+        color: var(--cl-text-muted);
+        line-height: 1.5;
+      }
 
-        .stat-item {
-            text-align: center;
-        }
+      /* Services Grid */
+      .services-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+      }
 
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: var(--primary-color);
-        }
+      .service-card {
+        background: var(--cl-bg-card);
+        padding: 30px;
+        border-radius: 8px;
+        border-left: 4px solid var(--cl-accent); /* Neon accent bar */
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
 
-        .stat-label {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+      .service-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+      }
 
-        /* Value Props */
-        .section-padding {
-            padding: 100px 0;
-        }
+      .service-card h3 {
+        margin-top: 0;
+        font-size: 1.4rem;
+        color: var(--cl-text-main);
+      }
 
-        .value-prop-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-            margin-bottom: 120px;
-        }
+      .service-card p {
+        color: var(--cl-text-muted);
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 20px;
+      }
 
-        .value-prop-content h2 {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-        }
+      .service-link {
+        color: var(--cl-accent);
+        text-decoration: none;
+        font-weight: bold;
+        font-size: 0.9rem;
+        display: inline-block;
+      }
 
-        .value-prop-content p {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            margin-bottom: 30px;
-        }
+      .service-link:hover {
+        text-decoration: underline;
+      }
 
-        .value-prop-image {
-            background: linear-gradient(45deg, var(--secondary-light), rgba(0, 229, 255, 0.1));
-            border-radius: 12px;
-            height: 400px; /* Placeholder height */
-            border: 1px solid rgba(0, 229, 255, 0.2);
-            position: relative;
-        }
+      /* Footer CTA */
+      .cta-footer {
+        background: linear-gradient(0deg, #000000 0%, var(--cl-bg-card) 100%);
+        text-align: center;
+        padding: 100px 20px;
+        border-top: 1px solid var(--cl-secondary);
+      }
 
-        .value-prop-image::after {
-            content: "UI Visualization";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: var(--primary-color);
-            font-weight: 700;
-            opacity: 0.5;
-        }
+      .btn-primary {
+        background-color: var(--cl-accent);
+        color: #000;
+        padding: 15px 40px;
+        font-size: 1.1rem;
+        font-weight: bold;
+        border-radius: 4px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 20px;
+        transition: background 0.3s;
+      }
 
-        /* Platform Cards */
-        .platform-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 30px;
-            margin-top: 60px;
-        }
-
-        .card {
-            background: rgba(31, 40, 51, 0.5); /* Semi-transparent Charcoal */
-            backdrop-filter: blur(10px);
-            padding: 30px;
-            border-radius: 8px;
-            border: 1px solid rgba(102, 252, 241, 0.2); /* Subtle Neon Green border */
-            transition: transform 0.3s, border-color 0.3s;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-color);
-        }
-
-        .card h3 {
-            font-size: 1.5rem;
-            margin-bottom: 15px;
-            color: #fff;
-        }
-
-        .card p {
-            color: var(--text-muted);
-            margin-bottom: 20px;
-        }
-
-        .card-icon {
-            width: 50px;
-            height: 50px;
-            background: rgba(0, 229, 255, 0.1);
-            border-radius: 8px;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--primary-color);
-        }
-
-        /* Responsive Homepage Styles */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .stats-grid {
-                gap: 40px;
-            }
-
-            .stat-item {
-                flex: 1 1 45%;
-            }
-
-            .value-prop-grid {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-
-            .value-prop-image {
-                order: -1;
-                height: 250px;
-            }
-        }
+      .btn-primary:hover {
+        background-color: #fff;
+      }
     </style>
 </head>
 <body>
 
     <div id="header-placeholder">
-    <div class="skeleton-header container">
-        <div class="skeleton-logo skeleton"></div>
-        <div class="skeleton-nav">
-            <div class="skeleton-link skeleton"></div>
-            <div class="skeleton-link skeleton"></div>
-            <div class="skeleton-link skeleton"></div>
-            <div class="skeleton-link skeleton"></div>
-            <div class="skeleton-link skeleton"></div>
+        <div class="skeleton-header container">
+            <div class="skeleton-logo skeleton"></div>
+            <div class="skeleton-nav">
+                <div class="skeleton-link skeleton"></div>
+                <div class="skeleton-link skeleton"></div>
+                <div class="skeleton-link skeleton"></div>
+                <div class="skeleton-link skeleton"></div>
+                <div class="skeleton-link skeleton"></div>
+            </div>
+            <div class="skeleton-cta skeleton"></div>
         </div>
-        <div class="skeleton-cta skeleton"></div>
     </div>
-</div>
 
     <main>
-        <!-- Hero Section -->
-        <section class="hero">
-            <div class="container">
-                <div class="hero-content text-center">
-                    <h1>Hackers Wrecked.<br><span>Your <span id="word-rotator">Enterprise</span> Secured.</span></h1>
-                    <p class="lead">
-                        CYBER-LOGIC NETWORKS wrecks hackers. A purpose-built platform for organizations like yours,
-                        all backed and operated by our industry-proven, 24/7 AI-assisted SOC for continuous threat protection.
-                    </p>
-                    <div class="cta-group">
-                        <a href="/demo.html" class="btn btn-primary">Start for Free</a>
-                        <a href="/demo.html" class="btn btn-outline" style="margin-left: 20px;">Get a Demo</a>
-                    </div>
-                </div>
+        <section class="cl-section" style="text-align: center;">
+          <h2 class="cl-heading">Engineered for <span id="word-rotator" class="cl-highlight">Enterprise</span></h2>
+          <p class="cl-subheading">
+            We don't just hunt threats; we eliminate the noise. Cyber-Logic combines algorithmic speed with human insight to secure your infrastructure from the ground up.
+          </p>
+
+          <div class="value-grid" style="text-align: left;">
+            <div class="value-item">
+              <h3>01. Precision Detection</h3>
+              <p>Legacy antivirus misses 60% of modern attacks. Our behavioral analysis detects anomalies in real-time, catching fileless malware before it executes.</p>
             </div>
+            <div class="value-item">
+              <h3>02. Zero-Gap Visibility</h3>
+              <p>You can't defend what you can't see. We provide total visibility into every endpoint, identity, and network log in your ecosystem.</p>
+            </div>
+            <div class="value-item">
+              <h3>03. Active Remediation</h3>
+              <p>We don't just send alerts; we take action. Our SOC isolates infected machines and reverses malicious changes instantly.</p>
+            </div>
+          </div>
         </section>
 
-        <!-- Stats Section -->
-        <section class="stats-bar">
-            <div class="container">
-                <div class="stats-grid">
-                    <div class="stat-item">
-                        <div class="stat-value">4M+</div>
-                        <div class="stat-label">Endpoints Protected</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">8M+</div>
-                        <div class="stat-label">Identities Monitored</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">24/7</div>
-                        <div class="stat-label">Human-Led SOC</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value">99%</div>
-                        <div class="stat-label">Cust. Satisfaction</div>
-                    </div>
-                </div>
+        <section class="cl-section" style="background-color: #0F1216;">
+          <div style="text-align: center; margin-bottom: 50px;">
+            <h2 class="cl-heading">The Logic Stack</h2>
+            <p class="cl-subheading">A comprehensive security suite designed for modern business.</p>
+          </div>
+
+          <div class="services-container">
+
+            <div class="service-card">
+              <h3>Endpoint Logic (EDR)</h3>
+              <p>
+                Advanced protection for laptops, servers, and workstations. We monitor process behaviors to stop ransomware and malicious scripts instantly.
+              </p>
+              <a href="#" class="service-link">View EDR Features &rarr;</a>
             </div>
+
+            <div class="service-card">
+              <h3>Identity Shield (ITDR)</h3>
+              <p>
+                Lock down Microsoft 365 and email environments. We detect impossible logins, account takeovers, and suspicious forwarding rules.
+              </p>
+              <a href="#" class="service-link">View Identity Protection &rarr;</a>
+            </div>
+
+            <div class="service-card">
+              <h3>Compliance & Logs (SIEM)</h3>
+              <p>
+                Meet regulatory requirements (HIPAA, PCI, SOC2) without the headache. We collect, correlate, and store your logs for effortless audits.
+              </p>
+              <a href="#" class="service-link">View Compliance Tools &rarr;</a>
+            </div>
+
+            <div class="service-card">
+              <h3>Human Firewall (SAT)</h3>
+              <p>
+                Your employees are your first line of defense. Our science-backed training reduces phishing click rates and builds a security-first culture.
+              </p>
+              <a href="#" class="service-link">View Training Modules &rarr;</a>
+            </div>
+
+          </div>
         </section>
 
-        <!-- Why Us / Value Props -->
-        <section class="section-padding">
-            <div class="container">
-                <div class="why-us-grid">
-                    <!-- Card 1 -->
-                    <div class="why-us-card">
-                        <div class="why-us-icon">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>
-                        </div>
-                        <h2 class="why-us-title">You Don't Have to Manage Any of It</h2>
-                        <p class="why-us-text">
-                            CYBER-LOGIC products are built to protect organizations of ALL sizes,
-                            owning detection to remediation. We own our tech and innovate faster
-                            than other vendors, giving you 24/7 protection against threats.
-                        </p>
-
-                        <div class="why-us-stat">4M+ endpoints</div>
-                        <div class="why-us-divider"></div>
-                        <div class="why-us-stat">8M+ identities</div>
-                        <div class="why-us-divider"></div>
-                        <div class="why-us-stat">720k+ active learners</div>
-
-                        <a href="/platform/overview.html" class="why-us-link">Explore the Platform &gt;</a>
-                    </div>
-
-                    <!-- Card 2 -->
-                    <div class="why-us-card">
-                        <div class="why-us-icon">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-                        </div>
-                        <h2 class="why-us-title">Expert Threat Hunters, On Your Team</h2>
-                        <p class="why-us-text">
-                            Our industry-recognized AI-assisted threat hunters are your unfair advantage,
-                            exposing the latest tradecraft and wrecking hackers. CYBER-LOGIC is out in
-                            front of global threats, leading research through remediation while the others chase us.
-                        </p>
-
-                        <div class="why-us-stat">98.8% customer satisfaction rating</div>
-                        <div class="why-us-divider"></div>
-                        <div class="why-us-stat">CVE Numbering Authority (CNA)</div>
-
-                        <a href="/about/soc.html" class="why-us-link">Meet the CYBER-LOGIC SOC &gt;</a>
-                    </div>
-
-                    <!-- Card 3 -->
-                    <div class="why-us-card">
-                        <div class="why-us-icon">
-                            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
-                        </div>
-                        <h2 class="why-us-title">Built for Outcomes, Not Optics</h2>
-                        <p class="why-us-text">
-                            You get peace of mind with advanced yet lightweight solutions that
-                            evolve with emerging threats. No gaps, no blind spots, no guessing
-                            if you're protected. The alerts you need and nothing you don't.
-                        </p>
-
-                        <div class="why-us-stat">4.9 out of 5 stars based on hundreds of G2 reviews</div>
-                        <div class="why-us-divider"></div>
-                        <div class="why-us-stat">Go from zero to protected in under 30 minutes.</div>
-
-                        <a href="/demo.html" class="why-us-link">Get a Demo &gt;</a>
-                    </div>
-                </div>
-            </div>
+        <section class="cta-footer">
+          <h2 class="cl-heading">Security is a Necessity, <br>Not a Luxury.</h2>
+          <p style="color: #C5C6C7; max-width: 600px; margin: 0 auto 30px auto;">
+            Deploy Cyber-Logic in minutes. No reboots, no downtime, just instant protection.
+          </p>
+          <a href="#" class="btn-primary">Start Your Free Audit</a>
         </section>
-
-        <!-- Platform Pillars -->
-        <section class="section-padding" style="background-color: var(--secondary-light);">
-            <div class="container">
-                <div class="text-center mb-2">
-                    <h2>Your Security Platform for Peace of Mind</h2>
-                    <p style="color: var(--text-muted);">Predictable pricing with no noise, just meaningful alerts.</p>
-                </div>
-
-                <div class="platform-grid">
-                    <!-- EDR -->
-                    <div class="card">
-                        <div class="card-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7L12 12L22 7L12 2Z" /></svg>
-                        </div>
-                        <h3>Managed EDR</h3>
-                        <p>Get full endpoint visibility, detection, and response. We handle the threats so you don't have to.</p>
-                        <a href="/platform/managed-edr.html" class="text-primary">Learn more &rarr;</a>
-                    </div>
-
-                    <!-- ITDR -->
-                    <div class="card">
-                        <div class="card-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12ZM12 14C9.33 14 4 15.34 4 18V20H20V18C20 15.34 14.67 14 12 14Z" /></svg>
-                        </div>
-                        <h3>Managed ITDR</h3>
-                        <p>Protect your Microsoft 365 identities and email environments from account takeovers.</p>
-                        <a href="/platform/managed-itdr.html" class="text-primary">Learn more &rarr;</a>
-                    </div>
-
-                    <!-- SIEM -->
-                    <div class="card">
-                        <div class="card-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M3 13H5V3H3V13ZM3 21H5V15H3V21ZM7 21H9V11H7V21ZM7 9H9V3H7V9ZM11 21H13V3H11V21ZM15 21H17V9H15V21ZM15 7H17V3H15V7ZM19 13H21V3H19V13ZM19 21H21V15H19V21Z" /></svg>
-                        </div>
-                        <h3>Managed SIEM</h3>
-                        <p>Managed threat response and robust compliance support at a predictable price.</p>
-                        <a href="/platform/managed-siem.html" class="text-primary">Learn more &rarr;</a>
-                    </div>
-
-                    <!-- SAT -->
-                    <div class="card">
-                        <div class="card-icon">
-                            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z" /></svg>
-                        </div>
-                        <h3>Managed SAT</h3>
-                        <p>Empower your teams with science-backed security awareness training.</p>
-                        <a href="/platform/managed-sat.html" class="text-primary">Learn more &rarr;</a>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Testimonial Slider -->
-        <section class="testimonial-section">
-            <div class="testimonial-header">
-                <h2>Protecting Businesses Like Yours</h2>
-            </div>
-
-            <div class="testimonial-container">
-                <button class="slider-prev">&lt;</button>
-                <div class="testimonial-track-wrapper">
-                    <div class="testimonial-track">
-
-                        <!-- Card 1 -->
-                        <div class="testimonial-card">
-                            <span class="quote-icon">“</span>
-                            <p class="testimonial-text">
-                                Security training is never a one-and-done. Employees need to be part of the SOC 2 conversation from the get-go.
-                                [CYBER-LOGIC Managed SAT] is a compelling way to make security education fun so employees actually learn from their training.
-                            </p>
-                            <div class="testimonial-author">
-                                <div class="author-avatar"></div> <!-- Placeholder for avatar -->
-                                <div class="author-info">
-                                    <h4>Adam Machowit</h4>
-                                    <p>CISO, Zense</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 2 -->
-                        <div class="testimonial-card">
-                            <span class="quote-icon">“</span>
-                            <p class="testimonial-text">
-                                I sleep better when my clients are being protected with CYBER-LOGIC. They help us by looking for persistent footholds in a network that antivirus just doesn't catch. We're getting a lot at the benefits of a bigger EDR platform for an extremely reasonable price.
-                            </p>
-                            <div class="testimonial-author">
-                                <div class="author-avatar"></div>
-                                <div class="author-info">
-                                    <h4>Dylan Sauce</h4>
-                                    <p>Chief Innovation Officer, Innovative Comm. Systems</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 3 (Active initially via JS) -->
-                        <div class="testimonial-card">
-                            <span class="quote-icon">“</span>
-                            <p class="testimonial-text">
-                                With the CYBER-LOGIC SOC, we have some of the best minds in cybersecurity at our disposal. They help us validate incidents, handle them and also level up our own knowledge. With the context and information included in their personalized reports, any tier one technician can easily understand what threats have been detected and take the appropriate next steps – it’s been a great force multiplier for us.
-                            </p>
-                            <div class="testimonial-author">
-                                <div class="author-avatar"></div>
-                                <div class="author-info">
-                                    <h4>Anthony Cabral</h4>
-                                    <p>Cisco Discloses Partners</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 4 -->
-                        <div class="testimonial-card">
-                            <span class="quote-icon">“</span>
-                            <p class="testimonial-text">
-                                The value that we get with CYBER-LOGIC far exceeds what we're getting with SentinelOne. CYBER-LOGIC has allowed us to deliver a solution that is monitoring 24/7 from an EDR perspective, while also adding that critical SOC component.
-                            </p>
-                            <div class="testimonial-author">
-                                <div class="author-avatar"></div>
-                                <div class="author-info">
-                                    <h4>Andy Warner</h4>
-                                    <p>CEO, ConnectingPoint</p>
-                                </div>
-                            </div>
-                        </div>
-
-                         <!-- Card 5 -->
-                         <div class="testimonial-card">
-                            <span class="quote-icon">“</span>
-                            <p class="testimonial-text">
-                                CYBER-LOGIC combines cutting-edge technology with human expertise in a way no other solution does. It’s reliable, cost-effective, and invaluable for any organization looking to strengthen their cyber defenses.
-                            </p>
-                            <div class="testimonial-author">
-                                <div class="author-avatar"></div>
-                                <div class="author-info">
-                                    <h4>Kevin Walker</h4>
-                                    <p>Founder, Black Swan Cyber Security Solutions</p>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-                <button class="slider-next">&gt;</button>
-                <div class="slider-dots"></div>
-            </div>
-        </section>
-
-        <!-- CTA -->
-        <section class="section-padding text-center">
-            <div class="container">
-                <h2>Cybersecurity is a Necessity, Not a Luxury.</h2>
-                <p class="mb-2" style="color: var(--text-muted); max-width: 600px; margin-left: auto; margin-right: auto;">
-                    Secure your endpoints, email, and employees with the power of our 24/7 SOC.
-                    Try CYBER-LOGIC for free and deploy in minutes.
-                </p>
-                <a href="/demo.html" class="btn btn-primary">Start Free Trial</a>
-            </div>
-        </section>
-
     </main>
 
     <div id="footer-placeholder">
-    <div class="container skeleton-footer">
-        <div class="skeleton-footer-grid">
-            <div class="skeleton-col">
-                <div class="skeleton-title skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-            </div>
-            <div class="skeleton-col">
-                <div class="skeleton-title skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-            </div>
-            <div class="skeleton-col">
-                <div class="skeleton-title skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-            </div>
-             <div class="skeleton-col">
-                <div class="skeleton-title skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
+        <div class="container skeleton-footer">
+            <div class="skeleton-footer-grid">
+                <div class="skeleton-col">
+                    <div class="skeleton-title skeleton"></div>
+                    <div class="skeleton-text-line skeleton"></div>
+                    <div class="skeleton-text-line skeleton"></div>
+                    <div class="skeleton-text-line skeleton"></div>
+                </div>
+                <div class="skeleton-col">
+                    <div class="skeleton-title skeleton"></div>
+                    <div class="skeleton-text-line skeleton"></div>
+                    <div class="skeleton-text-line skeleton"></div>
+                </div>
+                <div class="skeleton-col">
+                    <div class="skeleton-title skeleton"></div>
+                    <div class="skeleton-text-line skeleton"></div>
+                    <div class="skeleton-text-line skeleton"></div>
+                </div>
+                 <div class="skeleton-col">
+                    <div class="skeleton-title skeleton"></div>
+                    <div class="skeleton-text-line skeleton"></div>
+                    <div class="skeleton-text-line skeleton"></div>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <script src="js/components.js"></script>
     <script src="js/slider.js"></script>
