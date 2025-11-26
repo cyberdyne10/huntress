@@ -1,0 +1,70 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.12, pytest-9.0.1, pluggy-1.6.0
+rootdir: /app
+plugins: playwright-0.7.2, base-url-2.1.0
+collected 1 item
+
+tests/test_chat_widget.py F                                              [100%]
+
+=================================== FAILURES ===================================
+_____________________ test_terminal_chat_widget[chromium] ______________________
+
+page = <Page url='file:///app/index.html'>
+
+    def test_terminal_chat_widget(page: Page):
+        # Create verification directory if it doesn't exist
+        os.makedirs("verification", exist_ok=True)
+
+        # Listen for console events
+        page.on("console", lambda msg: print(f"CONSOLE: {msg.text}"))
+
+        # Navigate to the local index.html file
+        file_path = os.path.abspath('index.html')
+        page.goto(f'file://{file_path}')
+
+        # Wait for the chat widget to signal that it is ready
+>       page.wait_for_selector('body[data-chat-widget-ready="true"]')
+
+tests/test_chat_widget.py:17:
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+/home/jules/.pyenv/versions/3.12.12/lib/python3.12/site-packages/playwright/sync_api/_generated.py:8182: in wait_for_selector
+    self._sync(
+/home/jules/.pyenv/versions/3.12.12/lib/python3.12/site-packages/playwright/_impl/_page.py:423: in wait_for_selector
+    return await self._main_frame.wait_for_selector(**locals_to_params(locals()))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/home/jules/.pyenv/versions/3.12.12/lib/python3.12/site-packages/playwright/_impl/_frame.py:369: in wait_for_selector
+    await self._channel.send(
+/home/jules/.pyenv/versions/3.12.12/lib/python3.12/site-packages/playwright/_impl/_connection.py:69: in send
+    return await self._connection.wrap_api_call(
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = <playwright._impl._connection.Connection object at 0x7f9879371640>
+cb = <function Channel.send.<locals>.<lambda> at 0x7f9878faf380>
+is_internal = False, title = None
+
+    async def wrap_api_call(
+        self, cb: Callable[[], Any], is_internal: bool = False, title: str = None
+    ) -> Any:
+        if self._api_zone.get():
+            return await cb()
+        task = asyncio.current_task(self._loop)
+        st: List[inspect.FrameInfo] = getattr(
+            task, "__pw_stack__", None
+        ) or inspect.stack(0)
+
+        parsed_st = _extract_stack_trace_information_from_stack(st, is_internal, title)
+        self._api_zone.set(parsed_st)
+        try:
+            return await cb()
+        except Exception as error:
+>           raise rewrite_error(error, f"{parsed_st['apiName']}: {error}") from None
+E           playwright._impl._errors.TimeoutError: Page.wait_for_selector: Timeout 30000ms exceeded.
+E           Call log:
+E             - waiting for locator("body[data-chat-widget-ready=\"true\"]") to be visible
+
+/home/jules/.pyenv/versions/3.12.12/lib/python3.12/site-packages/playwright/_impl/_connection.py:558: TimeoutError
+----------------------------- Captured stdout call -----------------------------
+CONSOLE: Failed to load resource: net::ERR_FILE_NOT_FOUND
+=========================== short test summary info ============================
+FAILED tests/test_chat_widget.py::test_terminal_chat_widget[chromium] - playw...
+============================== 1 failed in 31.37s ==============================

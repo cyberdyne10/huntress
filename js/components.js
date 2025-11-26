@@ -214,34 +214,31 @@ function loadFooter() {
     document.body.appendChild(chatWidgetPlaceholder);
 
     const chatWidgetHTML = `
-        <div id="chat-widget-container">
-            <div id="chat-bubble">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-message-square"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+        <div id="terminal-chat-widget">
+            <div id="terminal-header">
+                <span>[system_terminal]::[gemini_v1beta]</span>
+                <button id="terminal-close" aria-label="Close terminal">&times;</button>
             </div>
-            <div id="chat-window">
-                <div id="chat-header">
-                    <span>AI Assistant</span>
-                    <button id="chat-close" aria-label="Close chat">&times;</button>
-                </div>
-                <div id="chat-log">
-                    <div class="chat-message bot">Hi there! How can I help you today?</div>
-                </div>
-                <div id="chat-input-container">
-                    <input type="text" id="chat-input" placeholder="Type a message..." aria-label="Chat input">
-                    <button id="chat-send" aria-label="Send message">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-send"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                    </button>
+            <div id="terminal-body">
+                <div id="terminal-output"></div>
+                <div id="terminal-input-line">
+                    <span class="prompt">>&nbsp;</span>
+                    <input type="text" id="terminal-input" placeholder="Enter command..." autocomplete="off">
+                    <span class="cursor"></span>
                 </div>
             </div>
+        </div>
+        <div id="terminal-toggle-bubble">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
         </div>
     `;
     chatWidgetPlaceholder.innerHTML = chatWidgetHTML;
 
     // Load the chat script and initialize the widget once it's loaded
     const chatScript = document.createElement('script');
-    chatScript.src = '/js/chat.js';
+    chatScript.src = 'js/gemini_chat.js';
     chatScript.onload = () => {
-        // This function is defined in js/chat.js
+        // This function is defined in js/gemini_chat.js
         if (typeof initializeChatWidget === 'function') {
             initializeChatWidget();
         }

@@ -939,6 +939,133 @@ footer {
     margin-top: 4px;
 }
 
+/* Terminal Chat Widget */
+#terminal-toggle-bubble {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: #000;
+    border: 1px solid var(--cl-brand-blue);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    z-index: 1001;
+    transition: all 0.3s ease;
+}
+
+#terminal-toggle-bubble:hover {
+    background: var(--cl-brand-blue);
+    box-shadow: 0 0 15px var(--cl-brand-blue);
+}
+
+#terminal-toggle-bubble svg {
+    color: var(--cl-brand-blue);
+    transition: color 0.3s ease;
+}
+
+#terminal-toggle-bubble:hover svg {
+    color: #000;
+}
+
+#terminal-chat-widget {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 400px;
+    max-width: 90vw;
+    height: 500px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--cl-brand-blue);
+    border-radius: 4px;
+    backdrop-filter: blur(5px);
+    font-family: 'Courier New', monospace;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 1000;
+    box-shadow: 0 0 20px rgba(0, 180, 216, 0.2);
+    display: none; /* Hidden by default */
+}
+
+#terminal-chat-widget.open {
+    display: flex;
+}
+
+#terminal-header {
+    background: var(--cl-brand-blue);
+    color: #000;
+    padding: 5px 10px;
+    font-weight: bold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#terminal-close {
+    background: none;
+    border: none;
+    color: #000;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+#terminal-body {
+    flex-grow: 1;
+    padding: 10px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+#terminal-output {
+    flex-grow: 1;
+}
+
+#terminal-output p {
+    margin: 0 0 5px;
+    line-height: 1.4;
+    max-width: 100%;
+}
+
+.user-message {
+    color: #fff;
+}
+
+.system-response {
+    color: var(--cl-brand-blue);
+}
+
+#terminal-input-line {
+    display: flex;
+    align-items: center;
+}
+
+.prompt {
+    color: var(--cl-brand-blue);
+    font-weight: bold;
+}
+
+#terminal-input {
+    background: transparent;
+    border: none;
+    color: #fff;
+    flex-grow: 1;
+    font-family: 'Courier New', monospace;
+    outline: none;
+}
+
+#terminal-input-line .cursor {
+    width: 8px;
+    height: 1.2em;
+    background: var(--cl-brand-blue);
+    animation: blink 1s infinite;
+}
+
+
 /* Word Rotator */
 .word-rotator-wrapper {
     display: inline-block;
