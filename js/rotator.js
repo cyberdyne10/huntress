@@ -6,7 +6,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const words = [
         "Chaos",
         "Breaches",
-        "Compromise",
         "Blindspots",
         "Downtime",
         "Disruption",
