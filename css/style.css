@@ -455,6 +455,18 @@ footer {
 
     .slider-prev { left: 5px; }
     .slider-next { right: 5px; }
+
+    .hero-stats {
+        flex-direction: column;
+        gap: 25px;
+        margin-top: 50px;
+        align-items: center;
+    }
+
+    .stat {
+        justify-content: flex-start;
+        width: 220px; /* Fixed width to align them */
+    }
 }
 
 /* Large Monitors */
