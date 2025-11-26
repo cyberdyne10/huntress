@@ -813,3 +813,34 @@ footer {
 .hidden { opacity: 0; transition: opacity 0.5s ease-in-out; }
 
 /* Hero Section */
+.hero-stats {
+    display: flex;
+    justify-content: center;
+    gap: 60px;
+    margin-top: 80px;
+}
+
+.stat {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.stat-icon {
+    font-size: 2rem;
+    color: var(--cl-brand-blue);
+}
+
+.stat-info h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0;
+}
+
+.stat-info p {
+    font-size: 1rem;
+    color: var(--cl-text-muted);
+    margin: 0;
+    max-width: none; /* Override default p max-width */
+}
