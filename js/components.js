@@ -234,14 +234,4 @@ function loadFooter() {
     `;
     chatWidgetPlaceholder.innerHTML = chatWidgetHTML;
 
-    // Load the chat script and initialize the widget once it's loaded
-    const chatScript = document.createElement('script');
-    chatScript.src = 'js/gemini_chat.js';
-    chatScript.onload = () => {
-        // This function is defined in js/gemini_chat.js
-        if (typeof initializeChatWidget === 'function') {
-            initializeChatWidget();
-        }
-    };
-    document.body.appendChild(chatScript);
 }

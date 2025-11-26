@@ -12,6 +12,18 @@ const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/
 
 export default {
     async fetch(request, env) {
+        // Set up CORS headers
+        const corsHeaders = {
+            'Access-Control-Allow-Origin': '*', // Or specify your domain for better security
+            'Access-Control-Allow-Methods': 'POST, OPTIONS',
+            'Access-Control-Allow-Headers': 'Content-Type',
+        };
+
+        // Handle pre-flight OPTIONS request for CORS
+        if (request.method === 'OPTIONS') {
+            return new Response(null, { headers: corsHeaders });
+        }
+
         // Only allow POST requests
         if (request.method !== 'POST') {
             return new Response('Expected POST', { status: 405 });
@@ -21,7 +33,7 @@ export default {
         try {
             const requestBody = await request.json();
 
-            const response = await fetch(GEMINI_API_URL, {
+            const geminiResponse = await fetch(GEMINI_API_URL, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -30,15 +42,18 @@ export default {
                 body: JSON.stringify(requestBody),
             });
 
-            const data = await response.json();
+            const data = await geminiResponse.json();
 
-            // Return the Gemini API's response to the frontend
+            // Return the Gemini API's response to the frontend with CORS headers
             return new Response(JSON.stringify(data), {
-                headers: { 'Content-Type': 'application/json' },
+                headers: { ...corsHeaders, 'Content-Type': 'application/json' },
             });
 
         } catch (error) {
-            return new Response(`Error forwarding request: ${error}`, { status: 500 });
+            return new Response(`Error forwarding request: ${error}`, {
+                status: 500,
+                headers: corsHeaders
+            });
         }
     },
 };

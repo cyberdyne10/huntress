@@ -1,4 +1,6 @@
-// URL for the Cloudflare Worker proxy. Replace with your actual worker URL.
+// --- IMPORTANT ---
+// The "Could not connect" error will appear until you replace this placeholder
+// with your actual, deployed Cloudflare Worker URL.
 const API_URL = 'YOUR_CLOUDFLARE_WORKER_URL';
 
 function initializeChatWidget() {

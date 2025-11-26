@@ -558,5 +558,13 @@
     <script src="js/components.js"></script>
     <script src="js/slider.js"></script>
     <script src="js/rotator.js"></script>
+    <script src="js/gemini_chat.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (typeof initializeChatWidget === 'function') {
+                initializeChatWidget();
+            }
+        });
+    </script>
 </body>
 </html>
