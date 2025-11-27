@@ -297,6 +297,10 @@ footer {
 
 /* Responsive */
 @media (max-width: 768px) {
+    a.btn.btn-primary {
+        display: none !important;
+    }
+
     /* Header adjustments */
     .header-container {
         flex-wrap: nowrap; /* Prevent wrapping so CTA stays on line */
