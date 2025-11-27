@@ -818,6 +818,8 @@ footer {
     position: relative;
     color: #fff;
     -webkit-text-fill-color: #fff;
+    text-align: left;
+    width: 250px; /* Adjust this width based on the longest word */
 }
 
 .cursor {
