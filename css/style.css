@@ -297,6 +297,11 @@ footer {
 
 /* Responsive */
 @media (max-width: 768px) {
+    h1 {
+        font-size: 28px !important; /* Adjust this number to make it smaller or larger */
+        line-height: 1.2; /* Keeps the spacing tight and readable */
+    }
+
     a.btn.btn-primary {
         display: none !important;
     }
