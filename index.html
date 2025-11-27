@@ -237,44 +237,6 @@
                 <a href="#platform" class="btn btn-secondary">View Platform</a>
             </div>
 
-            <div class="hud-container">
-
-                <div class="hud-card">
-                    <div class="scanner"></div> <div class="icon-box">
-                        <div class="status-dot"></div>
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
-                    </div>
-                    <div class="text-group">
-                        <span class="number">24/7_ON</span>
-                        <span class="label">SOC Active</span>
-                    </div>
-                </div>
-
-                <div class="hud-card">
-                    <div class="scanner" style="animation-delay: 1s;"></div>
-                    <div class="icon-box">
-                        <div class="status-dot" style="background-color: #fca311; box-shadow: 0 0 5px #fca311;"></div>
-                        <svg class="icon" style="fill: #fca311; filter: drop-shadow(0 0 5px #fca311);" viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
-                    </div>
-                    <div class="text-group">
-                        <span class="number">&lt;00:15:00</span>
-                        <span class="label">Response Time</span>
-                    </div>
-                </div>
-
-                <div class="hud-card">
-                    <div class="scanner" style="animation-delay: 2s;"></div>
-                    <div class="icon-box">
-                        <div class="status-dot"></div>
-                        <svg class="icon" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-                    </div>
-                    <div class="text-group">
-                        <span class="number">100.0%</span>
-                        <span class="label">Net Visibility</span>
-                    </div>
-                </div>
-
-            </div>
         </section>
 
         <!-- Stats Section -->
@@ -558,13 +520,5 @@
     <script src="js/components.js"></script>
     <script src="js/slider.js"></script>
     <script src="js/rotator.js"></script>
-    <script src="js/gemini_chat.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            if (typeof initializeChatWidget === 'function') {
-                initializeChatWidget();
-            }
-        });
-    </script>
 </body>
 </html>

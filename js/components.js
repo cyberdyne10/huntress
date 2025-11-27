@@ -207,31 +207,4 @@ function loadFooter() {
     `;
 
     footerPlaceholder.innerHTML = footerHTML;
-
-    // Create a placeholder for the chat widget
-    const chatWidgetPlaceholder = document.createElement('div');
-    chatWidgetPlaceholder.id = 'chat-widget-placeholder';
-    document.body.appendChild(chatWidgetPlaceholder);
-
-    const chatWidgetHTML = `
-        <div id="terminal-chat-widget">
-            <div id="terminal-header">
-                <span>[system_terminal]::[gemini_v1beta]</span>
-                <button id="terminal-close" aria-label="Close terminal">&times;</button>
-            </div>
-            <div id="terminal-body">
-                <div id="terminal-output"></div>
-                <div id="terminal-input-line">
-                    <span class="prompt">>&nbsp;</span>
-                    <input type="text" id="terminal-input" placeholder="Enter command..." autocomplete="off">
-                    <span class="cursor"></span>
-                </div>
-            </div>
-        </div>
-        <div id="terminal-toggle-bubble">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
-        </div>
-    `;
-    chatWidgetPlaceholder.innerHTML = chatWidgetHTML;
-
 }
