@@ -842,3 +842,67 @@ footer {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
 }
+
+/* Platform Cards */
+.platform-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 60px;
+}
+
+.card {
+    background: rgba(31, 40, 51, 0.5); /* Semi-transparent Charcoal */
+    backdrop-filter: blur(10px);
+    padding: 30px;
+    border-radius: 8px;
+    border: 1px solid rgba(102, 252, 241, 0.2); /* Subtle Neon Green border */
+    transition: transform 0.3s, border-color 0.3s, box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Ensure all cards take full height of grid cell */
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary-color);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+.card p {
+    color: var(--text-muted);
+    margin-bottom: 25px;
+    flex-grow: 1; /* Pushes the link to the bottom */
+}
+
+.card-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(2, 148, 213, 0.1); /* brand-blue with low opacity */
+    border-radius: 12px;
+    margin-bottom: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--primary-color);
+}
+
+.card-link {
+    color: var(--primary-color);
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: gap 0.3s;
+}
+
+.card-link:hover {
+    gap: 12px;
+    text-decoration: underline;
+}
