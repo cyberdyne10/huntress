@@ -906,3 +906,8 @@ footer {
     gap: 12px;
     text-decoration: underline;
 }
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
