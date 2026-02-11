@@ -1,6 +1,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
+const path = require('path');
 
 const {
   demoIntakeSchema,
@@ -47,6 +48,9 @@ app.use(
 
 app.use(cors({ origin: process.env.CORS_ORIGIN || '*', methods: ['GET', 'POST'] }));
 app.use(express.json({ limit: '1mb' }));
+
+const STATIC_ROOT = path.resolve(__dirname, '..');
+app.use(express.static(STATIC_ROOT));
 
 function scoreLead({ size, message = '', source = 'web' }) {
   let score = 10;
@@ -255,6 +259,11 @@ app.post('/api/demo-intake', async (req, res) => {
     lead,
     integrations: { crm },
   });
+});
+
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api') || req.path === '/health') return next();
+  return res.sendFile(path.join(STATIC_ROOT, 'index.html'));
 });
 
 module.exports = app;
