@@ -1,1 +1,99 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Pricing Calculator | CYBER-LOGIC</title><link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/expansion.css"></head><body><div id="header-placeholder"></div><main><section class="page-hero"><div class="container"><h1>Pricing Calculator</h1><p>Estimate your investment by endpoints, users, and managed services.</p></div></section><section class="section-block"><div class="container card"><form id="pricing-calc" class="form-grid"><label>Endpoints<input id="endpoints" class="input" type="number" min="1" value="120"></label><label>Users<input id="users" class="input" type="number" min="1" value="80"></label><fieldset><legend>Services</legend><label><input type="checkbox" name="service" checked> Managed EDR</label><label><input type="checkbox" name="service"> Managed ITDR</label><label><input type="checkbox" name="service"> Managed SIEM</label><label><input type="checkbox" name="service"> Security Awareness Training</label></fieldset><p id="pricing-result" class="calculator-result"></p><a href="/demo.html" class="btn btn-primary">Book a pricing walkthrough</a></form></div></section></main><div id="footer-placeholder"></div><script src="js/components.js"></script><script src="js/expansion.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing Calculator | CYBER-LOGIC</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/expansion.css">
+  <link rel="stylesheet" href="css/pricing.css">
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main class="pricing-page">
+    <section class="page-hero pricing-hero">
+      <div class="container">
+        <p class="badge">Transparent pricing estimator</p>
+        <h1>Get a tailored monthly security investment estimate</h1>
+        <p class="hero-subtext">Built for teams that want clarity fast: adjust your environment size, select services, and get an instant projected monthly cost.</p>
+        <div class="hero-trust-row" aria-label="Trust highlights">
+          <div class="trust-pill">No hidden setup fees</div>
+          <div class="trust-pill">Guided onboarding support</div>
+          <div class="trust-pill">Scale up or down anytime</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block pricing-main">
+      <div class="container">
+        <div class="pricing-layout">
+          <article class="card pricing-card calculator-panel" aria-labelledby="calculator-title">
+            <div class="panel-header">
+              <h2 id="calculator-title">Pricing calculator</h2>
+              <p>Tune your estimate by company size and selected managed services.</p>
+            </div>
+
+            <form id="pricing-calc" class="form-grid pricing-form" novalidate>
+              <div class="form-row">
+                <label for="endpoints">Endpoints</label>
+                <input id="endpoints" class="input" type="number" min="1" value="120" inputmode="numeric" required>
+              </div>
+
+              <div class="form-row">
+                <label for="users">Users</label>
+                <input id="users" class="input" type="number" min="1" value="80" inputmode="numeric" required>
+              </div>
+
+              <fieldset class="service-fieldset" aria-describedby="service-help">
+                <legend>Managed services</legend>
+                <p id="service-help" class="small">Select one or more services to include in this estimate.</p>
+                <label><input type="checkbox" name="service" checked> Managed EDR</label>
+                <label><input type="checkbox" name="service"> Managed ITDR</label>
+                <label><input type="checkbox" name="service"> Managed SIEM</label>
+                <label><input type="checkbox" name="service"> Security Awareness Training</label>
+              </fieldset>
+            </form>
+          </article>
+
+          <aside class="card pricing-card summary-panel" aria-live="polite" aria-atomic="true">
+            <h2>Your estimate</h2>
+            <p class="small">Indicative monthly estimate based on your current inputs.</p>
+            <p id="pricing-result" class="calculator-result"></p>
+
+            <dl class="price-breakdown" id="pricing-breakdown">
+              <div>
+                <dt>Endpoints subtotal</dt>
+                <dd id="endpoints-cost">$0</dd>
+              </div>
+              <div>
+                <dt>Users subtotal</dt>
+                <dd id="users-cost">$0</dd>
+              </div>
+              <div>
+                <dt>Services subtotal</dt>
+                <dd id="services-cost">$0</dd>
+              </div>
+              <div>
+                <dt>Platform base</dt>
+                <dd id="base-cost">$299</dd>
+              </div>
+            </dl>
+
+            <div class="summary-cta-group">
+              <a href="/demo.html" class="btn btn-primary">Book a pricing walkthrough</a>
+              <a href="/about/contact.html" class="btn btn-outline">Talk to an expert</a>
+            </div>
+            <p class="small trust-note">Trusted by teams that need predictable, security-first operations.</p>
+          </aside>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="js/components.js"></script>
+  <script src="js/expansion.js"></script>
+</body>
+</html>

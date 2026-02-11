@@ -124,12 +124,31 @@ function initPricingCalc() {
   const form = document.getElementById('pricing-calc');
   const output = document.getElementById('pricing-result');
   if (!form || !output) return;
+
+  const endpointsCost = document.getElementById('endpoints-cost');
+  const usersCost = document.getElementById('users-cost');
+  const servicesCost = document.getElementById('services-cost');
+  const baseCost = document.getElementById('base-cost');
+
+  const BASE_PRICE = 299;
   const recalc = () => {
-    const endpoints = Number(document.getElementById('endpoints').value || 0);
-    const users = Number(document.getElementById('users').value || 0);
+    const endpoints = Math.max(0, Number(document.getElementById('endpoints').value || 0));
+    const users = Math.max(0, Number(document.getElementById('users').value || 0));
     const services = [...document.querySelectorAll('input[name="service"]:checked')].length;
-    output.textContent = `Estimated monthly investment: $${(endpoints * 6 + users * 3 + services * 250 + 299).toLocaleString()}`;
+
+    const endpointSubtotal = endpoints * 6;
+    const userSubtotal = users * 3;
+    const serviceSubtotal = services * 250;
+    const total = endpointSubtotal + userSubtotal + serviceSubtotal + BASE_PRICE;
+
+    output.textContent = `Estimated monthly investment: $${total.toLocaleString()}`;
+
+    if (endpointsCost) endpointsCost.textContent = `$${endpointSubtotal.toLocaleString()}`;
+    if (usersCost) usersCost.textContent = `$${userSubtotal.toLocaleString()}`;
+    if (servicesCost) servicesCost.textContent = `$${serviceSubtotal.toLocaleString()}`;
+    if (baseCost) baseCost.textContent = `$${BASE_PRICE.toLocaleString()}`;
   };
+
   form.addEventListener('input', recalc);
   recalc();
 }
