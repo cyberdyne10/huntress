@@ -2,6 +2,7 @@ const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
 
 const {
   demoIntakeSchema,
@@ -49,7 +50,13 @@ app.use(
 app.use(cors({ origin: process.env.CORS_ORIGIN || '*', methods: ['GET', 'POST'] }));
 app.use(express.json({ limit: '1mb' }));
 
-const STATIC_ROOT = path.resolve(__dirname, '..');
+const staticCandidates = [
+  process.env.STATIC_SITE_DIR,
+  path.resolve(__dirname, '..'),
+  path.resolve(__dirname, '../..'),
+].filter(Boolean);
+
+const STATIC_ROOT = staticCandidates.find((dir) => fs.existsSync(path.join(dir, 'index.html'))) || path.resolve(__dirname, '..');
 app.use(express.static(STATIC_ROOT));
 
 function scoreLead({ size, message = '', source = 'web' }) {
