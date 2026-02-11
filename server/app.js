@@ -141,7 +141,14 @@ async function loadThreatFeed() {
 }
 
 app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', service: 'huntress-api' });
+  const indexPath = path.join(STATIC_ROOT, 'index.html');
+  res.json({
+    status: 'ok',
+    service: 'huntress-api',
+    release: 'render-root-fix-v2',
+    staticRoot: STATIC_ROOT,
+    hasIndex: fs.existsSync(indexPath),
+  });
 });
 
 app.get('/api/incidents', (_req, res) => {
