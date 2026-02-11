@@ -1,67 +1,79 @@
-# Huntress Marketing Site + API Bootstrap
+# Huntress Marketing Site + API
 
-Static-first cybersecurity website with optional Express backend for interactive modules.
+Static-first cybersecurity website with an Express API, real auth, durable SQLite storage, SOC demo data, CRM sync hooks, and admin/status modules.
 
-## New MVP Feature Expansion
+## What changed (feature suite)
 
-- Live demo booking flow (`demo.html`) with API-managed slots/bookings
-- Interactive SOC preview (`soc-preview.html`)
-- Threat intel feed widget on homepage (`/api/threat-feed`)
-- Pricing calculator (`pricing.html`)
-- Industry landing pages (finance/healthcare/education/SMB)
-- Filterable case studies module (`about/case-studies.html`)
-- Searchable resource center (`resources/resource-center.html`)
-- Client portal entry (`portal.html`)
-- Security trust center (`trust-center.html`)
-- Lead scoring + CRM webhook integration on demo/booking submissions
+- Real portal authentication with JWT sessions, hashed passwords, role-aware access (`client`/`admin`)
+- Durable DB persistence (SQLite via Node `node:sqlite`) for slots, bookings, leads, sessions, notifications, threat feed items, status incidents
+- SMTP notification service for booking confirmations/reminders with graceful DB log fallback
+- CRM two-way integration: outbound webhook + secured inbound status update webhook
+- Public status module (`status.html`, `GET /api/status`) with current state + incident history
+- SOC preview upgrade with richer filters (severity/source/status/MITRE), timeline, presets payload
+- SEO upgrades: meta/OG tags, canonical, Organization structured data, sitemap, robots
+- Admin console (`admin.html`) with secure admin-only overview endpoint
 
-See full details in `docs/FEATURES-EXPANSION.md`.
-
-## Backend API (optional)
-
-Run:
+## Run locally
 
 ```bash
 npm ci
-npm run start
+npm run db:init
+npm start
 ```
 
 Base URL: `http://localhost:3001`
 
-### Endpoints
+## Core API endpoints
 
-- `GET /health`
-- `GET /api/incidents`
-- `GET /api/alerts`
-- `GET /api/soc-preview`
-- `GET /api/threat-feed`
+### Auth
+- `POST /api/auth/login`
+- `POST /api/auth/logout` (auth)
+- `GET /api/auth/me` (auth)
+- `POST /api/auth/register` (admin)
+
+### Existing + persisted
 - `GET /api/demo-slots`
-- `POST /api/demo-slots`
-- `GET /api/demo-bookings`
+- `POST /api/demo-slots` (admin)
+- `GET /api/demo-bookings` (admin)
 - `POST /api/demo-bookings`
 - `POST /api/demo-intake`
+- `GET /api/threat-feed`
+- `GET /api/soc-preview`
 
-## Environment Variables
+### New platform endpoints
+- `POST /api/crm/webhook/status` (secured by `x-webhook-token`)
+- `GET /api/status`
+- `GET /api/admin/overview` (admin)
 
-Copy `.env.example` to `.env`.
+## Environment variables
 
-- `PORT=3001`
-- `CORS_ORIGIN=*`
-- `CRM_WEBHOOK_URL=`
-- `CRM_WEBHOOK_TOKEN=`
-- `THREAT_FEED_URL=`
-- `THREAT_FEED_CACHE_MS=300000`
-- `DEMO_WEBHOOK_URL=`
+See `.env.example` and `docs/AUTH.md` / `docs/OPERATIONS.md`.
 
-## Quality checks
+Required for production hardening:
+- `JWT_SECRET`
+- `CRM_INBOUND_TOKEN`
+- `DATABASE_URL` (optional; defaults to `./data/huntress.sqlite`)
+
+Optional integrations:
+- `CRM_WEBHOOK_URL`, `CRM_WEBHOOK_TOKEN`
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`
+
+## Migrations / DB init
+
+- SQL migrations live in `server/migrations/`
+- Bootstrap command: `npm run db:init`
+- Seed behavior:
+  - default demo slots inserted if empty
+  - default admin seeded if users table empty (`SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`)
+
+## Tests & checks
 
 ```bash
 npm run lint
 npm run test:smoke
 ```
 
-## Limitations (MVP)
+## Docs
 
-- Booking, slots, and feed cache are in-memory only (no database persistence).
-- Portal login is placeholder UI only (no real auth/SSO yet).
-- Threat feed live source expects JSON list; mapper is intentionally generic.
+- `docs/AUTH.md` — authentication and authorization model
+- `docs/OPERATIONS.md` — runbook, envs, backups, webhook/security ops
