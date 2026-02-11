@@ -17,7 +17,7 @@
         <p class="badge">Transparent pricing estimator</p>
         <h1>Get a tailored monthly security investment estimate</h1>
         <p class="hero-subtext">Built for teams that want clarity fast: adjust your environment size, select services, and get an instant projected monthly cost.</p>
-        <div class="hero-trust-row" aria-label="Trust highlights">
+        <div class="hero-trust-row">
           <div class="trust-pill">No hidden setup fees</div>
           <div class="trust-pill">Guided onboarding support</div>
           <div class="trust-pill">Scale up or down anytime</div>
@@ -48,11 +48,12 @@
               <fieldset class="service-fieldset" aria-describedby="service-help">
                 <legend>Managed services</legend>
                 <p id="service-help" class="small">Select one or more services to include in this estimate.</p>
-                <label><input type="checkbox" name="service" checked> Managed EDR</label>
-                <label><input type="checkbox" name="service"> Managed ITDR</label>
-                <label><input type="checkbox" name="service"> Managed SIEM</label>
-                <label><input type="checkbox" name="service"> Security Awareness Training</label>
+                <label><input type="checkbox" name="service[]" checked> Managed EDR</label>
+                <label><input type="checkbox" name="service[]"> Managed ITDR</label>
+                <label><input type="checkbox" name="service[]"> Managed SIEM</label>
+                <label><input type="checkbox" name="service[]"> Security Awareness Training</label>
               </fieldset>
+              <button type="submit" class="visually-hidden" tabindex="-1" aria-hidden="true">Update estimate</button>
             </form>
           </article>
 

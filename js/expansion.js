@@ -134,7 +134,7 @@ function initPricingCalc() {
   const recalc = () => {
     const endpoints = Math.max(0, Number(document.getElementById('endpoints').value || 0));
     const users = Math.max(0, Number(document.getElementById('users').value || 0));
-    const services = [...document.querySelectorAll('input[name="service"]:checked')].length;
+    const services = [...document.querySelectorAll('input[name="service"]:checked, input[name="service[]"]:checked')].length;
 
     const endpointSubtotal = endpoints * 6;
     const userSubtotal = users * 3;
@@ -150,6 +150,7 @@ function initPricingCalc() {
   };
 
   form.addEventListener('input', recalc);
+  form.addEventListener('submit', (event) => event.preventDefault());
   recalc();
 }
 
