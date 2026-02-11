@@ -261,6 +261,10 @@ app.post('/api/demo-intake', async (req, res) => {
   });
 });
 
+app.get('/', (_req, res) => {
+  return res.sendFile(path.join(STATIC_ROOT, 'index.html'));
+});
+
 app.get('*', (req, res, next) => {
   if (req.path.startsWith('/api') || req.path === '/health') return next();
   return res.sendFile(path.join(STATIC_ROOT, 'index.html'));
