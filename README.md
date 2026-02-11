@@ -1,90 +1,67 @@
 # Huntress Marketing Site + API Bootstrap
 
-A static-first cybersecurity website (multi-page HTML/CSS/JS) with an **optional Express backend scaffold** for demo intake and mock security telemetry.
+Static-first cybersecurity website with optional Express backend for interactive modules.
 
-## Overview
-- Static frontend pages for platform, solutions, about, resources, pricing, and demo entrypoint.
-- Shared UI composition via `js/components.js` (header/footer injection and nav behavior).
-- Optional backend in `server/` for:
-  - `POST /api/demo-intake` (validated/sanitized intake)
-  - `GET /api/incidents` (mock incident feed)
-  - `GET /api/alerts` (mock alert feed)
-  - `GET /health`
-- Security baseline with CSP and secure headers guidance for static + backend mode.
+## New MVP Feature Expansion
 
-## Project Structure
+- Live demo booking flow (`demo.html`) with API-managed slots/bookings
+- Interactive SOC preview (`soc-preview.html`)
+- Threat intel feed widget on homepage (`/api/threat-feed`)
+- Pricing calculator (`pricing.html`)
+- Industry landing pages (finance/healthcare/education/SMB)
+- Filterable case studies module (`about/case-studies.html`)
+- Searchable resource center (`resources/resource-center.html`)
+- Client portal entry (`portal.html`)
+- Security trust center (`trust-center.html`)
+- Lead scoring + CRM webhook integration on demo/booking submissions
 
-```text
-.
-├─ about/                  # about/company pages
-├─ css/
-│  ├─ style.css            # shared global styles
-│  ├─ home.css             # homepage-specific styles
-│  └─ demo.css             # demo page-specific styles
-├─ js/
-│  ├─ components.js        # shared header/footer + nav logic
-│  ├─ slider.js            # testimonial slider behavior
-│  └─ rotator.js           # hero word rotator
-├─ platform/               # platform pages
-├─ resources/              # resources pages
-├─ solutions/              # solutions pages
-├─ server/                 # optional express api scaffold
-├─ tests/                  # playwright smoke tests via pytest
-└─ .github/workflows/      # CI + dependency scanning
-```
+See full details in `docs/FEATURES-EXPANSION.md`.
 
-## Local Run
+## Backend API (optional)
 
-### Frontend (static)
-Use any static file server (VS Code Live Server, Python, etc.) from repo root.
+Run:
 
-```bash
-# Python option
-python -m http.server 5500
-```
-
-Then open `http://localhost:5500`.
-
-### Optional Backend API
 ```bash
 npm ci
 npm run start
 ```
-API base: `http://localhost:3001` (configurable by `.env`).
 
-## Testing and Quality Checks
+Base URL: `http://localhost:3001`
+
+### Endpoints
+
+- `GET /health`
+- `GET /api/incidents`
+- `GET /api/alerts`
+- `GET /api/soc-preview`
+- `GET /api/threat-feed`
+- `GET /api/demo-slots`
+- `POST /api/demo-slots`
+- `GET /api/demo-bookings`
+- `POST /api/demo-bookings`
+- `POST /api/demo-intake`
+
+## Environment Variables
+
+Copy `.env.example` to `.env`.
+
+- `PORT=3001`
+- `CORS_ORIGIN=*`
+- `CRM_WEBHOOK_URL=`
+- `CRM_WEBHOOK_TOKEN=`
+- `THREAT_FEED_URL=`
+- `THREAT_FEED_CACHE_MS=300000`
+- `DEMO_WEBHOOK_URL=`
+
+## Quality checks
 
 ```bash
-npm run lint        # htmlhint + stylelint + eslint
-npm run test:smoke  # pytest playwright smoke tests
+npm run lint
+npm run test:smoke
 ```
 
-If Playwright browsers are missing locally:
+## Limitations (MVP)
 
-```bash
-python -m playwright install chromium
-```
-
-## Environment Configuration
-Copy `.env.example` to `.env` when using backend mode:
-
-```bash
-cp .env.example .env
-```
-
-Key values:
-- `PORT`: backend port (default `3001`)
-- `CORS_ORIGIN`: allowed frontend origin for API calls
-- future hook placeholders: `DEMO_WEBHOOK_URL`, `DEMO_WEBHOOK_TOKEN`
-
-## Security Notes
-- Static pages include a baseline CSP and security-related meta headers.
-- Backend uses Helmet with CSP and secure defaults.
-- Demo intake payload is schema-validated (`zod`) and text-sanitized before response.
-
-See integration notes in `server/README.md`.
-
-## Deployment Notes
-- **Static-only deployment:** host HTML/CSS/JS on Netlify/Vercel/GitHub Pages/S3+CloudFront.
-- **Static + API deployment:** deploy static assets and Express service separately (or behind a reverse proxy), then point frontend requests to API base URL.
-- In production, tighten CORS and CSP directives to exact trusted origins.
+- Booking, slots, and feed cache are in-memory only (no database persistence).
+- Portal login is placeholder UI only (no real auth/SSO yet).
+- Threat feed live source expects JSON list; mapper is intentionally generic.
