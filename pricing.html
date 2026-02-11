@@ -1,154 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://cyberlogicnetwork.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <title>Pricing | CYBER-LOGIC NETWORKS</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        .hero {
-            padding: 80px 0;
-            background: linear-gradient(to right, #0f172a, #1e293b);
-            text-align: center;
-        }
-        .hero h1 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
-            margin-top: 60px;
-            margin-bottom: 60px;
-        }
-        .pricing-card {
-            background: var(--secondary-light);
-            padding: 40px;
-            border-radius: 8px;
-            border: 1px solid rgba(255,255,255,0.05);
-            text-align: center;
-        }
-        .pricing-card h3 {
-            color: var(--primary-color);
-            margin-bottom: 20px;
-        }
-        .price {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-        }
-        .features-list {
-            text-align: left;
-            margin-bottom: 30px;
-        }
-        .features-list li {
-            margin-bottom: 10px;
-            color: var(--text-muted);
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pricing Calculator | CYBER-LOGIC</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/expansion.css">
+  <link rel="stylesheet" href="css/pricing.css">
 </head>
 <body>
-    <div id="header-placeholder">
-    <div class="skeleton-header container">
-        <div class="skeleton-logo skeleton"></div>
-        <div class="skeleton-nav">
-            <div class="skeleton-link skeleton"></div>
-            <div class="skeleton-link skeleton"></div>
-            <div class="skeleton-link skeleton"></div>
-            <div class="skeleton-link skeleton"></div>
-            <div class="skeleton-link skeleton"></div>
+  <div id="header-placeholder"></div>
+
+  <main class="pricing-page">
+    <section class="page-hero pricing-hero">
+      <div class="container">
+        <p class="badge">Transparent pricing estimator</p>
+        <h1>Get a tailored monthly security investment estimate</h1>
+        <p class="hero-subtext">Built for teams that want clarity fast: adjust your environment size, select services, and get an instant projected monthly cost.</p>
+        <div class="hero-trust-row">
+          <div class="trust-pill">No hidden setup fees</div>
+          <div class="trust-pill">Guided onboarding support</div>
+          <div class="trust-pill">Scale up or down anytime</div>
         </div>
-        <div class="skeleton-cta skeleton"></div>
-    </div>
-</div>
+      </div>
+    </section>
 
-    <main>
-        <section class="hero">
-            <div class="container">
-                <h1>Simple, Transparent Pricing</h1>
-                <p class="lead" style="color: var(--text-muted);">
-                    Enterprise-grade security without the enterprise price tag.
-                </p>
+    <section class="section-block pricing-main">
+      <div class="container">
+        <div class="pricing-layout">
+          <article class="card pricing-card calculator-panel" aria-labelledby="calculator-title">
+            <div class="panel-header">
+              <h2 id="calculator-title">Pricing calculator</h2>
+              <p>Tune your estimate by company size and selected managed services.</p>
             </div>
-        </section>
 
-        <section class="container">
-            <div class="pricing-grid">
-                <div class="pricing-card">
-                    <h3>Managed EDR</h3>
-                    <div class="price">Contact Us</div>
-                    <p style="margin-bottom: 20px;">For comprehensive endpoint protection.</p>
-                    <ul class="features-list">
-                        <li>24/7 Human-Led SOC</li>
-                        <li>Automated Remediation</li>
-                        <li>Ransomware Canaries</li>
-                        <li>Easy Deployment</li>
-                    </ul>
-                    <a href="/about/contact.html" class="btn btn-outline">Get a Quote</a>
-                </div>
+            <form id="pricing-calc" class="form-grid pricing-form" novalidate>
+              <div class="form-row">
+                <label for="endpoints">Endpoints</label>
+                <input id="endpoints" class="input" type="number" min="1" value="120" inputmode="numeric" required>
+              </div>
 
-                <div class="pricing-card" style="border-color: var(--primary-color);">
-                    <h3>Platform Bundle</h3>
-                    <div class="price">Best Value</div>
-                    <p style="margin-bottom: 20px;">Complete protection for your organization.</p>
-                    <ul class="features-list">
-                        <li>Everything in Managed EDR</li>
-                        <li>Managed ITDR (M365)</li>
-                        <li>Security Awareness Training</li>
-                        <li>Unified Reporting</li>
-                    </ul>
-                    <a href="/about/contact.html" class="btn btn-primary">Get a Quote</a>
-                </div>
+              <div class="form-row">
+                <label for="users">Users</label>
+                <input id="users" class="input" type="number" min="1" value="80" inputmode="numeric" required>
+              </div>
 
-                <div class="pricing-card">
-                    <h3>Managed SIEM</h3>
-                    <div class="price">Contact Us</div>
-                    <p style="margin-bottom: 20px;">Compliance and advanced logging.</p>
-                    <ul class="features-list">
-                        <li>Log Retention</li>
-                        <li>Compliance Reporting</li>
-                        <li>Smart Filtering</li>
-                        <li>24/7 Monitoring</li>
-                    </ul>
-                    <a href="/about/contact.html" class="btn btn-outline">Get a Quote</a>
-                </div>
-            </div>
-        </section>
-    </main>
+              <fieldset class="service-fieldset" aria-describedby="service-help">
+                <legend>Managed services</legend>
+                <p id="service-help" class="small">Select one or more services to include in this estimate.</p>
+                <label><input type="checkbox" name="service[]" checked> Managed EDR</label>
+                <label><input type="checkbox" name="service[]"> Managed ITDR</label>
+                <label><input type="checkbox" name="service[]"> Managed SIEM</label>
+                <label><input type="checkbox" name="service[]"> Security Awareness Training</label>
+              </fieldset>
+              <button type="submit" class="visually-hidden" tabindex="-1" aria-hidden="true">Update estimate</button>
+            </form>
+          </article>
 
-    <div id="footer-placeholder">
-    <div class="container skeleton-footer">
-        <div class="skeleton-footer-grid">
-            <div class="skeleton-col">
-                <div class="skeleton-title skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
+          <aside class="card pricing-card summary-panel" aria-live="polite" aria-atomic="true">
+            <h2>Your estimate</h2>
+            <p class="small">Indicative monthly estimate based on your current inputs.</p>
+            <p id="pricing-result" class="calculator-result"></p>
+
+            <dl class="price-breakdown" id="pricing-breakdown">
+              <div>
+                <dt>Endpoints subtotal</dt>
+                <dd id="endpoints-cost">$0</dd>
+              </div>
+              <div>
+                <dt>Users subtotal</dt>
+                <dd id="users-cost">$0</dd>
+              </div>
+              <div>
+                <dt>Services subtotal</dt>
+                <dd id="services-cost">$0</dd>
+              </div>
+              <div>
+                <dt>Platform base</dt>
+                <dd id="base-cost">$299</dd>
+              </div>
+            </dl>
+
+            <div class="summary-cta-group">
+              <a href="/demo.html" class="btn btn-primary">Book a pricing walkthrough</a>
+              <a href="/about/contact.html" class="btn btn-outline">Talk to an expert</a>
             </div>
-            <div class="skeleton-col">
-                <div class="skeleton-title skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-            </div>
-            <div class="skeleton-col">
-                <div class="skeleton-title skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-            </div>
-             <div class="skeleton-col">
-                <div class="skeleton-title skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-            </div>
+            <p class="small trust-note">Trusted by teams that need predictable, security-first operations.</p>
+          </aside>
         </div>
-    </div>
-</div>
-    <script src="js/components.js"></script>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="js/components.js"></script>
+  <script src="js/expansion.js"></script>
 </body>
 </html>

@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: huntress-site
+    runtime: node
+    plan: free
+    autoDeploy: true
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 10000
+      - key: CORS_ORIGIN
+        value: "*"
+      - key: THREAT_FEED_CACHE_MS
+        value: "300000"
+      - key: DATABASE_URL
+        value: ./data/huntress.sqlite
+      - key: JWT_EXPIRY
+        value: 12h

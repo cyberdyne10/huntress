@@ -1,75 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: https://cyberlogicnetwork.com; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'; upgrade-insecure-requests">
-    <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
-    <meta http-equiv="X-Content-Type-Options" content="nosniff">
-    <meta http-equiv="X-Frame-Options" content="DENY">
-    <title>Get a Demo | CYBER-LOGIC NETWORKS</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/demo.css">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Live Demo Booking | CYBER-LOGIC</title>
+  <link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/expansion.css">
 </head>
 <body>
-    <div id="header-placeholder">
-    <div class="skeleton-header container">
-        <div class="skeleton-logo skeleton"></div>
-        <div class="skeleton-nav">
-            <div class="skeleton-link skeleton"></div>
-            <div class="skeleton-link skeleton"></div>
-            <div class="skeleton-link skeleton"></div>
-            <div class="skeleton-link skeleton"></div>
-            <div class="skeleton-link skeleton"></div>
-        </div>
-        <div class="skeleton-cta skeleton"></div>
-    </div>
-</div>
-
-    <main>
-        <section class="hero">
-            <div class="container">
-                <h1>See Cyber-Logic in Action</h1>
-                <p class="lead" style="color: var(--text-muted); margin-bottom: 40px;">
-                    Get a personalized walkthrough of our platform and see how we can protect your organization.
-                </p>
-                <div style="background: var(--secondary-light); padding: 40px; border-radius: 8px; max-width: 500px; margin: 0 auto;">
-                     <h3 style="margin-bottom: 20px;">Request a Demo</h3>
-                     <p style="color: var(--text-muted); margin-bottom: 30px;">This is a demo page placeholder.</p>
-                     <button class="btn btn-primary">Schedule Now</button>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <div id="footer-placeholder">
-    <div class="container skeleton-footer">
-        <div class="skeleton-footer-grid">
-            <div class="skeleton-col">
-                <div class="skeleton-title skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-            </div>
-            <div class="skeleton-col">
-                <div class="skeleton-title skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-            </div>
-            <div class="skeleton-col">
-                <div class="skeleton-title skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-            </div>
-             <div class="skeleton-col">
-                <div class="skeleton-title skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-                <div class="skeleton-text-line skeleton"></div>
-            </div>
-        </div>
-    </div>
-</div>
-    <script src="js/components.js"></script>
-</body>
-</html>
+<div id="header-placeholder"></div>
+<main>
+  <section class="page-hero"><div class="container"><h1>Book a Live Demo</h1><p>Pick a date/time slot and reserve your walkthrough with our SOC team.</p></div></section>
+  <section class="section-block"><div class="container card">
+    <form id="booking-form" class="form-grid">
+      <label>Available slots<select id="slotId" name="slotId" class="input"><option value="">Select a slot</option></select></label>
+      <label>Full name<input class="input" name="fullName" required></label>
+      <label>Business email<input class="input" name="email" type="email" required></label>
+      <label>Company<input class="input" name="company" required></label>
+      <label>Attendees<input class="input" name="attendees" type="number" min="1" max="20" value="1"></label>
+      <label>Notes<textarea class="input" name="notes" rows="3" placeholder="Use case, priorities, compliance needs"></textarea></label>
+      <button class="btn btn-primary" type="submit">Confirm Booking</button>
+      <p id="booking-result" class="small"></p>
+    </form>
+  </div></section>
+</main>
+<div id="footer-placeholder"></div>
+<script src="js/components.js"></script><script src="js/expansion.js"></script>
+</body></html>

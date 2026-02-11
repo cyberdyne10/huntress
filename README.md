@@ -1,90 +1,79 @@
-# Huntress Marketing Site + API Bootstrap
+# Huntress Marketing Site + API
 
-A static-first cybersecurity website (multi-page HTML/CSS/JS) with an **optional Express backend scaffold** for demo intake and mock security telemetry.
+Static-first cybersecurity website with an Express API, real auth, durable SQLite storage, SOC demo data, CRM sync hooks, and admin/status modules.
 
-## Overview
-- Static frontend pages for platform, solutions, about, resources, pricing, and demo entrypoint.
-- Shared UI composition via `js/components.js` (header/footer injection and nav behavior).
-- Optional backend in `server/` for:
-  - `POST /api/demo-intake` (validated/sanitized intake)
-  - `GET /api/incidents` (mock incident feed)
-  - `GET /api/alerts` (mock alert feed)
-  - `GET /health`
-- Security baseline with CSP and secure headers guidance for static + backend mode.
+## What changed (feature suite)
 
-## Project Structure
+- Real portal authentication with JWT sessions, hashed passwords, role-aware access (`client`/`admin`)
+- Durable DB persistence (SQLite via Node `node:sqlite`) for slots, bookings, leads, sessions, notifications, threat feed items, status incidents
+- SMTP notification service for booking confirmations/reminders with graceful DB log fallback
+- CRM two-way integration: outbound webhook + secured inbound status update webhook
+- Public status module (`status.html`, `GET /api/status`) with current state + incident history
+- SOC preview upgrade with richer filters (severity/source/status/MITRE), timeline, presets payload
+- SEO upgrades: meta/OG tags, canonical, Organization structured data, sitemap, robots
+- Admin console (`admin.html`) with secure admin-only overview endpoint
 
-```text
-.
-├─ about/                  # about/company pages
-├─ css/
-│  ├─ style.css            # shared global styles
-│  ├─ home.css             # homepage-specific styles
-│  └─ demo.css             # demo page-specific styles
-├─ js/
-│  ├─ components.js        # shared header/footer + nav logic
-│  ├─ slider.js            # testimonial slider behavior
-│  └─ rotator.js           # hero word rotator
-├─ platform/               # platform pages
-├─ resources/              # resources pages
-├─ solutions/              # solutions pages
-├─ server/                 # optional express api scaffold
-├─ tests/                  # playwright smoke tests via pytest
-└─ .github/workflows/      # CI + dependency scanning
-```
+## Run locally
 
-## Local Run
-
-### Frontend (static)
-Use any static file server (VS Code Live Server, Python, etc.) from repo root.
-
-```bash
-# Python option
-python -m http.server 5500
-```
-
-Then open `http://localhost:5500`.
-
-### Optional Backend API
 ```bash
 npm ci
-npm run start
+npm run db:init
+npm start
 ```
-API base: `http://localhost:3001` (configurable by `.env`).
 
-## Testing and Quality Checks
+Base URL: `http://localhost:3001`
+
+## Core API endpoints
+
+### Auth
+- `POST /api/auth/login`
+- `POST /api/auth/logout` (auth)
+- `GET /api/auth/me` (auth)
+- `POST /api/auth/register` (admin)
+
+### Existing + persisted
+- `GET /api/demo-slots`
+- `POST /api/demo-slots` (admin)
+- `GET /api/demo-bookings` (admin)
+- `POST /api/demo-bookings`
+- `POST /api/demo-intake`
+- `GET /api/threat-feed`
+- `GET /api/soc-preview`
+
+### New platform endpoints
+- `POST /api/crm/webhook/status` (secured by `x-webhook-token`)
+- `GET /api/status`
+- `GET /api/admin/overview` (admin)
+
+## Environment variables
+
+See `.env.example` and `docs/AUTH.md` / `docs/OPERATIONS.md`.
+
+Required for production hardening:
+- `JWT_SECRET`
+- `CRM_INBOUND_TOKEN`
+- `DATABASE_URL` (optional; defaults to `./data/huntress.sqlite`)
+
+Optional integrations:
+- `CRM_WEBHOOK_URL`, `CRM_WEBHOOK_TOKEN`
+- `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`
+
+## Migrations / DB init
+
+- SQL migrations live in `server/migrations/`
+- Bootstrap command: `npm run db:init`
+- Seed behavior:
+  - default demo slots inserted if empty
+  - default admin seeded if users table empty (`SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`)
+
+## Tests & checks
 
 ```bash
-npm run lint        # htmlhint + stylelint + eslint
-npm run test:smoke  # pytest playwright smoke tests
+npm run lint
+npm run test:smoke
 ```
 
-If Playwright browsers are missing locally:
+## Docs
 
-```bash
-python -m playwright install chromium
-```
-
-## Environment Configuration
-Copy `.env.example` to `.env` when using backend mode:
-
-```bash
-cp .env.example .env
-```
-
-Key values:
-- `PORT`: backend port (default `3001`)
-- `CORS_ORIGIN`: allowed frontend origin for API calls
-- future hook placeholders: `DEMO_WEBHOOK_URL`, `DEMO_WEBHOOK_TOKEN`
-
-## Security Notes
-- Static pages include a baseline CSP and security-related meta headers.
-- Backend uses Helmet with CSP and secure defaults.
-- Demo intake payload is schema-validated (`zod`) and text-sanitized before response.
-
-See integration notes in `server/README.md`.
-
-## Deployment Notes
-- **Static-only deployment:** host HTML/CSS/JS on Netlify/Vercel/GitHub Pages/S3+CloudFront.
-- **Static + API deployment:** deploy static assets and Express service separately (or behind a reverse proxy), then point frontend requests to API base URL.
-- In production, tighten CORS and CSP directives to exact trusted origins.
+- `docs/AUTH.md` — authentication and authorization model
+- `docs/OPERATIONS.md` — runbook, envs, backups, webhook/security ops

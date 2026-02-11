@@ -1,0 +1,245 @@
+.pricing-page {
+  padding-bottom: 48px;
+}
+
+.pricing-hero {
+  padding-top: 84px;
+  padding-bottom: 52px;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(255, 102, 0, 0.2), transparent 40%),
+    radial-gradient(circle at 90% 100%, rgba(2, 148, 213, 0.22), transparent 45%),
+    linear-gradient(120deg, #0b111d, #111a2c 65%, #0d1422);
+}
+
+.pricing-hero h1 {
+  margin-top: 10px;
+  margin-bottom: 12px;
+  max-width: 18ch;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+}
+
+.hero-subtext {
+  color: var(--text-muted);
+  max-width: 68ch;
+}
+
+.hero-trust-row {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.trust-pill {
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-light);
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+}
+
+.pricing-main {
+  padding-top: 18px;
+}
+
+.pricing-layout {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: 1fr;
+}
+
+.pricing-card {
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 18px 30px rgba(0, 0, 0, 0.25);
+}
+
+.panel-header h2,
+.summary-panel h2 {
+  margin-bottom: 2px;
+  font-size: 1.45rem;
+}
+
+.panel-header p {
+  color: var(--text-muted);
+  margin-bottom: 4px;
+}
+
+.pricing-form {
+  margin-top: 8px;
+  gap: 14px;
+}
+
+.form-row {
+  display: grid;
+  gap: 6px;
+}
+
+.form-row label {
+  font-weight: 600;
+}
+
+.pricing-form .input {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: #0b1222;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pricing-form .input:hover {
+  border-color: rgba(2, 148, 213, 0.75);
+}
+
+.pricing-form .input:focus-visible,
+.service-fieldset input[type="checkbox"]:focus-visible {
+  outline: none;
+  border-color: var(--cl-brand-blue);
+  box-shadow: 0 0 0 3px rgba(2, 148, 213, 0.28);
+}
+
+.service-fieldset {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  padding: 14px 14px 12px;
+  display: grid;
+  gap: 10px;
+}
+
+.service-fieldset legend {
+  font-weight: 700;
+  padding: 0 8px;
+  color: var(--text-light);
+}
+
+.service-fieldset label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  color: var(--text-light);
+}
+
+.service-fieldset input[type="checkbox"] {
+  accent-color: var(--primary-color);
+  width: 18px;
+  height: 18px;
+}
+
+.summary-panel {
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+
+.calculator-result {
+  margin-top: -2px;
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: #fff;
+  line-height: 1.2;
+  font-weight: 800;
+}
+
+.price-breakdown {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 10px 0;
+}
+
+.price-breakdown div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 18px;
+  padding: 8px 0;
+}
+
+.price-breakdown dt {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+.price-breakdown dd {
+  margin: 0;
+  font-weight: 700;
+  color: var(--text-light);
+}
+
+.summary-cta-group {
+  display: grid;
+  gap: 10px;
+}
+
+.summary-cta-group .btn {
+  width: 100%;
+}
+
+.summary-panel .btn-primary {
+  box-shadow: 0 8px 20px rgba(255, 102, 0, 0.34);
+}
+
+.summary-panel .btn-primary:hover {
+  box-shadow: 0 10px 22px rgba(255, 255, 255, 0.18);
+}
+
+.trust-note {
+  padding-left: 10px;
+  border-left: 3px solid rgba(2, 148, 213, 0.6);
+}
+
+@media (min-width: 900px) {
+  .pricing-layout {
+    grid-template-columns: minmax(0, 1.15fr) minmax(330px, 0.85fr);
+    align-items: start;
+  }
+
+  .summary-panel {
+    position: sticky;
+    top: calc(var(--header-height) + 20px);
+  }
+}
+
+@media (max-width: 768px) {
+  .pricing-hero {
+    padding-top: 64px;
+    padding-bottom: 34px;
+  }
+
+  .pricing-hero h1 {
+    font-size: 1.85rem !important;
+  }
+
+  .trust-pill {
+    font-size: 0.84rem;
+  }
+
+  .pricing-card {
+    padding: 16px;
+    border-radius: 14px;
+  }
+
+  .pricing-page a.btn.btn-primary {
+    display: inline-flex !important;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .pricing-form .input,
+  .pricing-card {
+    transition: none;
+  }
+}
