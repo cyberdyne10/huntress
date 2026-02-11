@@ -3,26 +3,33 @@
   "version": "1.0.0",
   "private": true,
   "description": "Static cybersecurity site with optional Express API scaffold",
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "start": "node server/index.js",
+    "db:init": "node server/init-db.js",
     "lint": "npm run lint:js && npm run lint:css && npm run lint:html",
     "lint:js": "eslint .",
     "lint:css": "stylelint \"css/**/*.css\"",
-    "lint:html": "htmlhint \"**/*.html\"",
+    "lint:html": "html-validate \"**/*.html\"",
     "test": "python -m pytest -q",
     "test:smoke": "python -m pytest -q tests",
     "audit": "npm audit --audit-level=moderate"
   },
   "dependencies": {
+    "bcryptjs": "^3.0.3",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
     "express": "^4.21.2",
     "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "nodemailer": "^8.0.1",
     "zod": "^3.24.2"
   },
   "devDependencies": {
     "eslint": "^9.20.1",
-    "htmlhint": "^1.6.3",
+    "html-validate": "^9.3.0",
     "stylelint": "^16.14.1",
     "stylelint-config-standard": "^37.0.0"
   }
