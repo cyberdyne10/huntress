@@ -27,11 +27,15 @@ const LANDMASSES = [
 
 const threatMapState = {
   paused: false,
-  severity: 'all',
+  severitySet: new Set(['critical', 'high', 'medium', 'low']),
   showArcs: true,
+  playbackSpeed: 1,
+  density: 0.75,
+  region: 'global',
   refreshTimer: null,
   refreshMs: 30000,
   events: [],
+  lastMeta: {},
   reducedMotion: window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
 };
 
@@ -74,41 +78,69 @@ function geoPolygonPath(coords, width, height) {
   return `${parts.join(' ')} Z`;
 }
 
-function flowPath(start, end) {
+function inRegion(event, region) {
+  if (region === 'global') return true;
+  const point = event?.target || event?.origin || {};
+  const lat = Number(point.lat);
+  const lon = Number(point.lon);
+  if (Number.isNaN(lat) || Number.isNaN(lon)) return false;
+  const bounds = {
+    americas: { latMin: -56, latMax: 83, lonMin: -170, lonMax: -30 },
+    emea: { latMin: -38, latMax: 72, lonMin: -20, lonMax: 60 },
+    apac: { latMin: -48, latMax: 70, lonMin: 60, lonMax: 180 },
+    africa: { latMin: -36, latMax: 38, lonMin: -20, lonMax: 56 },
+  };
+  const b = bounds[region];
+  return !!b && lat >= b.latMin && lat <= b.latMax && lon >= b.lonMin && lon <= b.lonMax;
+}
+
+function filterThreatEvents(events) {
+  return (events || []).filter((event) => {
+    const severity = String(event.severity || 'medium').toLowerCase();
+    return threatMapState.severitySet.has(severity) && inRegion(event, threatMapState.region);
+  });
+}
+
+function flowPath(start, end, wave = 0) {
   const dx = end.x - start.x;
   const dy = end.y - start.y;
   const travel = Math.hypot(dx, dy);
-  const curve = Math.max(18, Math.min(96, travel * 0.26));
+  const baseCurve = Math.max(18, Math.min(120, travel * 0.22));
+  const wobble = Math.sin(wave * 1.7) * 22;
   const northBias = ((start.y + end.y) / 2) > 220 ? -1 : 1;
-  const c1x = start.x + dx * 0.25;
-  const c2x = start.x + dx * 0.75;
-  const c1y = start.y - (curve * northBias);
-  const c2y = end.y - (curve * northBias);
+  const c1x = start.x + dx * (0.22 + (Math.cos(wave) * 0.03));
+  const c2x = start.x + dx * (0.78 - (Math.sin(wave) * 0.03));
+  const c1y = start.y - ((baseCurve + wobble) * northBias);
+  const c2y = end.y - ((baseCurve - wobble) * northBias);
   return `M ${start.x.toFixed(1)} ${start.y.toFixed(1)} C ${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${end.x.toFixed(1)} ${end.y.toFixed(1)}`;
 }
 
 function mapSvg(events) {
   const width = 1000;
   const height = 500;
-  const maxFlows = window.innerWidth < 768 ? 50 : 90;
-  const filtered = events
-    .filter((event) => threatMapState.severity === 'all' || event.severity === threatMapState.severity)
-    .slice(0, maxFlows);
+  const baseline = window.innerWidth < 768 ? 56 : 110;
+  const maxFlows = Math.max(12, Math.floor(baseline * threatMapState.density));
+  const filtered = filterThreatEvents(events).slice(0, maxFlows);
 
   const flows = filtered.map((event, index) => {
     const start = plotPoint({ ...event.origin, width, height });
     const end = plotPoint({ ...event.target, width, height });
-    const color = SEVERITY_COLORS[event.severity] || SEVERITY_COLORS.info;
+    const severity = String(event.severity || 'medium').toLowerCase();
+    const color = SEVERITY_COLORS[severity] || SEVERITY_COLORS.info;
+    const wave = ((index + 1) * 0.91) + (String(event.id || index).length * 0.13);
+    const duration = Math.max(4.5, (11 - (threatMapState.playbackSpeed * 3.5)) + ((index % 5) * 0.35));
+    const delay = (index % 9) * 0.22;
     return {
       id: event.id || `event-${index}`,
       label: event.label,
-      severity: event.severity,
+      severity,
       color,
       start,
       end,
-      path: flowPath(start, end),
+      path: flowPath(start, end, wave),
       sourceLabel: event.origin.label,
       targetLabel: event.target.label,
+      arcStyle: `--arc-duration:${duration.toFixed(2)}s;--arc-delay:${delay.toFixed(2)}s;`,
     };
   });
 
@@ -144,7 +176,7 @@ function mapSvg(events) {
         ${LANDMASSES.map((coords) => `<path d="${geoPolygonPath(coords, width, height)}" class="map-land"></path>`).join('')}
       </g>
 
-      ${threatMapState.showArcs ? flows.map((flow) => `<path class="map-flow${threatMapState.reducedMotion ? ' map-flow-static' : ''}" d="${flow.path}" stroke="${flow.color}"><title>${flow.label} (${flow.sourceLabel} → ${flow.targetLabel})</title></path>`).join('') : ''}
+      ${threatMapState.showArcs ? flows.map((flow) => `<path class="map-flow${threatMapState.reducedMotion ? ' map-flow-static' : ''}" style="${flow.arcStyle}" d="${flow.path}" stroke="${flow.color}"><title>${flow.label} (${flow.sourceLabel} → ${flow.targetLabel})</title></path>`).join('') : ''}
 
       ${flows.map((flow) => `
         <g class="map-point" style="--map-accent:${flow.color}">
@@ -174,6 +206,30 @@ function renderMapMeta(meta = {}) {
   }
 }
 
+function renderMapLiveMetrics(meta = {}) {
+  const filtered = filterThreatEvents(threatMapState.events);
+  const uniqueSources = new Set(filtered.map((item) => String(item.origin?.label || item.origin?.key || item.origin?.lat || 'src')));
+  const targetCounts = filtered.reduce((acc, item) => {
+    const key = String(item.target?.label || 'Unknown');
+    acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {});
+  const topTargets = Object.entries(targetCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(([name, count]) => `${name} (${count})`)
+    .join(', ') || '-';
+
+  const attacksMinEl = document.getElementById('threat-map-attacks-minute');
+  const sourcesEl = document.getElementById('threat-map-active-sources');
+  const targetsEl = document.getElementById('threat-map-top-targets');
+  const updatedEl = document.getElementById('threat-map-last-updated');
+  if (attacksMinEl) attacksMinEl.textContent = String(filtered.length);
+  if (sourcesEl) sourcesEl.textContent = String(uniqueSources.size);
+  if (targetsEl) targetsEl.textContent = topTargets;
+  if (updatedEl) updatedEl.textContent = meta.lastUpdated ? new Date(meta.lastUpdated).toLocaleTimeString() : '-';
+}
+
 function renderThreatMapFromState() {
   const mapRoot = document.getElementById('threat-map');
   const status = document.getElementById('threat-map-status');
@@ -181,9 +237,16 @@ function renderThreatMapFromState() {
   mapRoot.innerHTML = mapSvg(threatMapState.events);
 
   if (status) {
-    const visible = threatMapState.events.filter((event) => threatMapState.severity === 'all' || event.severity === threatMapState.severity).length;
-    status.textContent = `${visible} visible event${visible === 1 ? '' : 's'} · ${threatMapState.showArcs ? 'attack arcs on' : 'attack arcs off'}`;
+    const visible = filterThreatEvents(threatMapState.events).length;
+    status.textContent = `${visible} visible event${visible === 1 ? '' : 's'} · ${threatMapState.showArcs ? 'attack arcs on' : 'attack arcs off'} · ${threatMapState.region.toUpperCase()}`;
   }
+  renderMapLiveMetrics(threatMapState.lastMeta || {});
+}
+
+function restartThreatMapTimer() {
+  if (threatMapState.refreshTimer) clearInterval(threatMapState.refreshTimer);
+  const cadence = Math.max(7000, Math.floor(threatMapState.refreshMs / Math.max(0.5, threatMapState.playbackSpeed)));
+  threatMapState.refreshTimer = setInterval(refreshThreatMap, cadence);
 }
 
 async function refreshThreatMap() {
@@ -192,16 +255,14 @@ async function refreshThreatMap() {
   if (!response.ok || !response.data?.data) return;
 
   threatMapState.events = response.data.data;
+  threatMapState.lastMeta = response.data.meta || {};
   renderThreatMapFromState();
-  renderMapMeta(response.data.meta || {});
+  renderMapMeta(threatMapState.lastMeta);
 
   const nextMs = Number(response.data.meta?.refreshMs || 30000);
   if (nextMs !== threatMapState.refreshMs) {
     threatMapState.refreshMs = nextMs;
-    if (threatMapState.refreshTimer) {
-      clearInterval(threatMapState.refreshTimer);
-      threatMapState.refreshTimer = setInterval(refreshThreatMap, threatMapState.refreshMs);
-    }
+    restartThreatMapTimer();
   }
 }
 
@@ -328,14 +389,58 @@ function initThreatMap() {
     });
   }
 
-  document.querySelectorAll('[data-map-severity]').forEach((button) => {
+  const severityButtons = [...document.querySelectorAll('[data-map-severity]')];
+  severityButtons.forEach((button) => {
     button.addEventListener('click', () => {
-      threatMapState.severity = button.dataset.mapSeverity;
-      document.querySelectorAll('[data-map-severity]').forEach((item) => item.classList.remove('active'));
-      button.classList.add('active');
+      const value = button.dataset.mapSeverity;
+      if (value === 'all') {
+        threatMapState.severitySet = new Set(['critical', 'high', 'medium', 'low']);
+        severityButtons.forEach((item) => item.classList.add('active'));
+      } else {
+        if (threatMapState.severitySet.has(value)) {
+          threatMapState.severitySet.delete(value);
+        } else {
+          threatMapState.severitySet.add(value);
+        }
+        const allEnabled = ['critical', 'high', 'medium', 'low'].every((level) => threatMapState.severitySet.has(level));
+        severityButtons.forEach((item) => {
+          const level = item.dataset.mapSeverity;
+          if (level === 'all') item.classList.toggle('active', allEnabled);
+          else item.classList.toggle('active', threatMapState.severitySet.has(level));
+        });
+        if (threatMapState.severitySet.size === 0) {
+          threatMapState.severitySet = new Set(['critical', 'high', 'medium', 'low']);
+          severityButtons.forEach((item) => item.classList.add('active'));
+        }
+      }
       renderThreatMapFromState();
     });
   });
+
+  const speed = document.getElementById('threat-map-speed');
+  if (speed) {
+    speed.addEventListener('change', () => {
+      threatMapState.playbackSpeed = Number(speed.value || 1);
+      restartThreatMapTimer();
+      renderThreatMapFromState();
+    });
+  }
+
+  const density = document.getElementById('threat-map-density');
+  if (density) {
+    density.addEventListener('input', () => {
+      threatMapState.density = Math.max(0.2, Math.min(1, Number(density.value || 75) / 100));
+      renderThreatMapFromState();
+    });
+  }
+
+  const region = document.getElementById('threat-map-region');
+  if (region) {
+    region.addEventListener('change', () => {
+      threatMapState.region = region.value || 'global';
+      renderThreatMapFromState();
+    });
+  }
 
   const arcsToggle = document.getElementById('threat-map-arcs');
   if (arcsToggle) {
@@ -349,7 +454,7 @@ function initThreatMap() {
   }
 
   refreshThreatMap();
-  threatMapState.refreshTimer = setInterval(refreshThreatMap, threatMapState.refreshMs);
+  restartThreatMapTimer();
 }
 
 async function initThreatFeed() {
