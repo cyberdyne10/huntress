@@ -35,6 +35,14 @@ function resolveStaticRoot() {
 
 const STATIC_ROOT = resolveStaticRoot();
 const RELEASE_TAG = process.env.RENDER_GIT_COMMIT || process.env.RELEASE || `v${appVersion}`;
+const THREAT_GEO_FEED_URL = process.env.THREAT_GEO_FEED_URL || '';
+const THREAT_GEO_CACHE_MS = Number(process.env.THREAT_GEO_CACHE_MS || 45000);
+
+const threatGeoCache = {
+  data: null,
+  meta: null,
+  expiresAt: 0,
+};
 
 app.set('trust proxy', 1);
 app.use(helmet({ contentSecurityPolicy: false, referrerPolicy: { policy: 'strict-origin-when-cross-origin' } }));
@@ -93,6 +101,104 @@ async function postToCrm(payload, leadId = null) {
     db.prepare('INSERT INTO crm_events(lead_id,direction,event_type,status,payload_json,created_at) VALUES(?,?,?,?,?,?)').run(leadId, 'outbound', payload.type, `failed:${error.message}`, JSON.stringify(payload), ts);
     return { delivered: false, mode: 'log-fallback' };
   }
+}
+
+function randomThreatGeoEvents() {
+  const hubs = [
+    { key: 'lagos', label: 'Lagos SOC', lat: 6.5244, lon: 3.3792 },
+    { key: 'london', label: 'London DC', lat: 51.5074, lon: -0.1278 },
+    { key: 'frankfurt', label: 'Frankfurt IX', lat: 50.1109, lon: 8.6821 },
+    { key: 'new-york', label: 'New York POP', lat: 40.7128, lon: -74.006 },
+    { key: 'sao-paulo', label: 'São Paulo Edge', lat: -23.5505, lon: -46.6333 },
+    { key: 'johannesburg', label: 'Johannesburg SOC', lat: -26.2041, lon: 28.0473 },
+    { key: 'dubai', label: 'Dubai Core', lat: 25.2048, lon: 55.2708 },
+    { key: 'singapore', label: 'Singapore IX', lat: 1.3521, lon: 103.8198 },
+    { key: 'tokyo', label: 'Tokyo Sensor', lat: 35.6762, lon: 139.6503 },
+    { key: 'sydney', label: 'Sydney Sensor', lat: -33.8688, lon: 151.2093 },
+  ];
+
+  const labels = ['Credential stuffing burst', 'Phishing beacon callback', 'Command-and-control check-in', 'Suspicious RDP probing', 'Lateral movement attempt', 'Privilege escalation pattern'];
+  const severities = ['critical', 'high', 'high', 'medium', 'medium', 'low'];
+  const total = 16;
+  return Array.from({ length: total }).map((_, idx) => {
+    const origin = hubs[Math.floor(Math.random() * hubs.length)];
+    let target = hubs[Math.floor(Math.random() * hubs.length)];
+    while (target.key === origin.key) target = hubs[Math.floor(Math.random() * hubs.length)];
+    const severity = severities[Math.floor(Math.random() * severities.length)];
+    const label = labels[Math.floor(Math.random() * labels.length)];
+    return {
+      id: `GEO-${Date.now()}-${idx}`,
+      label,
+      severity,
+      feed: 'mock',
+      observedAt: nowIso(),
+      origin: { label: origin.label, lat: origin.lat, lon: origin.lon },
+      target: { label: target.label, lat: target.lat, lon: target.lon },
+    };
+  });
+}
+
+function normalizeGeoEvent(item, index = 0) {
+  if (!item || !item.origin || !item.target) return null;
+  const severity = ['critical', 'high', 'medium', 'low'].includes(item.severity) ? item.severity : 'medium';
+  return {
+    id: String(item.id || `GEO-LIVE-${Date.now()}-${index}`),
+    label: String(item.label || item.title || 'Threat flow observed'),
+    severity,
+    feed: String(item.feed || 'live'),
+    observedAt: item.observedAt || nowIso(),
+    origin: {
+      label: String(item.origin.label || 'Unknown source'),
+      lat: Number(item.origin.lat),
+      lon: Number(item.origin.lon),
+    },
+    target: {
+      label: String(item.target.label || 'Unknown target'),
+      lat: Number(item.target.lat),
+      lon: Number(item.target.lon),
+    },
+  };
+}
+
+async function getThreatGeoEvents() {
+  const now = Date.now();
+  if (threatGeoCache.data && threatGeoCache.expiresAt > now) {
+    return { data: threatGeoCache.data, meta: threatGeoCache.meta };
+  }
+
+  let data = [];
+  let source = 'mock';
+
+  if (THREAT_GEO_FEED_URL) {
+    try {
+      const response = await fetch(THREAT_GEO_FEED_URL, { headers: { accept: 'application/json' } });
+      if (response.ok) {
+        const payload = await response.json();
+        const input = Array.isArray(payload) ? payload : (payload.events || []);
+        data = input.map((event, index) => normalizeGeoEvent(event, index)).filter(Boolean);
+        if (data.length > 0) source = payload.source || 'live-feed';
+      }
+    } catch (_error) {
+      source = 'mock-fallback';
+    }
+  }
+
+  if (data.length === 0) {
+    data = randomThreatGeoEvents();
+    source = THREAT_GEO_FEED_URL ? 'mock-fallback' : 'mock';
+  }
+
+  const meta = {
+    source,
+    refreshMs: THREAT_GEO_CACHE_MS,
+    lastUpdated: nowIso(),
+    count: data.length,
+  };
+  threatGeoCache.data = data;
+  threatGeoCache.meta = meta;
+  threatGeoCache.expiresAt = Date.now() + THREAT_GEO_CACHE_MS;
+
+  return { data, meta };
 }
 
 app.get('/health', (_req, res) => {
@@ -253,6 +359,11 @@ app.get('/api/soc-preview', (req, res) => {
 app.get('/api/threat-feed', (_req, res) => {
   const data = db.prepare('SELECT id,threat,severity,source,status,mitre_tags AS mitreTags,published_at AS publishedAt FROM threat_feed_items ORDER BY published_at DESC LIMIT 20').all();
   res.json({ source: 'db', data, count: data.length });
+});
+
+app.get('/api/threat-geo-events', async (_req, res) => {
+  const payload = await getThreatGeoEvents();
+  res.json(payload);
 });
 
 app.get('/api/admin/overview', authRequired, adminRequired, (_req, res) => {
