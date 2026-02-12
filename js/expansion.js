@@ -675,18 +675,143 @@ function initThreatMap() {
   restartThreatMapTimer();
 }
 
+function toReadableTime(value) {
+  if (!value) return 'Unknown time';
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return 'Unknown time';
+  return date.toLocaleString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+}
+
+function sourceTag(source) {
+  const normalized = String(source || 'SOC').toLowerCase();
+  if (normalized.includes('misp')) return 'MISP';
+  if (normalized.includes('endpoint')) return 'Endpoint';
+  if (normalized.includes('identity')) return 'Identity';
+  if (normalized.includes('email')) return 'Email';
+  return 'Intel';
+}
+
+function threatIconBySeverity(raw) {
+  const severity = String(raw || 'info').toLowerCase();
+  if (severity === 'critical') return '⛔';
+  if (severity === 'high') return '⚠';
+  if (severity === 'medium') return '◉';
+  if (severity === 'low') return '✓';
+  return '•';
+}
+
+function renderThreatFeedSkeleton(feed, count = 4) {
+  feed.innerHTML = '';
+  for (let index = 0; index < count; index += 1) {
+    const skeleton = document.createElement('div');
+    skeleton.className = 'threat-feed-skeleton loading-skeleton';
+    skeleton.innerHTML = '<div class="line"></div><div class="line"></div>';
+    feed.appendChild(skeleton);
+  }
+}
+
+function renderThreatFeedEmpty(feed, statusNode, message) {
+  feed.innerHTML = `<div class="threat-feed-state">${message}</div>`;
+  if (statusNode) statusNode.textContent = 'No matching intelligence right now.';
+}
+
+function renderThreatFeedItems(feed, statusNode, items) {
+  if (!items.length) {
+    renderThreatFeedEmpty(feed, statusNode, 'No intel items match the current filters. Try widening severity/source.');
+    return;
+  }
+
+  feed.innerHTML = '';
+  items.forEach((item, index) => {
+    const article = document.createElement('article');
+    const severity = String(item.severity || 'info').toLowerCase();
+    const source = String(item.source || 'SOC');
+    const mitre = item.mitreTags ? `<span class="threat-meta-chip">${item.mitreTags}</span>` : '';
+    const statusChip = item.status ? `<span class="threat-meta-chip">${item.status}</span>` : '';
+    article.className = 'threat-feed-item';
+    article.style.animationDelay = `${Math.min(index, 7) * 45}ms`;
+    article.innerHTML = `
+      <div class="threat-feed-top">
+        <div class="threat-feed-icon" aria-hidden="true">${threatIconBySeverity(severity)}</div>
+        <span class="${severityBadgeClass(severity)}">${severity}</span>
+      </div>
+      <h3 class="threat-feed-title">${item.threat || item.title || 'Unlabeled threat signal'}</h3>
+      <div class="threat-feed-meta">
+        <span class="threat-meta-chip">${sourceTag(source)}</span>
+        <span class="threat-meta-chip">${source}</span>
+        ${statusChip}
+        ${mitre}
+        <span class="threat-meta-chip threat-meta-time">${toReadableTime(item.publishedAt || item.updatedAt)}</span>
+      </div>
+    `;
+    feed.appendChild(article);
+  });
+
+  if (statusNode) statusNode.textContent = `Displaying ${items.length} curated intelligence signal${items.length === 1 ? '' : 's'}.`;
+}
+
 async function initThreatFeed() {
   const feed = document.getElementById('threat-feed');
   if (!feed) return;
-  const data = await fetchJson('/api/threat-feed');
-  (data?.data?.data || []).slice(0, 5).forEach((item) => {
-    const div = document.createElement('div');
-    div.className = 'list-item';
-    const source = String(item.source || 'SOC');
-    const mispBadge = source.toLowerCase().includes('misp') ? ' <span class="badge badge-medium">MISP</span>' : '';
-    div.innerHTML = `<strong>${item.threat || item.title}</strong><div class="small">${source}${mispBadge} · ${item.severity || 'info'}</div>`;
-    feed.appendChild(div);
-  });
+
+  const sourceLabel = document.getElementById('threat-feed-source');
+  const refreshedLabel = document.getElementById('threat-feed-refreshed');
+  const severityFilter = document.getElementById('threat-filter-severity');
+  const sourceFilter = document.getElementById('threat-filter-source');
+  const statusNode = document.getElementById('threat-feed-status');
+  const sectionCard = feed.closest('.threat-intel-card');
+
+  const fallbackItems = [
+    { threat: 'Suspicious PowerShell beaconing on finance endpoint', severity: 'high', source: 'SOC Sensor', status: 'investigating' },
+    { threat: 'Credential stuffing burst blocked at identity gateway', severity: 'critical', source: 'Identity Defense', status: 'contained' },
+    { threat: 'Known phishing lure observed in inbox telemetry', severity: 'medium', source: 'Email Shield', status: 'monitoring' },
+  ];
+
+  if (statusNode) statusNode.textContent = 'Loading latest intelligence…';
+  renderThreatFeedSkeleton(feed);
+
+  const response = await fetchJson('/api/threat-feed');
+  let allItems = Array.isArray(response?.data?.data) ? response.data.data : [];
+
+  if (!response.ok && allItems.length === 0) {
+    allItems = fallbackItems;
+    if (statusNode) statusNode.textContent = 'Live feed unavailable. Showing resilient fallback intel.';
+  }
+
+  if (sourceLabel) sourceLabel.textContent = `Source: ${response?.data?.source || (response.ok ? 'db' : 'fallback')}`;
+  if (refreshedLabel) refreshedLabel.textContent = `Refreshed: ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`;
+
+  const sources = [...new Set(allItems.map((item) => String(item.source || 'SOC')))].sort((a, b) => a.localeCompare(b));
+  if (sourceFilter) {
+    sourceFilter.innerHTML = '<option value="all">All sources</option>';
+    sources.forEach((source) => {
+      const option = document.createElement('option');
+      option.value = source;
+      option.textContent = source;
+      sourceFilter.appendChild(option);
+    });
+  }
+
+  const applyFilters = () => {
+    const severityValue = severityFilter?.value || 'all';
+    const sourceValue = sourceFilter?.value || 'all';
+    const filtered = allItems
+      .filter((item) => (severityValue === 'all' ? true : String(item.severity || 'info').toLowerCase() === severityValue))
+      .filter((item) => (sourceValue === 'all' ? true : String(item.source || 'SOC') === sourceValue))
+      .slice(0, 8);
+
+    renderThreatFeedItems(feed, statusNode, filtered);
+  };
+
+  if (allItems.length === 0) {
+    renderThreatFeedEmpty(feed, statusNode, 'No threat intel available yet. Feed will repopulate automatically on next refresh.');
+  } else {
+    applyFilters();
+  }
+
+  if (severityFilter) severityFilter.addEventListener('change', applyFilters);
+  if (sourceFilter) sourceFilter.addEventListener('change', applyFilters);
+  if (sectionCard) sectionCard.setAttribute('aria-busy', 'false');
 }
 
 function initPricingCalc() {

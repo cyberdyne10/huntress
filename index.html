@@ -396,11 +396,45 @@
             </div>
         </section>
 
-        <section class="section-padding">
-            <div class="container card">
-                <h2>Threat Intel Feed</h2>
-                <p class="small">Curated intel with optional live feed integration and safe cache fallback.</p>
-                <div id="threat-feed" class="list"></div>
+        <section class="section-padding threat-intel-section" aria-labelledby="threat-intel-title">
+            <div class="container">
+                <article class="card threat-intel-card" aria-live="polite" aria-busy="true">
+                    <header class="threat-intel-head">
+                        <div>
+                            <p class="threat-intel-kicker">Live security telemetry</p>
+                            <h2 id="threat-intel-title">Threat Intel Feed</h2>
+                            <p class="small">Curated intel with optional live feed integration and safe cache fallback.</p>
+                        </div>
+                        <div class="threat-intel-meta">
+                            <span id="threat-feed-source" class="threat-source-tag">Source: -</span>
+                            <span id="threat-feed-refreshed" class="small">Refreshed: --:--</span>
+                        </div>
+                    </header>
+
+                    <div class="threat-intel-controls" role="group" aria-label="Threat intel filters">
+                        <label for="threat-filter-severity" class="small">Severity</label>
+                        <select id="threat-filter-severity" class="input input-sm" aria-label="Filter by severity">
+                            <option value="all">All severities</option>
+                            <option value="critical">Critical</option>
+                            <option value="high">High</option>
+                            <option value="medium">Medium</option>
+                            <option value="low">Low</option>
+                            <option value="info">Info</option>
+                        </select>
+
+                        <label for="threat-filter-source" class="small">Source</label>
+                        <select id="threat-filter-source" class="input input-sm" aria-label="Filter by source">
+                            <option value="all">All sources</option>
+                        </select>
+                    </div>
+
+                    <div id="threat-feed-status" class="small" role="status">Loading latest intelligence…</div>
+                    <div id="threat-feed" class="threat-feed-list"></div>
+
+                    <footer class="threat-intel-footer">
+                        <a href="/soc-preview.html" class="btn btn-secondary threat-intel-cta">View all intel</a>
+                    </footer>
+                </article>
             </div>
         </section>
 
