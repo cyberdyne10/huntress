@@ -296,6 +296,8 @@
     radial-gradient(circle at 96% 2%, rgb(59 130 246 / 16%), transparent 34%),
     radial-gradient(circle at 2% 100%, rgb(34 211 238 / 12%), transparent 30%),
     linear-gradient(165deg, rgb(11 26 46 / 82%), rgb(8 14 26 / 92%));
+  display: grid;
+  gap: 12px;
 }
 
 .threat-intel-head {
@@ -303,7 +305,9 @@
   align-items: flex-start;
   justify-content: space-between;
   gap: 14px;
-  margin-bottom: 14px;
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .threat-intel-head > div:first-child {
@@ -316,6 +320,11 @@
   margin-top: 4px;
   max-width: 64ch;
   line-height: 1.45;
+}
+
+.threat-intel-head h2 {
+  margin: 0;
+  line-height: 1.2;
 }
 
 .threat-intel-kicker {
@@ -349,20 +358,25 @@
   grid-template-columns: auto minmax(120px, 180px) auto minmax(140px, 220px);
   gap: 8px 10px;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 0;
+  position: relative;
+  z-index: 1;
 }
 
 .threat-intel-controls .small { font-weight: 600; color: #d4e7ff; }
 
 .threat-intel-card #threat-feed-status {
   display: block;
-  margin: 8px 0 12px;
+  margin: 0;
   padding: 8px 10px;
   border: 1px dashed rgb(125 211 252 / 22%);
   border-radius: 10px;
   background: rgb(7 20 37 / 45%);
   color: #b7d5f8;
   line-height: 1.4;
+  position: relative !important;
+  inset: auto !important;
+  z-index: 1;
 }
 
 .threat-feed-list {
