@@ -1,18 +1,38 @@
 const API_BASE = window.location.origin.startsWith('http') ? '' : 'http://localhost:3001';
 
 const SEVERITY_COLORS = {
-  critical: '#ef4444',
-  high: '#f97316',
-  medium: '#eab308',
-  low: '#22c55e',
-  info: '#38bdf8',
+  critical: '#ff4d6d',
+  high: '#ff8a3d',
+  medium: '#f7c948',
+  low: '#3ddc97',
+  info: '#4db8ff',
 };
+
+const LANDMASSES = [
+  // North America
+  [[72, -168], [65, -155], [58, -141], [52, -130], [45, -125], [35, -120], [28, -114], [18, -102], [16, -88], [24, -82], [30, -77], [41, -70], [52, -62], [61, -72], [69, -95], [72, -120], [72, -168]],
+  // South America
+  [[13, -81], [9, -74], [3, -69], [-7, -63], [-18, -58], [-28, -57], [-39, -63], [-52, -71], [-56, -75], [-46, -67], [-32, -57], [-19, -52], [-2, -49], [6, -54], [13, -64], [13, -81]],
+  // Europe + Asia
+  [[71, -10], [68, 18], [64, 45], [58, 67], [56, 92], [53, 122], [50, 142], [40, 152], [29, 136], [19, 121], [13, 101], [8, 82], [6, 66], [14, 52], [22, 43], [30, 35], [38, 27], [45, 13], [52, 2], [58, -8], [71, -10]],
+  // Africa
+  [[37, -17], [31, -7], [24, 4], [14, 12], [7, 17], [-6, 20], [-17, 23], [-28, 27], [-35, 19], [-34, 8], [-29, 1], [-17, -5], [-4, -11], [10, -15], [21, -14], [30, -11], [37, -17]],
+  // Australia
+  [[-11, 112], [-16, 127], [-19, 137], [-26, 146], [-35, 147], [-41, 136], [-39, 124], [-33, 116], [-25, 112], [-11, 112]],
+  // Greenland
+  [[83, -73], [78, -56], [73, -38], [66, -35], [60, -43], [61, -53], [66, -62], [74, -66], [83, -73]],
+  // UK/Iceland blob
+  [[64, -24], [60, -21], [56, -11], [52, -6], [50, 0], [53, 3], [58, -2], [63, -13], [64, -24]],
+];
 
 const threatMapState = {
   paused: false,
   severity: 'all',
+  showArcs: true,
   refreshTimer: null,
   refreshMs: 30000,
+  events: [],
+  reducedMotion: window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
 };
 
 async function fetchJson(path, opts = {}) {
@@ -36,42 +56,51 @@ function severityBadgeClass(raw) {
 }
 
 function plotPoint({ lat, lon, width, height }) {
-  const x = ((Number(lon) + 180) / 360) * width;
-  const y = ((90 - Number(lat)) / 180) * height;
+  const clampedLat = Math.max(-85, Math.min(85, Number(lat)));
+  const lambda = (Number(lon) * Math.PI) / 180;
+  const phi = (clampedLat * Math.PI) / 180;
+  const x = ((lambda + Math.PI) / (2 * Math.PI)) * width;
+  const mercN = Math.log(Math.tan((Math.PI / 4) + (phi / 2)));
+  const y = (height / 2) - ((width * mercN) / (2 * Math.PI)) * 0.62;
   return { x: Math.max(0, Math.min(width, x)), y: Math.max(0, Math.min(height, y)) };
+}
+
+function geoPolygonPath(coords, width, height) {
+  if (!Array.isArray(coords) || coords.length < 2) return '';
+  const parts = coords.map(([lat, lon], idx) => {
+    const p = plotPoint({ lat, lon, width, height });
+    return `${idx === 0 ? 'M' : 'L'} ${p.x.toFixed(2)} ${p.y.toFixed(2)}`;
+  });
+  return `${parts.join(' ')} Z`;
 }
 
 function flowPath(start, end) {
   const dx = end.x - start.x;
   const dy = end.y - start.y;
-  const curve = Math.max(35, Math.min(120, Math.abs(dx) * 0.22 + Math.abs(dy) * 0.15));
-  const c1x = start.x + dx * 0.3;
-  const c2x = start.x + dx * 0.7;
-  const c1y = start.y - curve;
-  const c2y = end.y - curve;
+  const travel = Math.hypot(dx, dy);
+  const curve = Math.max(18, Math.min(96, travel * 0.26));
+  const northBias = ((start.y + end.y) / 2) > 220 ? -1 : 1;
+  const c1x = start.x + dx * 0.25;
+  const c2x = start.x + dx * 0.75;
+  const c1y = start.y - (curve * northBias);
+  const c2y = end.y - (curve * northBias);
   return `M ${start.x.toFixed(1)} ${start.y.toFixed(1)} C ${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${end.x.toFixed(1)} ${end.y.toFixed(1)}`;
 }
 
 function mapSvg(events) {
   const width = 1000;
   const height = 500;
-  const continents = [
-    'M80,195 L145,145 L220,145 L260,190 L220,235 L130,230 Z',
-    'M245,250 L300,270 L318,355 L280,440 L245,405 Z',
-    'M430,140 L545,120 L655,155 L670,225 L610,240 L520,220 L455,245 L405,210 Z',
-    'M520,250 L600,272 L630,350 L585,425 L515,396 L490,318 Z',
-    'M680,165 L760,140 L875,165 L940,215 L890,260 L790,250 L710,230 Z',
-    'M805,300 L860,335 L845,380 L792,390 L760,352 Z',
-  ];
+  const maxFlows = window.innerWidth < 768 ? 50 : 90;
+  const filtered = events
+    .filter((event) => threatMapState.severity === 'all' || event.severity === threatMapState.severity)
+    .slice(0, maxFlows);
 
-  const filtered = events.filter((event) => threatMapState.severity === 'all' || event.severity === threatMapState.severity);
-
-  const flows = filtered.map((event) => {
+  const flows = filtered.map((event, index) => {
     const start = plotPoint({ ...event.origin, width, height });
     const end = plotPoint({ ...event.target, width, height });
     const color = SEVERITY_COLORS[event.severity] || SEVERITY_COLORS.info;
     return {
-      id: event.id,
+      id: event.id || `event-${index}`,
       label: event.label,
       severity: event.severity,
       color,
@@ -84,20 +113,44 @@ function mapSvg(events) {
   });
 
   return `
-    <svg viewBox="0 0 ${width} ${height}" aria-hidden="true">
+    <svg viewBox="0 0 ${width} ${height}" role="presentation" focusable="false">
       <defs>
-        <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
-          <path d="M50 0L0 0 0 50" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
+        <linearGradient id="oceanGradient" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0%" stop-color="#020617" />
+          <stop offset="45%" stop-color="#0b1430" />
+          <stop offset="100%" stop-color="#030712" />
+        </linearGradient>
+        <radialGradient id="vignette" cx="50%" cy="40%" r="75%">
+          <stop offset="0%" stop-color="rgba(56,189,248,0.09)" />
+          <stop offset="100%" stop-color="rgba(2,6,23,0.94)" />
+        </radialGradient>
+        <linearGradient id="landGradient" x1="0" x2="1" y1="0" y2="1">
+          <stop offset="0%" stop-color="rgba(30,64,175,0.44)" />
+          <stop offset="100%" stop-color="rgba(15,118,110,0.24)" />
+        </linearGradient>
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M40 0L0 0 0 40" fill="none" stroke="rgba(148,163,184,0.1)" stroke-width="1" />
         </pattern>
+        <filter id="landGlow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="1.8" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
       </defs>
+      <rect x="0" y="0" width="${width}" height="${height}" fill="url(#oceanGradient)"></rect>
       <rect x="0" y="0" width="${width}" height="${height}" fill="url(#grid)"></rect>
-      ${continents.map((path) => `<path d="${path}" fill="rgba(148, 163, 184, 0.2)" stroke="rgba(148,163,184,0.3)" stroke-width="1"></path>`).join('')}
-      ${flows.map((flow) => `<path class="map-flow" d="${flow.path}" stroke="${flow.color}"><title>${flow.label} (${flow.sourceLabel} → ${flow.targetLabel})</title></path>`).join('')}
+      <rect x="0" y="0" width="${width}" height="${height}" fill="url(#vignette)"></rect>
+
+      <g class="map-landmasses" filter="url(#landGlow)">
+        ${LANDMASSES.map((coords) => `<path d="${geoPolygonPath(coords, width, height)}" class="map-land"></path>`).join('')}
+      </g>
+
+      ${threatMapState.showArcs ? flows.map((flow) => `<path class="map-flow${threatMapState.reducedMotion ? ' map-flow-static' : ''}" d="${flow.path}" stroke="${flow.color}"><title>${flow.label} (${flow.sourceLabel} → ${flow.targetLabel})</title></path>`).join('') : ''}
+
       ${flows.map((flow) => `
-        <g class="map-point">
-          <circle cx="${flow.start.x}" cy="${flow.start.y}" r="3.4" fill="${flow.color}"></circle>
-          <circle class="map-point-pulse" cx="${flow.start.x}" cy="${flow.start.y}" r="2" fill="none" stroke="${flow.color}" stroke-width="1.2"></circle>
-          <circle cx="${flow.end.x}" cy="${flow.end.y}" r="3.8" fill="${flow.color}"></circle>
+        <g class="map-point" style="--map-accent:${flow.color}">
+          <circle class="map-point-origin" cx="${flow.start.x}" cy="${flow.start.y}" r="3.2"></circle>
+          ${threatMapState.reducedMotion ? '' : `<circle class="map-point-pulse" cx="${flow.start.x}" cy="${flow.start.y}" r="2.6"></circle>`}
+          <circle class="map-point-target" cx="${flow.end.x}" cy="${flow.end.y}" r="3.8"></circle>
         </g>
       `).join('')}
     </svg>
@@ -121,13 +174,25 @@ function renderMapMeta(meta = {}) {
   }
 }
 
-async function refreshThreatMap() {
+function renderThreatMapFromState() {
   const mapRoot = document.getElementById('threat-map');
-  if (!mapRoot || threatMapState.paused) return;
+  const status = document.getElementById('threat-map-status');
+  if (!mapRoot) return;
+  mapRoot.innerHTML = mapSvg(threatMapState.events);
+
+  if (status) {
+    const visible = threatMapState.events.filter((event) => threatMapState.severity === 'all' || event.severity === threatMapState.severity).length;
+    status.textContent = `${visible} visible event${visible === 1 ? '' : 's'} · ${threatMapState.showArcs ? 'attack arcs on' : 'attack arcs off'}`;
+  }
+}
+
+async function refreshThreatMap() {
+  if (threatMapState.paused) return;
   const response = await fetchJson('/api/threat-geo-events');
   if (!response.ok || !response.data?.data) return;
-  const events = response.data.data;
-  mapRoot.innerHTML = mapSvg(events);
+
+  threatMapState.events = response.data.data;
+  renderThreatMapFromState();
   renderMapMeta(response.data.meta || {});
 
   const nextMs = Number(response.data.meta?.refreshMs || 30000);
@@ -268,9 +333,20 @@ function initThreatMap() {
       threatMapState.severity = button.dataset.mapSeverity;
       document.querySelectorAll('[data-map-severity]').forEach((item) => item.classList.remove('active'));
       button.classList.add('active');
-      refreshThreatMap();
+      renderThreatMapFromState();
     });
   });
+
+  const arcsToggle = document.getElementById('threat-map-arcs');
+  if (arcsToggle) {
+    arcsToggle.setAttribute('aria-pressed', String(threatMapState.showArcs));
+    arcsToggle.addEventListener('click', () => {
+      threatMapState.showArcs = !threatMapState.showArcs;
+      arcsToggle.textContent = threatMapState.showArcs ? 'Hide Arcs' : 'Show Arcs';
+      arcsToggle.setAttribute('aria-pressed', String(threatMapState.showArcs));
+      renderThreatMapFromState();
+    });
+  }
 
   refreshThreatMap();
   threatMapState.refreshTimer = setInterval(refreshThreatMap, threatMapState.refreshMs);
