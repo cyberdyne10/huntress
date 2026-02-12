@@ -9,6 +9,7 @@ const { demoIntakeSchema, slotSchema, bookingSchema, sanitizeText } = require('.
 const { incidents, alerts } = require('./mock-data');
 const { db, initDb, nowIso } = require('./db');
 const { createJwt, verifyJwt, revokeSession, sendBookingNotification } = require('./services');
+const { getMispIntel, getMispStatus } = require('./misp');
 
 initDb();
 const app = express();
@@ -41,6 +42,11 @@ const THREAT_GEO_CACHE_MS = Number(process.env.THREAT_GEO_CACHE_MS || 45000);
 const threatGeoCache = {
   data: null,
   meta: null,
+  expiresAt: 0,
+};
+
+const mispCache = {
+  intel: null,
   expiresAt: 0,
 };
 
@@ -160,6 +166,15 @@ function normalizeGeoEvent(item, index = 0) {
   };
 }
 
+async function getMispIntelCached() {
+  const now = Date.now();
+  if (mispCache.intel && mispCache.expiresAt > now) return mispCache.intel;
+  const intel = await getMispIntel();
+  mispCache.intel = intel;
+  mispCache.expiresAt = now + Math.max(15000, Math.floor(THREAT_GEO_CACHE_MS));
+  return intel;
+}
+
 async function getThreatGeoEvents() {
   const now = Date.now();
   if (threatGeoCache.data && threatGeoCache.expiresAt > now) {
@@ -169,7 +184,13 @@ async function getThreatGeoEvents() {
   let data = [];
   let source = 'mock';
 
-  if (THREAT_GEO_FEED_URL) {
+  const mispIntel = await getMispIntelCached();
+  if (mispIntel.ok && Array.isArray(mispIntel.geoEvents) && mispIntel.geoEvents.length > 0) {
+    data = mispIntel.geoEvents.map((event, index) => normalizeGeoEvent(event, index)).filter(Boolean);
+    source = 'misp';
+  }
+
+  if (data.length === 0 && THREAT_GEO_FEED_URL) {
     try {
       const response = await fetch(THREAT_GEO_FEED_URL, { headers: { accept: 'application/json' } });
       if (response.ok) {
@@ -185,7 +206,7 @@ async function getThreatGeoEvents() {
 
   if (data.length === 0) {
     data = randomThreatGeoEvents();
-    source = THREAT_GEO_FEED_URL ? 'mock-fallback' : 'mock';
+    source = (THREAT_GEO_FEED_URL || mispIntel.reason === 'unreachable') ? 'mock-fallback' : 'mock';
   }
 
   const meta = {
@@ -356,9 +377,26 @@ app.get('/api/soc-preview', (req, res) => {
   });
 });
 
-app.get('/api/threat-feed', (_req, res) => {
-  const data = db.prepare('SELECT id,threat,severity,source,status,mitre_tags AS mitreTags,published_at AS publishedAt FROM threat_feed_items ORDER BY published_at DESC LIMIT 20').all();
-  res.json({ source: 'db', data, count: data.length });
+app.get('/api/threat-feed', async (_req, res) => {
+  const dbData = db.prepare('SELECT id,threat,severity,source,status,mitre_tags AS mitreTags,published_at AS publishedAt FROM threat_feed_items ORDER BY published_at DESC LIMIT 20').all();
+  const mispIntel = await getMispIntelCached();
+  const mispData = (mispIntel.ok ? mispIntel.feedItems : [])
+    .map((item) => ({
+      id: item.id,
+      threat: item.threat,
+      severity: item.severity,
+      source: item.source,
+      status: item.status,
+      mitreTags: item.mitreTags,
+      publishedAt: item.publishedAt,
+    }));
+
+  const merged = [...mispData, ...dbData]
+    .sort((a, b) => new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime())
+    .slice(0, 20);
+
+  const source = mispData.length > 0 ? 'db+misp' : 'db';
+  res.json({ source, data: merged, count: merged.length });
 });
 
 app.get('/api/threat-geo-events', async (_req, res) => {
@@ -373,6 +411,11 @@ app.get('/api/admin/overview', authRequired, adminRequired, (_req, res) => {
   const incidentsCount = db.prepare('SELECT COUNT(1) AS c FROM status_incidents').get().c;
   const threatSources = db.prepare('SELECT source,COUNT(1) AS count FROM threat_feed_items GROUP BY source').all();
   res.json({ data: { slots, bookings, leads, incidents: incidentsCount, threatSources } });
+});
+
+app.get('/api/admin/integrations/misp/status', authRequired, adminRequired, async (_req, res) => {
+  await getMispIntelCached();
+  res.json({ data: getMispStatus() });
 });
 
 app.get('/status.html', (_req, res) => res.sendFile(path.join(STATIC_ROOT, 'status.html')));
