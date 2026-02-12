@@ -1,1 +1,134 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Interactive SOC Dashboard Preview</title><meta name="description" content="SOC dashboard preview with severity/source/status/MITRE filtering and timeline drill-down."><link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/expansion.css"></head><body><div id="header-placeholder"></div><main id="soc-preview"><section class="page-hero"><div class="container"><h1>Interactive SOC Dashboard Preview</h1><p>Explore realistic alerts/incidents, triage filters, KPI snapshots, and timeline drill-down.</p></div></section><section class="section-block"><div class="container"><div class="kpis"><div class="kpi"><div class="small">Open incidents</div><strong id="kpi-open">-</strong></div><div class="kpi"><div class="small">MTTR</div><strong id="kpi-mttr">-</strong></div><div class="kpi"><div class="small">Active analysts</div><strong id="kpi-analysts">-</strong></div></div></div></section><section class="section-block"><div class="container card"><h3>Threat trend (7 days)</h3><div id="soc-chart" class="chart-bars"></div><h4>Timeline</h4><div id="soc-timeline" class="list"></div></div></section><section class="section-block"><div class="container card"><div class="filters"><button class="btn btn-outline" data-filter="all">All</button><button class="btn btn-outline" data-filter="critical">Critical</button><button class="btn btn-outline" data-filter="high">High</button><button class="btn btn-outline" data-filter="medium">Medium</button><button class="btn btn-outline" data-filter="low">Low</button></div><div class="form-grid"><label>Source<input id="soc-source-filter" class="input" placeholder="e.g. Hunt Lab"></label><label>Status<input id="soc-status-filter" class="input" placeholder="active"></label><label>MITRE tag<input id="soc-mitre-filter" class="input" placeholder="T1110"></label><button id="soc-apply-filters" class="btn btn-primary" type="button">Apply Filters</button></div><div id="soc-list" class="list"></div></div></section></main><div id="footer-placeholder"></div><script src="js/components.js"></script><script src="js/expansion.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive SOC Dashboard Preview</title>
+  <meta
+    name="description"
+    content="SOC dashboard preview with severity/source/status/MITRE filtering, timeline drill-down, and a live threat map."
+  >
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/expansion.css">
+</head>
+<body>
+  <div id="header-placeholder"></div>
+
+  <main id="soc-preview" class="soc-preview-page">
+    <section class="page-hero">
+      <div class="container">
+        <h1>Interactive SOC Dashboard Preview</h1>
+        <p>
+          Explore realistic alerts/incidents, triage filters, KPI snapshots, timeline drill-down,
+          and live geo threat telemetry.
+        </p>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="container">
+        <div class="kpis">
+          <article class="kpi" aria-live="polite">
+            <div class="small">Open incidents</div>
+            <strong id="kpi-open">-</strong>
+          </article>
+          <article class="kpi" aria-live="polite">
+            <div class="small">MTTR</div>
+            <strong id="kpi-mttr">-</strong>
+          </article>
+          <article class="kpi" aria-live="polite">
+            <div class="small">Active analysts</div>
+            <strong id="kpi-analysts">-</strong>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="container split-grid">
+        <article class="card panel">
+          <div class="panel-head">
+            <h2>Threat trend (7 days)</h2>
+            <span class="small">Rolling baseline</span>
+          </div>
+          <div id="soc-chart" class="chart-bars" role="img" aria-label="Threat trend bar chart"></div>
+
+          <div class="panel-head panel-head-sub">
+            <h3>Timeline</h3>
+            <span class="small">Most recent events</span>
+          </div>
+          <div id="soc-timeline" class="list timeline-list"></div>
+        </article>
+
+        <article class="card panel" aria-labelledby="threat-map-title">
+          <div class="panel-head">
+            <h2 id="threat-map-title">Live Threat Map</h2>
+            <div class="map-meta">
+              <span id="threat-map-source" class="small">Source: -</span>
+              <span id="threat-map-updated" class="small">Last updated: -</span>
+            </div>
+          </div>
+
+          <div class="map-controls" role="group" aria-label="Threat map controls">
+            <button id="threat-map-toggle" type="button" class="btn btn-outline btn-sm" aria-pressed="false">Pause</button>
+            <button type="button" class="btn btn-outline btn-sm active" data-map-severity="all">All</button>
+            <button type="button" class="btn btn-outline btn-sm" data-map-severity="critical">Critical</button>
+            <button type="button" class="btn btn-outline btn-sm" data-map-severity="high">High</button>
+            <button type="button" class="btn btn-outline btn-sm" data-map-severity="medium">Medium</button>
+            <button type="button" class="btn btn-outline btn-sm" data-map-severity="low">Low</button>
+          </div>
+
+          <div id="threat-map" class="threat-map" role="img" aria-label="World threat map with animated attack flows"></div>
+
+          <div class="map-legend">
+            <span><i class="dot dot-critical"></i> Critical</span>
+            <span><i class="dot dot-high"></i> High</span>
+            <span><i class="dot dot-medium"></i> Medium</span>
+            <span><i class="dot dot-low"></i> Low</span>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="container card panel">
+        <div class="panel-head">
+          <h2>Incident &amp; Alert Feed</h2>
+          <span class="small">Filter by severity/source/status/MITRE</span>
+        </div>
+
+        <div class="filters" role="group" aria-label="Severity quick filter">
+          <button type="button" class="btn btn-outline" data-filter="all">All</button>
+          <button type="button" class="btn btn-outline" data-filter="critical">Critical</button>
+          <button type="button" class="btn btn-outline" data-filter="high">High</button>
+          <button type="button" class="btn btn-outline" data-filter="medium">Medium</button>
+          <button type="button" class="btn btn-outline" data-filter="low">Low</button>
+        </div>
+
+        <div class="form-grid form-grid-inline">
+          <label>
+            Source
+            <input id="soc-source-filter" class="input" type="text" placeholder="e.g. Hunt Lab">
+          </label>
+          <label>
+            Status
+            <input id="soc-status-filter" class="input" type="text" placeholder="active">
+          </label>
+          <label>
+            MITRE tag
+            <input id="soc-mitre-filter" class="input" type="text" placeholder="T1110">
+          </label>
+          <button id="soc-apply-filters" class="btn btn-primary" type="button">Apply Filters</button>
+        </div>
+
+        <div id="soc-list" class="list incident-list"></div>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+
+  <script src="js/components.js"></script>
+  <script src="js/expansion.js"></script>
+</body>
+</html>

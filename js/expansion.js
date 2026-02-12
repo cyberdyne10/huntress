@@ -1,11 +1,26 @@
 const API_BASE = window.location.origin.startsWith('http') ? '' : 'http://localhost:3001';
 
+const SEVERITY_COLORS = {
+  critical: '#ef4444',
+  high: '#f97316',
+  medium: '#eab308',
+  low: '#22c55e',
+  info: '#38bdf8',
+};
+
+const threatMapState = {
+  paused: false,
+  severity: 'all',
+  refreshTimer: null,
+  refreshMs: 30000,
+};
+
 async function fetchJson(path, opts = {}) {
   try {
     const res = await fetch(`${API_BASE}${path}`, opts);
     const data = await res.json().catch(() => ({}));
     return { ok: res.ok, status: res.status, data };
-  } catch (_err) {
+  } catch {
     return { ok: false, status: 0, data: null };
   }
 }
@@ -13,6 +28,109 @@ async function fetchJson(path, opts = {}) {
 function authHeader() {
   const token = localStorage.getItem('portal_token');
   return token ? { authorization: `Bearer ${token}` } : {};
+}
+
+function severityBadgeClass(raw) {
+  const level = String(raw || 'low').toLowerCase();
+  return `badge badge-${SEVERITY_COLORS[level] ? level : 'low'}`;
+}
+
+function plotPoint({ lat, lon, width, height }) {
+  const x = ((Number(lon) + 180) / 360) * width;
+  const y = ((90 - Number(lat)) / 180) * height;
+  return { x: Math.max(0, Math.min(width, x)), y: Math.max(0, Math.min(height, y)) };
+}
+
+function flowPath(start, end) {
+  const dx = end.x - start.x;
+  const dy = end.y - start.y;
+  const curve = Math.max(35, Math.min(120, Math.abs(dx) * 0.22 + Math.abs(dy) * 0.15));
+  const c1x = start.x + dx * 0.3;
+  const c2x = start.x + dx * 0.7;
+  const c1y = start.y - curve;
+  const c2y = end.y - curve;
+  return `M ${start.x.toFixed(1)} ${start.y.toFixed(1)} C ${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${end.x.toFixed(1)} ${end.y.toFixed(1)}`;
+}
+
+function mapSvg(events) {
+  const width = 1000;
+  const height = 500;
+  const continents = [
+    'M80,195 L145,145 L220,145 L260,190 L220,235 L130,230 Z',
+    'M245,250 L300,270 L318,355 L280,440 L245,405 Z',
+    'M430,140 L545,120 L655,155 L670,225 L610,240 L520,220 L455,245 L405,210 Z',
+    'M520,250 L600,272 L630,350 L585,425 L515,396 L490,318 Z',
+    'M680,165 L760,140 L875,165 L940,215 L890,260 L790,250 L710,230 Z',
+    'M805,300 L860,335 L845,380 L792,390 L760,352 Z',
+  ];
+
+  const filtered = events.filter((event) => threatMapState.severity === 'all' || event.severity === threatMapState.severity);
+
+  const flows = filtered.map((event) => {
+    const start = plotPoint({ ...event.origin, width, height });
+    const end = plotPoint({ ...event.target, width, height });
+    const color = SEVERITY_COLORS[event.severity] || SEVERITY_COLORS.info;
+    return {
+      id: event.id,
+      label: event.label,
+      severity: event.severity,
+      color,
+      start,
+      end,
+      path: flowPath(start, end),
+      sourceLabel: event.origin.label,
+      targetLabel: event.target.label,
+    };
+  });
+
+  return `
+    <svg viewBox="0 0 ${width} ${height}" aria-hidden="true">
+      <defs>
+        <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+          <path d="M50 0L0 0 0 50" fill="none" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
+        </pattern>
+      </defs>
+      <rect x="0" y="0" width="${width}" height="${height}" fill="url(#grid)"></rect>
+      ${continents.map((path) => `<path d="${path}" fill="rgba(148, 163, 184, 0.2)" stroke="rgba(148,163,184,0.3)" stroke-width="1"></path>`).join('')}
+      ${flows.map((flow) => `<path class="map-flow" d="${flow.path}" stroke="${flow.color}"><title>${flow.label} (${flow.sourceLabel} → ${flow.targetLabel})</title></path>`).join('')}
+      ${flows.map((flow) => `
+        <g class="map-point">
+          <circle cx="${flow.start.x}" cy="${flow.start.y}" r="3.4" fill="${flow.color}"></circle>
+          <circle class="map-point-pulse" cx="${flow.start.x}" cy="${flow.start.y}" r="2" fill="none" stroke="${flow.color}" stroke-width="1.2"></circle>
+          <circle cx="${flow.end.x}" cy="${flow.end.y}" r="3.8" fill="${flow.color}"></circle>
+        </g>
+      `).join('')}
+    </svg>
+  `;
+}
+
+function renderMapMeta(meta = {}) {
+  const source = document.getElementById('threat-map-source');
+  const updated = document.getElementById('threat-map-updated');
+  if (source) source.textContent = `Source: ${meta.source || 'mock'}`;
+  if (updated) {
+    const stamp = meta.lastUpdated ? new Date(meta.lastUpdated).toLocaleTimeString() : '-';
+    updated.textContent = `Last updated: ${stamp}`;
+  }
+}
+
+async function refreshThreatMap() {
+  const mapRoot = document.getElementById('threat-map');
+  if (!mapRoot || threatMapState.paused) return;
+  const response = await fetchJson('/api/threat-geo-events');
+  if (!response.ok || !response.data?.data) return;
+  const events = response.data.data;
+  mapRoot.innerHTML = mapSvg(events);
+  renderMapMeta(response.data.meta || {});
+
+  const nextMs = Number(response.data.meta?.refreshMs || 30000);
+  if (nextMs !== threatMapState.refreshMs) {
+    threatMapState.refreshMs = nextMs;
+    if (threatMapState.refreshTimer) {
+      clearInterval(threatMapState.refreshTimer);
+      threatMapState.refreshTimer = setInterval(refreshThreatMap, threatMapState.refreshMs);
+    }
+  }
 }
 
 async function initBooking() {
@@ -63,10 +181,18 @@ async function renderSoc(filters = {}) {
   const list = document.getElementById('soc-list');
   list.innerHTML = '';
   [...alerts, ...incidents, ...threats].forEach((item) => {
-    const li = document.createElement('div');
+    const severity = String(item.severity || item.level || 'low').toLowerCase();
+    const li = document.createElement('article');
     li.className = 'list-item';
-    li.dataset.severity = item.severity || item.level || 'low';
-    li.innerHTML = `<strong>${item.id || item.incident_ref}</strong> - ${item.title || item.summary || item.threat} <span class="badge">${li.dataset.severity}</span>`;
+    li.dataset.severity = severity;
+    li.innerHTML = `
+      <div class="list-item-header">
+        <strong>${item.id || item.incident_ref}</strong>
+        <span class="${severityBadgeClass(severity)}">${severity}</span>
+      </div>
+      <div>${item.title || item.summary || item.threat}</div>
+      <div class="small">${item.source || 'SOC'} ${item.status ? `· ${item.status}` : ''} ${(item.mitre_tags || item.mitre || '') ? `· ${(item.mitre_tags || item.mitre)}` : ''}</div>
+    `;
     list.appendChild(li);
   });
 
@@ -74,9 +200,15 @@ async function renderSoc(filters = {}) {
   if (timelineRoot) {
     timelineRoot.innerHTML = '';
     timeline.forEach((point) => {
-      const row = document.createElement('div');
+      const row = document.createElement('article');
       row.className = 'list-item';
-      row.innerHTML = `<strong>${new Date(point.t).toLocaleString()}</strong> - ${point.label} <span class="badge">${point.value}</span>`;
+      row.innerHTML = `
+        <div class="list-item-header">
+          <strong>${new Date(point.t).toLocaleString()}</strong>
+          <span class="badge badge-medium">${point.value}</span>
+        </div>
+        <div>${point.label}</div>
+      `;
       timelineRoot.appendChild(row);
     });
   }
@@ -90,8 +222,10 @@ async function initSocPreview() {
   document.querySelectorAll('[data-filter]').forEach((button) => {
     button.addEventListener('click', () => {
       const key = button.dataset.filter;
+      document.querySelectorAll('[data-filter]').forEach((item) => item.classList.remove('active'));
+      button.classList.add('active');
       document.querySelectorAll('#soc-list .list-item').forEach((item) => {
-        item.style.display = key === 'all' || item.dataset.severity === key ? 'block' : 'none';
+        item.style.display = key === 'all' || item.dataset.severity === key ? 'grid' : 'none';
       });
     });
   });
@@ -106,6 +240,33 @@ async function initSocPreview() {
       });
     });
   }
+}
+
+function initThreatMap() {
+  const mapRoot = document.getElementById('threat-map');
+  if (!mapRoot) return;
+
+  const toggle = document.getElementById('threat-map-toggle');
+  if (toggle) {
+    toggle.addEventListener('click', () => {
+      threatMapState.paused = !threatMapState.paused;
+      toggle.textContent = threatMapState.paused ? 'Resume' : 'Pause';
+      toggle.setAttribute('aria-pressed', String(threatMapState.paused));
+      if (!threatMapState.paused) refreshThreatMap();
+    });
+  }
+
+  document.querySelectorAll('[data-map-severity]').forEach((button) => {
+    button.addEventListener('click', () => {
+      threatMapState.severity = button.dataset.mapSeverity;
+      document.querySelectorAll('[data-map-severity]').forEach((item) => item.classList.remove('active'));
+      button.classList.add('active');
+      refreshThreatMap();
+    });
+  });
+
+  refreshThreatMap();
+  threatMapState.refreshTimer = setInterval(refreshThreatMap, threatMapState.refreshMs);
 }
 
 async function initThreatFeed() {
@@ -195,10 +356,10 @@ async function initStatusPage() {
   document.getElementById('status-current').textContent = `${status.data.current.status}: ${status.data.current.message || 'No issues reported'}`;
   const incidents = document.getElementById('status-incidents');
   incidents.innerHTML = '';
-  status.data.incidents.forEach((i) => {
+  status.data.incidents.forEach((item) => {
     const row = document.createElement('div');
     row.className = 'list-item';
-    row.textContent = `${i.incident_ref} - ${i.title} (${i.status})`;
+    row.textContent = `${item.incident_ref} - ${item.title} (${item.status})`;
     incidents.appendChild(row);
   });
 }
@@ -209,8 +370,8 @@ function initAdmin() {
   const authResult = document.getElementById('admin-auth-result');
   const overview = document.getElementById('admin-overview');
 
-  form.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
     const payload = Object.fromEntries(new FormData(form).entries());
     const login = await fetchJson('/api/auth/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
     if (!login.ok) {
@@ -229,6 +390,7 @@ function initAdmin() {
 document.addEventListener('DOMContentLoaded', () => {
   initBooking();
   initSocPreview();
+  initThreatMap();
   initThreatFeed();
   initPricingCalc();
   initFilterSearch('case-study-list', 'case-search');
