@@ -306,6 +306,18 @@
   margin-bottom: 14px;
 }
 
+.threat-intel-head > div:first-child {
+  flex: 1;
+  min-width: 0;
+}
+
+.threat-intel-head > div:first-child .small {
+  display: block;
+  margin-top: 4px;
+  max-width: 64ch;
+  line-height: 1.45;
+}
+
 .threat-intel-kicker {
   margin: 0 0 6px;
   color: #89d7ff;
@@ -319,6 +331,7 @@
   display: grid;
   gap: 5px;
   justify-items: end;
+  flex-shrink: 0;
 }
 
 .threat-source-tag {
@@ -340,6 +353,17 @@
 }
 
 .threat-intel-controls .small { font-weight: 600; color: #d4e7ff; }
+
+.threat-intel-card #threat-feed-status {
+  display: block;
+  margin: 8px 0 12px;
+  padding: 8px 10px;
+  border: 1px dashed rgb(125 211 252 / 22%);
+  border-radius: 10px;
+  background: rgb(7 20 37 / 45%);
+  color: #b7d5f8;
+  line-height: 1.4;
+}
 
 .threat-feed-list {
   display: grid;
