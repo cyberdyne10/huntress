@@ -16,8 +16,9 @@
   <div id="header-placeholder"></div>
 
   <main id="soc-preview" class="soc-preview-page">
-    <section class="page-hero">
+    <section class="page-hero page-hero-premium">
       <div class="container">
+        <div class="hero-chip" aria-hidden="true">Live security operations preview</div>
         <h1>Interactive SOC Dashboard Preview</h1>
         <p>
           Explore realistic alerts/incidents, triage filters, KPI snapshots, timeline drill-down,
@@ -52,13 +53,13 @@
             <h2>Threat trend (7 days)</h2>
             <span class="small">Rolling baseline</span>
           </div>
-          <div id="soc-chart" class="chart-bars" role="img" aria-label="Threat trend bar chart"></div>
+          <div id="soc-chart" class="chart-bars loading-skeleton" role="img" aria-label="Threat trend bar chart"></div>
 
           <div class="panel-head panel-head-sub">
             <h3>Timeline</h3>
             <span class="small">Most recent events</span>
           </div>
-          <div id="soc-timeline" class="list timeline-list"></div>
+          <div id="soc-timeline" class="list timeline-list" aria-live="polite"></div>
         </article>
 
         <article class="card panel" aria-labelledby="threat-map-title">
@@ -134,7 +135,7 @@
         </div>
 
         <div class="filters" role="group" aria-label="Severity quick filter">
-          <button type="button" class="btn btn-outline" data-filter="all">All</button>
+          <button type="button" class="btn btn-outline active" data-filter="all">All</button>
           <button type="button" class="btn btn-outline" data-filter="critical">Critical</button>
           <button type="button" class="btn btn-outline" data-filter="high">High</button>
           <button type="button" class="btn btn-outline" data-filter="medium">Medium</button>
@@ -157,7 +158,7 @@
           <button id="soc-apply-filters" class="btn btn-primary" type="button">Apply Filters</button>
         </div>
 
-        <div id="soc-list" class="list incident-list"></div>
+        <div id="soc-list" class="list incident-list" aria-live="polite"></div>
       </div>
     </section>
   </main>
