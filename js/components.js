@@ -36,9 +36,9 @@ function loadHeader() {
           <li class="mobile-only-link"><a href="/portal.html">Client Portal</a></li>
         </ul>
       </nav>
-      <div class="cta-group">
+      <div class="cta-group" aria-label="Primary navigation actions">
         <a href="/portal.html" class="btn btn-outline nav-cta-secondary">Portal</a>
-        <a href="/demo.html" class="btn btn-primary">Get a Demo</a>
+        <a href="/demo.html" class="btn btn-primary">Book Demo</a>
       </div>
       <button class="mobile-menu-toggle" aria-label="Toggle navigation menu" aria-expanded="false">☰</button>
     </div>
@@ -119,7 +119,7 @@ function loadFooter() {
         </div>
         <div class="footer-col">
           <h4>Contact</h4>
-          <p style="color: var(--text-muted); margin-bottom: 10px;">Security outcomes, delivered 24/7.</p>
+          <p style="color: var(--text-muted); margin-bottom: 10px;">24/7 analyst-backed protection with transparent reporting.</p>
           <a href="/demo.html" class="btn btn-outline" style="font-size: .9rem;">Request Demo</a>
         </div>
       </div>
