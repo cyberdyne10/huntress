@@ -9,11 +9,11 @@ const SEVERITY_COLORS = {
 };
 
 const MAP_REGION_VIEWS = {
-  global: { center: [20, 0], zoom: 2 },
-  americas: { center: [16, -86], zoom: 3 },
-  emea: { center: [28, 18], zoom: 3 },
-  apac: { center: [18, 112], zoom: 3 },
-  africa: { center: [4, 20], zoom: 3 },
+  global: { center: [18, 10], zoom: 1.6, bounds: [[-58, -180], [82, 180]] },
+  americas: { center: [16, -86], zoom: 3, bounds: [[-56, -170], [83, -30]] },
+  emea: { center: [28, 18], zoom: 3, bounds: [[-38, -20], [72, 60]] },
+  apac: { center: [18, 112], zoom: 3, bounds: [[-48, 60], [70, 180]] },
+  africa: { center: [4, 20], zoom: 3, bounds: [[-36, -20], [38, 56]] },
 };
 
 const threatMapState = {
@@ -98,9 +98,14 @@ function ensureLeafletMap() {
     zoomControl: true,
     attributionControl: true,
     worldCopyJump: true,
-    minZoom: 2,
+    minZoom: 1,
     maxZoom: 6,
+    zoomSnap: 0.25,
+    zoomDelta: 0.25,
+    maxBoundsViscosity: 0.9,
   }).setView(MAP_REGION_VIEWS.global.center, MAP_REGION_VIEWS.global.zoom);
+
+  map.setMaxBounds([[-85, -180], [85, 180]]);
 
   window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     maxZoom: 19,
@@ -183,7 +188,16 @@ function renderLeafletThreatMap() {
   }
 
   const nextView = MAP_REGION_VIEWS[threatMapState.region] || MAP_REGION_VIEWS.global;
-  map.flyTo(nextView.center, nextView.zoom, { animate: !threatMapState.reducedMotion, duration: 0.6 });
+  if (nextView.bounds) {
+    map.flyToBounds(nextView.bounds, {
+      animate: !threatMapState.reducedMotion,
+      duration: 0.6,
+      padding: [16, 16],
+      maxZoom: nextView.zoom,
+    });
+  } else {
+    map.flyTo(nextView.center, nextView.zoom, { animate: !threatMapState.reducedMotion, duration: 0.6 });
+  }
 
   if (status) {
     status.textContent = `${filtered.length} visible event${filtered.length === 1 ? '' : 's'} · ${threatMapState.showArcs ? 'attack arcs on' : 'attack arcs off'} · ${threatMapState.region.toUpperCase()}`;
