@@ -38,6 +38,7 @@ Base URL: `http://localhost:3001`
 - `POST /api/demo-bookings`
 - `POST /api/demo-intake`
 - `GET /api/threat-feed`
+- `GET /api/threat-geo-events`
 - `GET /api/soc-preview`
 
 ### New platform endpoints
@@ -57,6 +58,34 @@ Required for production hardening:
 Optional integrations:
 - `CRM_WEBHOOK_URL`, `CRM_WEBHOOK_TOKEN`
 - `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`
+- `THREAT_GEO_FEED_URL` (optional JSON feed for live geo-threat events)
+- `THREAT_GEO_CACHE_MS` (cache/refresh cadence for geo-threat map, default `45000`)
+
+## Live threat map feed (SOC preview)
+
+`/soc-preview.html` now includes a lightweight live threat map with animated origin→target flows and severity controls.
+
+Backend endpoint:
+- `GET /api/threat-geo-events`
+
+Feed shape supported when using `THREAT_GEO_FEED_URL`:
+
+```json
+{
+  "source": "provider-name",
+  "events": [
+    {
+      "id": "evt-1",
+      "label": "Credential stuffing burst",
+      "severity": "high",
+      "origin": { "label": "London", "lat": 51.5, "lon": -0.12 },
+      "target": { "label": "Lagos", "lat": 6.52, "lon": 3.37 }
+    }
+  ]
+}
+```
+
+If live feed retrieval fails or returns no usable events, the API gracefully falls back to realistic rotating mock telemetry.
 
 ## Migrations / DB init
 
