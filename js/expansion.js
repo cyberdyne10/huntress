@@ -117,13 +117,48 @@ function ensureLeafletMap() {
   return map;
 }
 
+function createMapNode(latlng, color, nodeClass, tooltipText) {
+  const marker = window.L.marker(latlng, {
+    icon: window.L.divIcon({
+      className: '',
+      html: `<span class="map-node ${nodeClass}" style="color:${color}; background:${color};"></span>`,
+      iconSize: [16, 16],
+      iconAnchor: [8, 8],
+    }),
+    keyboard: true,
+  });
+  marker.bindTooltip(tooltipText, { direction: 'top' });
+  return marker;
+}
+
+function buildArcPath(origin, target) {
+  const [lat1, lon1] = origin;
+  const [lat2, lon2] = target;
+  const midLat = (lat1 + lat2) / 2;
+  const midLon = (lon1 + lon2) / 2;
+  const curvature = Math.min(20, 4 + (Math.abs(lon2 - lon1) + Math.abs(lat2 - lat1)) * 0.09);
+  const ctrlLat = midLat + curvature;
+  const ctrlLon = midLon;
+
+  const points = [];
+  const steps = 26;
+  for (let i = 0; i <= steps; i += 1) {
+    const t = i / steps;
+    const omt = 1 - t;
+    const lat = (omt * omt * lat1) + (2 * omt * t * ctrlLat) + (t * t * lat2);
+    const lon = (omt * omt * lon1) + (2 * omt * t * ctrlLon) + (t * t * lon2);
+    points.push([lat, lon]);
+  }
+  return points;
+}
+
 function renderLeafletThreatMap() {
   const map = ensureLeafletMap();
   const status = document.getElementById('threat-map-status');
   if (!map) return;
 
-  const baseline = window.innerWidth < 768 ? 40 : 80;
-  const maxFlows = Math.max(10, Math.floor(baseline * threatMapState.density));
+  const baseline = window.innerWidth < 768 ? 34 : 72;
+  const maxFlows = Math.max(8, Math.floor(baseline * threatMapState.density));
   const filtered = filterThreatEvents(threatMapState.events).slice(0, maxFlows);
 
   clearThreatMapLayers();
@@ -137,41 +172,59 @@ function renderLeafletThreatMap() {
     const target = [Number(event.target?.lat), Number(event.target?.lon)];
     if (origin.some(Number.isNaN) || target.some(Number.isNaN)) return;
 
-    const originMarker = window.L.circleMarker(origin, {
-      radius: 4,
+    const originMarker = createMapNode(
+      origin,
       color,
-      weight: 1,
-      fillColor: color,
-      fillOpacity: 0.95,
-      className: threatMapState.reducedMotion ? 'map-origin-static' : 'map-origin-pulse',
-    }).bindTooltip(`${event.origin?.label || 'Source'} (${severity.toUpperCase()})`, { direction: 'top' }).addTo(map);
+      threatMapState.reducedMotion ? 'map-node-target' : 'map-node-origin',
+      `${event.origin?.label || 'Source'} (${severity.toUpperCase()})`,
+    ).addTo(map);
 
-    const targetMarker = window.L.circleMarker(target, {
-      radius: 5,
+    const targetMarker = createMapNode(
+      target,
       color,
-      weight: 1,
-      fillColor: color,
-      fillOpacity: 0.8,
-      className: 'map-target-point',
-    }).bindTooltip(`${event.target?.label || 'Target'} • ${event.label || 'Threat flow'}`, { direction: 'top' }).addTo(map);
+      'map-node-target',
+      `${event.target?.label || 'Target'} • ${event.label || 'Threat flow'}`,
+    ).addTo(map);
 
     threatMapState.layers.push(originMarker, targetMarker);
 
     if (threatMapState.showArcs) {
-      const line = window.L.polyline([origin, target], {
+      const arcPath = buildArcPath(origin, target);
+      const glowLine = window.L.polyline(arcPath, {
+        color,
+        weight: 5,
+        opacity: threatMapState.reducedMotion ? 0.2 : 0.34,
+        className: 'map-flow-line-glow',
+      }).addTo(map);
+      const coreLine = window.L.polyline(arcPath, {
         color,
         weight: 2,
-        opacity: threatMapState.reducedMotion ? 0.45 : 0.72,
-        dashArray: '8 10',
+        opacity: threatMapState.reducedMotion ? 0.38 : 0.72,
+        dashArray: threatMapState.reducedMotion ? '' : '7 10',
         className: 'map-flow-line',
       }).addTo(map);
-      line.bindTooltip(`${event.label || 'Threat flow'} (${event.origin?.label || 'Source'} → ${event.target?.label || 'Target'})`);
-      threatMapState.layers.push(line);
+      coreLine.bindTooltip(`${event.label || 'Threat flow'} (${event.origin?.label || 'Source'} → ${event.target?.label || 'Target'})`);
+
+      threatMapState.layers.push(glowLine, coreLine);
+
       if (!threatMapState.reducedMotion) {
+        const tracer = window.L.marker(origin, {
+          icon: window.L.divIcon({
+            className: '',
+            html: `<span class="map-tracer" style="color:${color}; background:${color};"></span>`,
+            iconSize: [8, 8],
+            iconAnchor: [4, 4],
+          }),
+        }).addTo(map);
+
+        threatMapState.layers.push(tracer);
         animatingArcs.push({
-          line,
-          offset: index * 6,
-          step: Math.max(1.5, threatMapState.playbackSpeed * 2.2),
+          coreLine,
+          tracer,
+          path: arcPath,
+          offset: index * 8,
+          step: Math.max(1.4, threatMapState.playbackSpeed * 2.3),
+          progress: (index * 0.09) % 1,
         });
       }
     }
@@ -181,22 +234,28 @@ function renderLeafletThreatMap() {
     threatMapState.arcAnimationTimer = setInterval(() => {
       animatingArcs.forEach((arc) => {
         arc.offset -= arc.step;
-        const node = arc.line.getElement();
+        arc.progress = (arc.progress + (0.009 * threatMapState.playbackSpeed)) % 1;
+
+        const node = arc.coreLine.getElement();
         if (node) node.style.strokeDashoffset = `${arc.offset}`;
+
+        const idx = Math.min(arc.path.length - 1, Math.floor(arc.progress * (arc.path.length - 1)));
+        const point = arc.path[idx];
+        if (point) arc.tracer.setLatLng(point);
       });
-    }, 80);
+    }, 70);
   }
 
   const nextView = MAP_REGION_VIEWS[threatMapState.region] || MAP_REGION_VIEWS.global;
   if (nextView.bounds) {
     map.flyToBounds(nextView.bounds, {
       animate: !threatMapState.reducedMotion,
-      duration: 0.6,
+      duration: 0.7,
       padding: [16, 16],
       maxZoom: nextView.zoom,
     });
   } else {
-    map.flyTo(nextView.center, nextView.zoom, { animate: !threatMapState.reducedMotion, duration: 0.6 });
+    map.flyTo(nextView.center, nextView.zoom, { animate: !threatMapState.reducedMotion, duration: 0.7 });
   }
 
   if (status) {
@@ -300,10 +359,23 @@ async function initBooking() {
   });
 }
 
+function setSocLoadingState(isLoading) {
+  ['soc-chart', 'soc-list', 'soc-timeline'].forEach((id) => {
+    const node = document.getElementById(id);
+    if (!node) return;
+    node.classList.toggle('loading-skeleton', isLoading);
+  });
+}
+
 async function renderSoc(filters = {}) {
+  setSocLoadingState(true);
   const query = new URLSearchParams(filters).toString();
   const data = await fetchJson(`/api/soc-preview${query ? `?${query}` : ''}`);
-  if (!data?.ok || !data?.data?.data) return;
+  if (!data?.ok || !data?.data?.data) {
+    setSocLoadingState(false);
+    return;
+  }
+
   const { kpis, incidents, alerts, chart, timeline, threats } = data.data.data;
   document.getElementById('kpi-open').textContent = kpis.openIncidents;
   document.getElementById('kpi-mttr').textContent = `${kpis.mttrMinutes}m`;
@@ -325,6 +397,7 @@ async function renderSoc(filters = {}) {
     const li = document.createElement('article');
     li.className = 'list-item';
     li.dataset.severity = severity;
+    li.tabIndex = 0;
     li.innerHTML = `
       <div class="list-item-header">
         <strong>${item.id || item.incident_ref}</strong>
@@ -342,6 +415,7 @@ async function renderSoc(filters = {}) {
     timeline.forEach((point) => {
       const row = document.createElement('article');
       row.className = 'list-item';
+      row.tabIndex = 0;
       row.innerHTML = `
         <div class="list-item-header">
           <strong>${new Date(point.t).toLocaleString()}</strong>
@@ -352,6 +426,7 @@ async function renderSoc(filters = {}) {
       timelineRoot.appendChild(row);
     });
   }
+  setSocLoadingState(false);
 }
 
 async function initSocPreview() {
