@@ -70,18 +70,48 @@
             </div>
           </div>
 
-          <div class="map-controls" role="group" aria-label="Threat map controls">
+          <div class="map-controls map-controls-grid" role="group" aria-label="Threat map controls">
             <button id="threat-map-toggle" type="button" class="btn btn-outline btn-sm" aria-pressed="false">Pause</button>
             <button id="threat-map-arcs" type="button" class="btn btn-outline btn-sm" aria-pressed="true">Hide Arcs</button>
-            <button type="button" class="btn btn-outline btn-sm active" data-map-severity="all">All Severities</button>
-            <button type="button" class="btn btn-outline btn-sm" data-map-severity="critical">Critical</button>
-            <button type="button" class="btn btn-outline btn-sm" data-map-severity="high">High</button>
-            <button type="button" class="btn btn-outline btn-sm" data-map-severity="medium">Medium</button>
-            <button type="button" class="btn btn-outline btn-sm" data-map-severity="low">Low</button>
+
+            <label class="map-control-inline small" for="threat-map-speed">Playback speed</label>
+            <select id="threat-map-speed" class="input input-sm">
+              <option value="0.5">0.5x</option>
+              <option value="1" selected>1x</option>
+              <option value="1.5">1.5x</option>
+              <option value="2">2x</option>
+            </select>
+
+            <label class="map-control-inline small" for="threat-map-density">Activity density</label>
+            <input id="threat-map-density" type="range" min="20" max="100" value="75" aria-label="Activity density percentage">
+
+            <label class="map-control-inline small" for="threat-map-region">Region focus</label>
+            <select id="threat-map-region" class="input input-sm">
+              <option value="global" selected>Global</option>
+              <option value="americas">Americas</option>
+              <option value="emea">EMEA</option>
+              <option value="apac">APAC</option>
+              <option value="africa">Africa</option>
+            </select>
+
+            <div class="map-severity-group" role="group" aria-label="Severity filters">
+              <button type="button" class="btn btn-outline btn-sm active" data-map-severity="all">All</button>
+              <button type="button" class="btn btn-outline btn-sm active" data-map-severity="critical">Critical</button>
+              <button type="button" class="btn btn-outline btn-sm active" data-map-severity="high">High</button>
+              <button type="button" class="btn btn-outline btn-sm active" data-map-severity="medium">Medium</button>
+              <button type="button" class="btn btn-outline btn-sm active" data-map-severity="low">Low</button>
+            </div>
+          </div>
+
+          <div class="map-live-metrics" aria-live="polite">
+            <div><span class="small">Attacks/min</span><strong id="threat-map-attacks-minute">-</strong></div>
+            <div><span class="small">Active sources</span><strong id="threat-map-active-sources">-</strong></div>
+            <div><span class="small">Top targets</span><strong id="threat-map-top-targets">-</strong></div>
+            <div><span class="small">Last updated</span><strong id="threat-map-last-updated">-</strong></div>
           </div>
 
           <p id="threat-map-status" class="small" aria-live="polite">Loading geo telemetry…</p>
-          <div id="threat-map" class="threat-map" role="img" aria-label="Global threat map with severity markers, pulses, and optional attack arcs"></div>
+          <div id="threat-map" class="threat-map" role="img" aria-label="Global threat globe with neon attack arcs, source pulses, and target hotspots"></div>
 
           <div class="map-legend">
             <span><i class="dot dot-critical"></i> Critical Event</span>
