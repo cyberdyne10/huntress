@@ -72,20 +72,24 @@
 
           <div class="map-controls" role="group" aria-label="Threat map controls">
             <button id="threat-map-toggle" type="button" class="btn btn-outline btn-sm" aria-pressed="false">Pause</button>
-            <button type="button" class="btn btn-outline btn-sm active" data-map-severity="all">All</button>
+            <button id="threat-map-arcs" type="button" class="btn btn-outline btn-sm" aria-pressed="true">Hide Arcs</button>
+            <button type="button" class="btn btn-outline btn-sm active" data-map-severity="all">All Severities</button>
             <button type="button" class="btn btn-outline btn-sm" data-map-severity="critical">Critical</button>
             <button type="button" class="btn btn-outline btn-sm" data-map-severity="high">High</button>
             <button type="button" class="btn btn-outline btn-sm" data-map-severity="medium">Medium</button>
             <button type="button" class="btn btn-outline btn-sm" data-map-severity="low">Low</button>
           </div>
 
-          <div id="threat-map" class="threat-map" role="img" aria-label="World threat map with animated attack flows"></div>
+          <p id="threat-map-status" class="small" aria-live="polite">Loading geo telemetry…</p>
+          <div id="threat-map" class="threat-map" role="img" aria-label="Global threat map with severity markers, pulses, and optional attack arcs"></div>
 
           <div class="map-legend">
-            <span><i class="dot dot-critical"></i> Critical</span>
-            <span><i class="dot dot-high"></i> High</span>
-            <span><i class="dot dot-medium"></i> Medium</span>
-            <span><i class="dot dot-low"></i> Low</span>
+            <span><i class="dot dot-critical"></i> Critical Event</span>
+            <span><i class="dot dot-high"></i> High Event</span>
+            <span><i class="dot dot-medium"></i> Medium Event</span>
+            <span><i class="dot dot-low"></i> Low Event</span>
+            <span><i class="dot dot-arc"></i> Attack Path Arc</span>
+            <span><i class="dot dot-pulse"></i> Origin Pulse</span>
           </div>
         </article>
       </div>

@@ -84,7 +84,7 @@ If MISP is not configured/reachable, existing mock/DB behavior stays active.
 
 ## Live threat map feed (SOC preview)
 
-`/soc-preview.html` now includes a lightweight live threat map with animated origin→target flows and severity controls.
+`/soc-preview.html` now includes a real-world projected live threat map with cyber-neon styling (glowing landmasses/coastlines), animated origin pulses, optional attack arcs, severity controls, and reduced-motion fallback.
 
 Backend endpoint:
 - `GET /api/threat-geo-events`

@@ -210,15 +210,22 @@ button:focus-visible {
 .threat-map {
   min-height: 300px;
   border-radius: 12px;
-  border: 1px solid rgb(255 255 255 / 10%);
-  background: radial-gradient(circle at 50% 50%, rgb(2 148 213 / 9%), rgb(2 6 23) 65%);
+  border: 1px solid rgb(56 189 248 / 25%);
+  background: radial-gradient(circle at 30% 15%, rgb(56 189 248 / 12%), rgb(2 6 23) 60%);
   overflow: hidden;
+  box-shadow: inset 0 0 40px rgb(56 189 248 / 8%);
 }
 
 .threat-map svg {
   width: 100%;
   height: 100%;
   display: block;
+}
+
+.map-land {
+  fill: url(#landGradient);
+  stroke: rgb(125 211 252 / 58%);
+  stroke-width: 1;
 }
 
 .map-legend {
@@ -237,14 +244,28 @@ button:focus-visible {
   margin-right: 5px;
 }
 
-.dot-critical { background: #ef4444; }
-.dot-high { background: #f97316; }
-.dot-medium { background: #eab308; }
-.dot-low { background: #22c55e; }
+.dot-critical { background: #ff4d6d; }
+.dot-high { background: #ff8a3d; }
+.dot-medium { background: #f7c948; }
+.dot-low { background: #3ddc97; }
+.dot-arc { background: #4db8ff; }
+.dot-pulse {
+  border: 1px solid #7dd3fc;
+  background: transparent;
+}
 
-.map-point { opacity: 0.9; }
+.map-point { opacity: 0.95; }
+
+.map-point-origin,
+.map-point-target {
+  fill: var(--map-accent);
+  filter: drop-shadow(0 0 5px var(--map-accent));
+}
 
 .map-point-pulse {
+  fill: none;
+  stroke: var(--map-accent);
+  stroke-width: 1.25;
   transform-origin: center;
   animation: pulse 1.8s ease-out infinite;
 }
@@ -252,10 +273,17 @@ button:focus-visible {
 .map-flow {
   fill: none;
   stroke-linecap: round;
-  stroke-width: 2;
+  stroke-width: 1.8;
   stroke-dasharray: 8 8;
-  animation: dash 10s linear infinite;
-  opacity: 0.8;
+  animation: dash 9s linear infinite;
+  opacity: 0.78;
+  filter: drop-shadow(0 0 6px rgb(56 189 248 / 45%));
+}
+
+.map-flow-static {
+  stroke-dasharray: none;
+  animation: none;
+  opacity: 0.55;
 }
 
 @keyframes dash {
@@ -265,7 +293,7 @@ button:focus-visible {
 @keyframes pulse {
   0% {
     opacity: 0.85;
-    r: 2;
+    r: 2.6;
   }
 
   70% {
@@ -304,5 +332,12 @@ button:focus-visible {
   .panel-head {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .map-flow,
+  .map-point-pulse {
+    animation: none;
   }
 }
