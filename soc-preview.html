@@ -9,6 +9,7 @@
     content="SOC dashboard preview with severity/source/status/MITRE filtering, timeline drill-down, and a live threat map."
   >
   <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin>
   <link rel="stylesheet" href="css/expansion.css">
 </head>
 <body>
@@ -111,7 +112,7 @@
           </div>
 
           <p id="threat-map-status" class="small" aria-live="polite">Loading geo telemetry…</p>
-          <div id="threat-map" class="threat-map" role="img" aria-label="Global threat globe with neon attack arcs, source pulses, and target hotspots"></div>
+          <div id="threat-map" class="threat-map" role="img" aria-label="Global threat map with animated attack paths, source pulses, and target hotspots"></div>
 
           <div class="map-legend">
             <span><i class="dot dot-critical"></i> Critical Event</span>
@@ -164,6 +165,7 @@
   <div id="footer-placeholder"></div>
 
   <script src="js/components.js"></script>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin></script>
   <script src="js/expansion.js"></script>
 </body>
 </html>

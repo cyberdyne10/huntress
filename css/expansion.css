@@ -252,6 +252,8 @@ button:focus-visible {
 
 .threat-map {
   min-height: 300px;
+  height: 56vh;
+  max-height: 520px;
   border-radius: 12px;
   border: 1px solid rgb(56 189 248 / 25%);
   background:
@@ -261,16 +263,30 @@ button:focus-visible {
   box-shadow: inset 0 0 40px rgb(56 189 248 / 8%), 0 0 28px rgb(8 145 178 / 10%);
 }
 
-.threat-map svg {
+.threat-map .leaflet-container {
   width: 100%;
   height: 100%;
-  display: block;
+  min-height: inherit;
+  background: transparent;
+  font-family: inherit;
 }
 
-.map-land {
-  fill: url(#landGradient);
-  stroke: rgb(125 211 252 / 58%);
-  stroke-width: 1;
+.threat-map .leaflet-control-zoom a {
+  background: rgb(15 23 42 / 88%);
+  color: #dbeafe;
+  border-color: rgb(125 211 252 / 40%);
+}
+
+.threat-map .leaflet-control-attribution {
+  background: rgb(2 6 23 / 70%);
+  color: #93c5fd;
+}
+
+.threat-map .leaflet-tooltip {
+  background: rgb(2 6 23 / 92%);
+  color: #bae6fd;
+  border: 1px solid rgb(125 211 252 / 35%);
+  box-shadow: 0 6px 18px rgb(2 6 23 / 45%);
 }
 
 .map-legend {
@@ -299,58 +315,24 @@ button:focus-visible {
   background: transparent;
 }
 
-.map-point { opacity: 0.95; }
-
-.map-point-origin,
-.map-point-target {
-  fill: var(--map-accent);
-  filter: drop-shadow(0 0 5px var(--map-accent));
+.map-origin-pulse {
+  animation: pulse-dot 1.8s ease-out infinite;
 }
 
-.map-point-pulse {
-  fill: none;
-  stroke: var(--map-accent);
-  stroke-width: 1.25;
-  transform-origin: center;
-  animation: pulse 1.8s ease-out infinite;
-}
-
-.map-flow {
-  fill: none;
-  stroke-linecap: round;
-  stroke-width: 1.8;
-  stroke-dasharray: 8 8;
-  animation: dash var(--arc-duration, 9s) linear infinite;
-  animation-delay: var(--arc-delay, 0s);
-  opacity: 0.78;
-  filter: drop-shadow(0 0 6px rgb(56 189 248 / 45%));
-}
-
-.map-flow-static {
-  stroke-dasharray: none;
+.map-target-point,
+.map-origin-static {
   animation: none;
-  opacity: 0.55;
 }
 
-@keyframes dash {
-  to { stroke-dashoffset: -220; }
+.map-flow-line {
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 5px rgb(56 189 248 / 40%));
 }
 
-@keyframes pulse {
-  0% {
-    opacity: 0.85;
-    r: 2.6;
-  }
-
-  70% {
-    opacity: 0.2;
-    r: 10;
-  }
-
-  100% {
-    opacity: 0;
-    r: 12;
-  }
+@keyframes pulse-dot {
+  0% { opacity: 0.9; }
+  70% { opacity: 0.3; }
+  100% { opacity: 1; }
 }
 
 .calculator-result {
@@ -369,7 +351,10 @@ button:focus-visible {
     grid-template-columns: 1fr;
   }
 
-  .threat-map { min-height: 260px; }
+  .threat-map {
+    min-height: 260px;
+    height: 44vh;
+  }
 }
 
 @media (max-width: 768px) {
@@ -384,8 +369,8 @@ button:focus-visible {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .map-flow,
-  .map-point-pulse {
+  .map-origin-pulse,
+  .map-flow-line {
     animation: none;
   }
 }
