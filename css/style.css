@@ -1159,3 +1159,79 @@ footer {
         padding: 24px;
     }
 }
+
+/* ===== Premium UI Refresh Overrides ===== */
+:root {
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --ring: 0 0 0 3px rgba(2, 148, 213, 0.3);
+  --shadow-soft: 0 12px 34px rgba(2, 6, 23, 0.35);
+  --shadow-strong: 0 24px 54px rgba(2, 6, 23, 0.55);
+}
+
+body {
+  background:
+    radial-gradient(circle at 10% -10%, rgba(255, 102, 0, 0.11), transparent 35%),
+    radial-gradient(circle at 100% 0%, rgba(2, 148, 213, 0.14), transparent 40%),
+    linear-gradient(165deg, #03070f, #060a12 45%, #0b1220);
+}
+
+header {
+  background: rgba(6, 10, 18, 0.8);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  backdrop-filter: blur(14px);
+}
+
+:focus-visible {
+  outline: none;
+  box-shadow: var(--ring);
+  border-radius: 8px;
+}
+
+.btn {
+  border-radius: 999px;
+  min-height: 44px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn:hover { transform: translateY(-1px); }
+
+.btn-primary {
+  background: linear-gradient(120deg, #ff6600, #ff8742);
+  box-shadow: 0 10px 22px rgba(255, 102, 0, 0.35);
+}
+
+.btn-outline {
+  border-color: rgba(2, 148, 213, 0.52);
+  color: #bdefff;
+  background: rgba(2, 148, 213, 0.08);
+}
+
+.dropdown {
+  background: rgba(13, 23, 40, 0.9);
+  border-radius: 12px;
+  border: 1px solid rgba(2,148,213,0.28);
+  box-shadow: var(--shadow-soft);
+}
+
+footer {
+  background: linear-gradient(180deg, rgba(10, 16, 29, 0.95), rgba(7, 12, 22, 0.95));
+}
+
+.card,
+.product-card,
+.why-us-card,
+.testimonial-card,
+.soc-container-box {
+  border-radius: var(--radius-md);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

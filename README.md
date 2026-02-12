@@ -12,6 +12,7 @@ Static-first cybersecurity website with an Express API, real auth, durable SQLit
 - SOC preview upgrade with richer filters (severity/source/status/MITRE), timeline, presets payload
 - SEO upgrades: meta/OG tags, canonical, Organization structured data, sitemap, robots
 - Admin console (`admin.html`) with secure admin-only overview endpoint
+- Premium UI refresh across major pages: unified design tokens, premium glass/neon surfaces, stronger CTA/form states, improved accessibility focus styling, and mobile-first portal/auth upgrades
 
 ## Run locally
 
@@ -126,6 +127,13 @@ If live feed retrieval fails or returns no usable events, the API gracefully fal
 - Seed behavior:
   - default demo slots inserted if empty
   - default admin seeded if users table empty (`SEED_ADMIN_EMAIL`, `SEED_ADMIN_PASSWORD`)
+
+## UI styling architecture (premium refresh)
+
+- `css/style.css` remains the global base and now includes premium override tokens (radius/ring/shadows) for a cohesive cyber-luxe look.
+- `css/expansion.css` now includes cross-page premium section/card/form styles (`.page-hero`, `.section-block`, `.card-grid`, `.form-grid`) plus portal-specific layout/state classes.
+- Existing page-specific CSS (`home.css`, `pricing.css`) remains in place; premium updates layer on top to avoid route or API coupling risk.
+- Motion effects include `prefers-reduced-motion` fallback to keep interaction subtle and accessible.
 
 ## Tests & checks
 

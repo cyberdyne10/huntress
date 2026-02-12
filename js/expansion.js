@@ -33,6 +33,10 @@ const threatMapState = {
   arcAnimationTimer: null,
 };
 
+const socChartState = {
+  reducedMotion: window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+};
+
 async function fetchJson(path, opts = {}) {
   try {
     const res = await fetch(`${API_BASE}${path}`, opts);
@@ -352,11 +356,145 @@ async function initBooking() {
     const payload = Object.fromEntries(formData.entries());
     payload.attendees = Number(payload.attendees || 1);
 
+    setResultState(bookingResult, 'loading', 'Submitting booking…');
     const resp = await fetchJson('/api/demo-bookings', {
       method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload),
     });
-    bookingResult.textContent = resp.ok ? `Booked! Confirmation ${resp.data.data.id}.` : `Booking failed: ${resp.data?.error || 'Invalid input'}`;
+    if (resp.ok) setResultState(bookingResult, 'success', `Booked! Confirmation ${resp.data.data.id}.`);
+    else setResultState(bookingResult, 'error', `Booking failed: ${resp.data?.error || 'Invalid input'}`);
   });
+}
+
+function buildSocChartSeries(rawChart) {
+  const toValue = (item) => {
+    if (typeof item === 'number') return item;
+    if (item && typeof item === 'object') return Number(item.value ?? item.count ?? item.y ?? 0);
+    return Number(item || 0);
+  };
+
+  const points = (Array.isArray(rawChart) ? rawChart : []).map((item, index) => ({
+    value: Math.max(0, toValue(item)),
+    label: typeof item === 'object' ? String(item.day || item.label || '') : '',
+    change: typeof item === 'object' ? Number(item.change ?? 0) : null,
+    index,
+  }));
+
+  const fallback = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  const start = new Date();
+  start.setHours(0, 0, 0, 0);
+  start.setDate(start.getDate() - Math.max(0, points.length - 1));
+
+  return points.map((point, index) => {
+    const day = new Date(start);
+    day.setDate(start.getDate() + index);
+    return {
+      ...point,
+      label: point.label || fallback[day.getDay()],
+    };
+  });
+}
+
+function renderSocTrendChart(rawChart) {
+  const chartRoot = document.getElementById('soc-chart');
+  if (!chartRoot) return;
+
+  const series = buildSocChartSeries(rawChart);
+  chartRoot.innerHTML = '';
+  if (series.length === 0) return;
+
+  chartRoot.classList.remove('loading-skeleton');
+  chartRoot.classList.toggle('reduced-motion', socChartState.reducedMotion);
+
+  const width = 640;
+  const height = 210;
+  const padding = { top: 20, right: 20, bottom: 44, left: 18 };
+  const innerWidth = width - padding.left - padding.right;
+  const innerHeight = height - padding.top - padding.bottom;
+  const max = Math.max(...series.map((point) => point.value), 1);
+  const min = Math.min(...series.map((point) => point.value), 0);
+  const range = Math.max(1, max - min);
+  const average = series.reduce((sum, point) => sum + point.value, 0) / series.length;
+
+  const toX = (index) => padding.left + (innerWidth * index) / Math.max(1, series.length - 1);
+  const toY = (value) => padding.top + innerHeight - ((value - min) / range) * innerHeight;
+  const baselineY = toY(average);
+
+  const linePoints = series.map((point, index) => `${toX(index)},${toY(point.value)}`).join(' ');
+  const areaPath = `M ${toX(0)} ${height - padding.bottom} L ${linePoints} L ${toX(series.length - 1)} ${height - padding.bottom} Z`;
+
+  const last = series[series.length - 1].value;
+  const prev = series[Math.max(0, series.length - 2)].value;
+  const delta = last - prev;
+  const deltaLabel = `${delta >= 0 ? '+' : ''}${delta}`;
+
+  const html = `
+    <div class="soc-chart-headline">
+      <span class="small">7-day delta</span>
+      <strong class="${delta >= 0 ? 'up' : 'down'}">${deltaLabel}</strong>
+    </div>
+    <svg class="soc-chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true">
+      <defs>
+        <linearGradient id="socAreaGradient" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="rgba(77,224,255,0.45)"></stop>
+          <stop offset="100%" stop-color="rgba(77,224,255,0)"></stop>
+        </linearGradient>
+      </defs>
+      <line class="soc-chart-baseline" x1="${padding.left}" y1="${baselineY}" x2="${width - padding.right}" y2="${baselineY}"></line>
+      ${series.map((point, index) => {
+    const barWidth = Math.max(12, innerWidth / Math.max(7, series.length * 1.7));
+    const x = toX(index) - barWidth / 2;
+    const y = toY(point.value);
+    const h = Math.max(4, height - padding.bottom - y);
+    return `<rect class="soc-chart-bar" x="${x}" y="${y}" width="${barWidth}" height="${h}" rx="4"></rect>`;
+  }).join('')}
+      <path class="soc-chart-area" d="${areaPath}"></path>
+      <polyline class="soc-chart-line" points="${linePoints}"></polyline>
+      ${series.map((point, index) => `<circle class="soc-chart-dot" data-point="${index}" cx="${toX(index)}" cy="${toY(point.value)}" r="4"></circle>`).join('')}
+    </svg>
+    <div class="soc-chart-labels">${series.map((point) => `<span>${point.label}</span>`).join('')}</div>
+    <div class="soc-chart-tooltip" role="status" aria-live="polite" hidden></div>
+  `;
+
+  chartRoot.innerHTML = html;
+  chartRoot.setAttribute('aria-label', `Threat trend chart, latest ${last} events, delta ${deltaLabel}`);
+
+  const tooltip = chartRoot.querySelector('.soc-chart-tooltip');
+  const dots = [...chartRoot.querySelectorAll('.soc-chart-dot')];
+
+  const showPoint = (index) => {
+    const point = series[index];
+    const previous = series[index - 1]?.value ?? point.value;
+    const localDelta = point.change ?? (point.value - previous);
+    const changeLabel = `${localDelta >= 0 ? '+' : ''}${localDelta}`;
+    const dot = dots[index];
+    if (!dot || !tooltip) return;
+    dots.forEach((item) => item.classList.remove('active'));
+    dot.classList.add('active');
+
+    const x = Number(dot.getAttribute('cx'));
+    const y = Number(dot.getAttribute('cy'));
+    tooltip.hidden = false;
+    tooltip.innerHTML = `<strong>${point.label}</strong><span>${point.value} events</span><span>Δ ${changeLabel}</span>`;
+    tooltip.style.left = `${(x / width) * 100}%`;
+    tooltip.style.top = `${(y / height) * 100}%`;
+  };
+
+  dots.forEach((dot, index) => {
+    dot.tabIndex = 0;
+    dot.addEventListener('mouseenter', () => showPoint(index));
+    dot.addEventListener('focus', () => showPoint(index));
+  });
+
+  chartRoot.addEventListener('mouseleave', () => {
+    if (tooltip) tooltip.hidden = true;
+    dots.forEach((item) => item.classList.remove('active'));
+  });
+
+  if (!socChartState.reducedMotion) {
+    requestAnimationFrame(() => chartRoot.classList.add('is-ready'));
+  } else {
+    chartRoot.classList.add('is-ready');
+  }
 }
 
 function setSocLoadingState(isLoading) {
@@ -381,14 +519,7 @@ async function renderSoc(filters = {}) {
   document.getElementById('kpi-mttr').textContent = `${kpis.mttrMinutes}m`;
   document.getElementById('kpi-analysts').textContent = kpis.activeAnalysts;
 
-  const bars = document.getElementById('soc-chart');
-  bars.innerHTML = '';
-  chart.forEach((value) => {
-    const bar = document.createElement('div');
-    bar.className = 'bar';
-    bar.style.height = `${Math.max(20, value * 4)}px`;
-    bars.appendChild(bar);
-  });
+  renderSocTrendChart(chart);
 
   const list = document.getElementById('soc-list');
   list.innerHTML = '';
@@ -604,25 +735,48 @@ function initFilterSearch(containerId, queryId) {
   });
 }
 
+function setResultState(node, state, message) {
+  if (!node) return;
+  node.dataset.state = state || '';
+  node.textContent = message || '';
+}
+
 function initPortalForm() {
   const form = document.getElementById('portal-login');
   const result = document.getElementById('portal-result');
   const userBox = document.getElementById('portal-user');
+  const submit = document.getElementById('portal-submit');
   if (!form || !result) return;
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const payload = Object.fromEntries(new FormData(form).entries());
+    const oldLabel = submit?.textContent;
+    if (submit) {
+      submit.disabled = true;
+      submit.textContent = 'Signing in…';
+      submit.setAttribute('aria-busy', 'true');
+    }
+    setResultState(result, 'loading', 'Validating credentials…');
+
     const login = await fetchJson('/api/auth/login', {
       method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload),
     });
+
     if (!login.ok) {
-      result.textContent = `Login failed: ${login.data?.error || 'invalid credentials'}`;
-      return;
+      setResultState(result, 'error', `Login failed: ${login.data?.error || 'invalid credentials'}`);
+      if (userBox) userBox.textContent = '';
+    } else {
+      localStorage.setItem('portal_token', login.data.token);
+      setResultState(result, 'success', 'Signed in successfully.');
+      if (userBox) userBox.textContent = `Role: ${login.data.user.role} | ${login.data.user.email}`;
     }
-    localStorage.setItem('portal_token', login.data.token);
-    result.textContent = 'Signed in successfully.';
-    userBox.textContent = `Role: ${login.data.user.role} | ${login.data.user.email}`;
+
+    if (submit) {
+      submit.disabled = false;
+      submit.textContent = oldLabel || 'Sign in';
+      submit.removeAttribute('aria-busy');
+    }
   });
 }
 
@@ -650,13 +804,14 @@ function initAdmin() {
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const payload = Object.fromEntries(new FormData(form).entries());
+    setResultState(authResult, 'loading', 'Authenticating…');
     const login = await fetchJson('/api/auth/login', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(payload) });
     if (!login.ok) {
-      authResult.textContent = `Login failed: ${login.data?.error || 'unauthorized'}`;
+      setResultState(authResult, 'error', `Login failed: ${login.data?.error || 'unauthorized'}`);
       return;
     }
     localStorage.setItem('portal_token', login.data.token);
-    authResult.textContent = 'Authenticated.';
+    setResultState(authResult, 'success', 'Authenticated. Loading overview…');
     const data = await fetchJson('/api/admin/overview', { headers: { ...authHeader() } });
     if (!data.ok) return;
     const d = data.data.data;
