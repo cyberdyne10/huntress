@@ -8,22 +8,13 @@ const SEVERITY_COLORS = {
   info: '#4db8ff',
 };
 
-const LANDMASSES = [
-  // North America
-  [[72, -168], [65, -155], [58, -141], [52, -130], [45, -125], [35, -120], [28, -114], [18, -102], [16, -88], [24, -82], [30, -77], [41, -70], [52, -62], [61, -72], [69, -95], [72, -120], [72, -168]],
-  // South America
-  [[13, -81], [9, -74], [3, -69], [-7, -63], [-18, -58], [-28, -57], [-39, -63], [-52, -71], [-56, -75], [-46, -67], [-32, -57], [-19, -52], [-2, -49], [6, -54], [13, -64], [13, -81]],
-  // Europe + Asia
-  [[71, -10], [68, 18], [64, 45], [58, 67], [56, 92], [53, 122], [50, 142], [40, 152], [29, 136], [19, 121], [13, 101], [8, 82], [6, 66], [14, 52], [22, 43], [30, 35], [38, 27], [45, 13], [52, 2], [58, -8], [71, -10]],
-  // Africa
-  [[37, -17], [31, -7], [24, 4], [14, 12], [7, 17], [-6, 20], [-17, 23], [-28, 27], [-35, 19], [-34, 8], [-29, 1], [-17, -5], [-4, -11], [10, -15], [21, -14], [30, -11], [37, -17]],
-  // Australia
-  [[-11, 112], [-16, 127], [-19, 137], [-26, 146], [-35, 147], [-41, 136], [-39, 124], [-33, 116], [-25, 112], [-11, 112]],
-  // Greenland
-  [[83, -73], [78, -56], [73, -38], [66, -35], [60, -43], [61, -53], [66, -62], [74, -66], [83, -73]],
-  // UK/Iceland blob
-  [[64, -24], [60, -21], [56, -11], [52, -6], [50, 0], [53, 3], [58, -2], [63, -13], [64, -24]],
-];
+const MAP_REGION_VIEWS = {
+  global: { center: [20, 0], zoom: 2 },
+  americas: { center: [16, -86], zoom: 3 },
+  emea: { center: [28, 18], zoom: 3 },
+  apac: { center: [18, 112], zoom: 3 },
+  africa: { center: [4, 20], zoom: 3 },
+};
 
 const threatMapState = {
   paused: false,
@@ -37,6 +28,9 @@ const threatMapState = {
   events: [],
   lastMeta: {},
   reducedMotion: window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+  map: null,
+  layers: [],
+  arcAnimationTimer: null,
 };
 
 async function fetchJson(path, opts = {}) {
@@ -57,25 +51,6 @@ function authHeader() {
 function severityBadgeClass(raw) {
   const level = String(raw || 'low').toLowerCase();
   return `badge badge-${SEVERITY_COLORS[level] ? level : 'low'}`;
-}
-
-function plotPoint({ lat, lon, width, height }) {
-  const clampedLat = Math.max(-85, Math.min(85, Number(lat)));
-  const lambda = (Number(lon) * Math.PI) / 180;
-  const phi = (clampedLat * Math.PI) / 180;
-  const x = ((lambda + Math.PI) / (2 * Math.PI)) * width;
-  const mercN = Math.log(Math.tan((Math.PI / 4) + (phi / 2)));
-  const y = (height / 2) - ((width * mercN) / (2 * Math.PI)) * 0.62;
-  return { x: Math.max(0, Math.min(width, x)), y: Math.max(0, Math.min(height, y)) };
-}
-
-function geoPolygonPath(coords, width, height) {
-  if (!Array.isArray(coords) || coords.length < 2) return '';
-  const parts = coords.map(([lat, lon], idx) => {
-    const p = plotPoint({ lat, lon, width, height });
-    return `${idx === 0 ? 'M' : 'L'} ${p.x.toFixed(2)} ${p.y.toFixed(2)}`;
-  });
-  return `${parts.join(' ')} Z`;
 }
 
 function inRegion(event, region) {
@@ -101,92 +76,119 @@ function filterThreatEvents(events) {
   });
 }
 
-function flowPath(start, end, wave = 0) {
-  const dx = end.x - start.x;
-  const dy = end.y - start.y;
-  const travel = Math.hypot(dx, dy);
-  const baseCurve = Math.max(18, Math.min(120, travel * 0.22));
-  const wobble = Math.sin(wave * 1.7) * 22;
-  const northBias = ((start.y + end.y) / 2) > 220 ? -1 : 1;
-  const c1x = start.x + dx * (0.22 + (Math.cos(wave) * 0.03));
-  const c2x = start.x + dx * (0.78 - (Math.sin(wave) * 0.03));
-  const c1y = start.y - ((baseCurve + wobble) * northBias);
-  const c2y = end.y - ((baseCurve - wobble) * northBias);
-  return `M ${start.x.toFixed(1)} ${start.y.toFixed(1)} C ${c1x.toFixed(1)} ${c1y.toFixed(1)} ${c2x.toFixed(1)} ${c2y.toFixed(1)} ${end.x.toFixed(1)} ${end.y.toFixed(1)}`;
+function clearThreatMapLayers() {
+  if (threatMapState.arcAnimationTimer) {
+    clearInterval(threatMapState.arcAnimationTimer);
+    threatMapState.arcAnimationTimer = null;
+  }
+  threatMapState.layers.forEach((layer) => layer.remove());
+  threatMapState.layers = [];
 }
 
-function mapSvg(events) {
-  const width = 1000;
-  const height = 500;
-  const baseline = window.innerWidth < 768 ? 56 : 110;
-  const maxFlows = Math.max(12, Math.floor(baseline * threatMapState.density));
-  const filtered = filterThreatEvents(events).slice(0, maxFlows);
+function ensureLeafletMap() {
+  if (threatMapState.map) return threatMapState.map;
+  const mapRoot = document.getElementById('threat-map');
+  const status = document.getElementById('threat-map-status');
+  if (!mapRoot || typeof window.L === 'undefined') {
+    if (status) status.textContent = 'Map engine unavailable. Threat telemetry continues in feed.';
+    return null;
+  }
 
-  const flows = filtered.map((event, index) => {
-    const start = plotPoint({ ...event.origin, width, height });
-    const end = plotPoint({ ...event.target, width, height });
+  const map = window.L.map(mapRoot, {
+    zoomControl: true,
+    attributionControl: true,
+    worldCopyJump: true,
+    minZoom: 2,
+    maxZoom: 6,
+  }).setView(MAP_REGION_VIEWS.global.center, MAP_REGION_VIEWS.global.zoom);
+
+  window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors',
+    className: 'threat-map-tiles',
+  }).addTo(map);
+
+  threatMapState.map = map;
+  return map;
+}
+
+function renderLeafletThreatMap() {
+  const map = ensureLeafletMap();
+  const status = document.getElementById('threat-map-status');
+  if (!map) return;
+
+  const baseline = window.innerWidth < 768 ? 40 : 80;
+  const maxFlows = Math.max(10, Math.floor(baseline * threatMapState.density));
+  const filtered = filterThreatEvents(threatMapState.events).slice(0, maxFlows);
+
+  clearThreatMapLayers();
+
+  const animatingArcs = [];
+
+  filtered.forEach((event, index) => {
     const severity = String(event.severity || 'medium').toLowerCase();
     const color = SEVERITY_COLORS[severity] || SEVERITY_COLORS.info;
-    const wave = ((index + 1) * 0.91) + (String(event.id || index).length * 0.13);
-    const duration = Math.max(4.5, (11 - (threatMapState.playbackSpeed * 3.5)) + ((index % 5) * 0.35));
-    const delay = (index % 9) * 0.22;
-    return {
-      id: event.id || `event-${index}`,
-      label: event.label,
-      severity,
+    const origin = [Number(event.origin?.lat), Number(event.origin?.lon)];
+    const target = [Number(event.target?.lat), Number(event.target?.lon)];
+    if (origin.some(Number.isNaN) || target.some(Number.isNaN)) return;
+
+    const originMarker = window.L.circleMarker(origin, {
+      radius: 4,
       color,
-      start,
-      end,
-      path: flowPath(start, end, wave),
-      sourceLabel: event.origin.label,
-      targetLabel: event.target.label,
-      arcStyle: `--arc-duration:${duration.toFixed(2)}s;--arc-delay:${delay.toFixed(2)}s;`,
-    };
+      weight: 1,
+      fillColor: color,
+      fillOpacity: 0.95,
+      className: threatMapState.reducedMotion ? 'map-origin-static' : 'map-origin-pulse',
+    }).bindTooltip(`${event.origin?.label || 'Source'} (${severity.toUpperCase()})`, { direction: 'top' }).addTo(map);
+
+    const targetMarker = window.L.circleMarker(target, {
+      radius: 5,
+      color,
+      weight: 1,
+      fillColor: color,
+      fillOpacity: 0.8,
+      className: 'map-target-point',
+    }).bindTooltip(`${event.target?.label || 'Target'} • ${event.label || 'Threat flow'}`, { direction: 'top' }).addTo(map);
+
+    threatMapState.layers.push(originMarker, targetMarker);
+
+    if (threatMapState.showArcs) {
+      const line = window.L.polyline([origin, target], {
+        color,
+        weight: 2,
+        opacity: threatMapState.reducedMotion ? 0.45 : 0.72,
+        dashArray: '8 10',
+        className: 'map-flow-line',
+      }).addTo(map);
+      line.bindTooltip(`${event.label || 'Threat flow'} (${event.origin?.label || 'Source'} → ${event.target?.label || 'Target'})`);
+      threatMapState.layers.push(line);
+      if (!threatMapState.reducedMotion) {
+        animatingArcs.push({
+          line,
+          offset: index * 6,
+          step: Math.max(1.5, threatMapState.playbackSpeed * 2.2),
+        });
+      }
+    }
   });
 
-  return `
-    <svg viewBox="0 0 ${width} ${height}" role="presentation" focusable="false">
-      <defs>
-        <linearGradient id="oceanGradient" x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0%" stop-color="#020617" />
-          <stop offset="45%" stop-color="#0b1430" />
-          <stop offset="100%" stop-color="#030712" />
-        </linearGradient>
-        <radialGradient id="vignette" cx="50%" cy="40%" r="75%">
-          <stop offset="0%" stop-color="rgba(56,189,248,0.09)" />
-          <stop offset="100%" stop-color="rgba(2,6,23,0.94)" />
-        </radialGradient>
-        <linearGradient id="landGradient" x1="0" x2="1" y1="0" y2="1">
-          <stop offset="0%" stop-color="rgba(30,64,175,0.44)" />
-          <stop offset="100%" stop-color="rgba(15,118,110,0.24)" />
-        </linearGradient>
-        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-          <path d="M40 0L0 0 0 40" fill="none" stroke="rgba(148,163,184,0.1)" stroke-width="1" />
-        </pattern>
-        <filter id="landGlow" x="-40%" y="-40%" width="180%" height="180%">
-          <feGaussianBlur stdDeviation="1.8" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-      </defs>
-      <rect x="0" y="0" width="${width}" height="${height}" fill="url(#oceanGradient)"></rect>
-      <rect x="0" y="0" width="${width}" height="${height}" fill="url(#grid)"></rect>
-      <rect x="0" y="0" width="${width}" height="${height}" fill="url(#vignette)"></rect>
+  if (animatingArcs.length) {
+    threatMapState.arcAnimationTimer = setInterval(() => {
+      animatingArcs.forEach((arc) => {
+        arc.offset -= arc.step;
+        const node = arc.line.getElement();
+        if (node) node.style.strokeDashoffset = `${arc.offset}`;
+      });
+    }, 80);
+  }
 
-      <g class="map-landmasses" filter="url(#landGlow)">
-        ${LANDMASSES.map((coords) => `<path d="${geoPolygonPath(coords, width, height)}" class="map-land"></path>`).join('')}
-      </g>
+  const nextView = MAP_REGION_VIEWS[threatMapState.region] || MAP_REGION_VIEWS.global;
+  map.flyTo(nextView.center, nextView.zoom, { animate: !threatMapState.reducedMotion, duration: 0.6 });
 
-      ${threatMapState.showArcs ? flows.map((flow) => `<path class="map-flow${threatMapState.reducedMotion ? ' map-flow-static' : ''}" style="${flow.arcStyle}" d="${flow.path}" stroke="${flow.color}"><title>${flow.label} (${flow.sourceLabel} → ${flow.targetLabel})</title></path>`).join('') : ''}
-
-      ${flows.map((flow) => `
-        <g class="map-point" style="--map-accent:${flow.color}">
-          <circle class="map-point-origin" cx="${flow.start.x}" cy="${flow.start.y}" r="3.2"></circle>
-          ${threatMapState.reducedMotion ? '' : `<circle class="map-point-pulse" cx="${flow.start.x}" cy="${flow.start.y}" r="2.6"></circle>`}
-          <circle class="map-point-target" cx="${flow.end.x}" cy="${flow.end.y}" r="3.8"></circle>
-        </g>
-      `).join('')}
-    </svg>
-  `;
+  if (status) {
+    status.textContent = `${filtered.length} visible event${filtered.length === 1 ? '' : 's'} · ${threatMapState.showArcs ? 'attack arcs on' : 'attack arcs off'} · ${threatMapState.region.toUpperCase()}`;
+  }
+  renderMapLiveMetrics(threatMapState.lastMeta || {});
 }
 
 function renderMapMeta(meta = {}) {
@@ -231,16 +233,7 @@ function renderMapLiveMetrics(meta = {}) {
 }
 
 function renderThreatMapFromState() {
-  const mapRoot = document.getElementById('threat-map');
-  const status = document.getElementById('threat-map-status');
-  if (!mapRoot) return;
-  mapRoot.innerHTML = mapSvg(threatMapState.events);
-
-  if (status) {
-    const visible = filterThreatEvents(threatMapState.events).length;
-    status.textContent = `${visible} visible event${visible === 1 ? '' : 's'} · ${threatMapState.showArcs ? 'attack arcs on' : 'attack arcs off'} · ${threatMapState.region.toUpperCase()}`;
-  }
-  renderMapLiveMetrics(threatMapState.lastMeta || {});
+  renderLeafletThreatMap();
 }
 
 function restartThreatMapTimer() {
@@ -378,6 +371,11 @@ async function initSocPreview() {
 function initThreatMap() {
   const mapRoot = document.getElementById('threat-map');
   if (!mapRoot) return;
+
+  ensureLeafletMap();
+  window.addEventListener('resize', () => {
+    if (threatMapState.map) threatMapState.map.invalidateSize(false);
+  });
 
   const toggle = document.getElementById('threat-map-toggle');
   if (toggle) {

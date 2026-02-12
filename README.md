@@ -84,7 +84,7 @@ If MISP is not configured/reachable, existing mock/DB behavior stays active.
 
 ## Live threat map feed (SOC preview)
 
-`/soc-preview.html` now includes a v2 war-room live threat map with a dark global/globe feel, cyber-neon landmasses/coastlines, animated origin pulses, varied trajectory attack arcs, and reduced-motion fallback.
+`/soc-preview.html` now includes a v2 war-room live threat map built on **Leaflet + OpenStreetMap** (free map stack), with Cyber-Logic dark styling, animated origin pulses, attack arcs, and reduced-motion fallback.
 
 New map controls in v2:
 - Pause / Resume playback
