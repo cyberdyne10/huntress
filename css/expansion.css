@@ -291,8 +291,9 @@
 .threat-intel-section .threat-intel-card {
   padding: clamp(16px, 2.4vw, 24px);
   border-radius: 18px;
-  border-color: rgb(125 211 252 / 22%);
-  background: linear-gradient(165deg, rgb(6 18 34 / 56%), rgb(6 14 28 / 52%));
+  border-color: rgb(125 211 252 / 18%);
+  background: transparent;
+  box-shadow: none;
   display: grid;
   gap: 12px;
 }
