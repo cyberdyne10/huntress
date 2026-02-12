@@ -132,6 +132,7 @@ If live feed retrieval fails or returns no usable events, the API gracefully fal
 
 - `css/style.css` remains the global base and now includes premium override tokens (radius/ring/shadows) for a cohesive cyber-luxe look.
 - `css/expansion.css` now includes cross-page premium section/card/form styles (`.page-hero`, `.section-block`, `.card-grid`, `.form-grid`) plus portal-specific layout/state classes.
+- Homepage Threat Intel Feed is now upgraded via `index.html` + modular `css/expansion.css` / `js/expansion.js`: premium glass card UI, severity/source quick filters, live refresh metadata, skeleton loading, and graceful empty/error fallback states backed by `/api/threat-feed`.
 - Existing page-specific CSS (`home.css`, `pricing.css`) remains in place; premium updates layer on top to avoid route or API coupling risk.
 - Motion effects include `prefers-reduced-motion` fallback to keep interaction subtle and accessible.
 

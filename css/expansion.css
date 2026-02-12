@@ -288,6 +288,157 @@
   100% { transform: translateX(100%); }
 }
 
+.threat-intel-section .threat-intel-card {
+  padding: clamp(16px, 2.4vw, 24px);
+  border-radius: 18px;
+  border-color: rgb(125 211 252 / 28%);
+  background:
+    radial-gradient(circle at 96% 2%, rgb(59 130 246 / 16%), transparent 34%),
+    radial-gradient(circle at 2% 100%, rgb(34 211 238 / 12%), transparent 30%),
+    linear-gradient(165deg, rgb(11 26 46 / 82%), rgb(8 14 26 / 92%));
+}
+
+.threat-intel-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.threat-intel-kicker {
+  margin: 0 0 6px;
+  color: #89d7ff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.threat-intel-meta {
+  display: grid;
+  gap: 5px;
+  justify-items: end;
+}
+
+.threat-source-tag {
+  border: 1px solid rgb(125 211 252 / 36%);
+  background: rgb(2 24 46 / 68%);
+  color: #dbeafe;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.threat-intel-controls {
+  display: grid;
+  grid-template-columns: auto minmax(120px, 180px) auto minmax(140px, 220px);
+  gap: 8px 10px;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.threat-intel-controls .small { font-weight: 600; color: #d4e7ff; }
+
+.threat-feed-list {
+  display: grid;
+  gap: 10px;
+  min-height: 180px;
+}
+
+.threat-feed-item {
+  border: 1px solid rgb(125 211 252 / 18%);
+  background: linear-gradient(165deg, rgb(13 28 50 / 58%), rgb(8 16 30 / 90%));
+  border-radius: 12px;
+  padding: 11px 12px;
+  display: grid;
+  gap: 8px;
+  transform: translateY(6px);
+  opacity: 0;
+  animation: threat-entry 320ms ease forwards;
+}
+
+.threat-feed-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.threat-feed-title {
+  margin: 0;
+  font-size: 0.98rem;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+
+.threat-feed-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.threat-meta-chip {
+  border: 1px solid rgb(125 211 252 / 24%);
+  background: rgb(8 26 46 / 62%);
+  color: #cde5ff;
+  border-radius: 999px;
+  padding: 2px 9px;
+  font-size: 0.72rem;
+  line-height: 1.4;
+}
+
+.threat-meta-time { color: #9fb4d1; }
+
+.threat-feed-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.84rem;
+  background: rgb(2 22 41 / 80%);
+  border: 1px solid rgb(125 211 252 / 28%);
+}
+
+.threat-feed-state {
+  border: 1px dashed rgb(125 211 252 / 28%);
+  border-radius: 12px;
+  padding: 16px;
+  color: #d5e8ff;
+  background: rgb(8 19 35 / 52%);
+}
+
+.threat-feed-skeleton {
+  border-radius: 12px;
+  border: 1px solid rgb(125 211 252 / 16%);
+  background: linear-gradient(165deg, rgb(14 31 54 / 44%), rgb(9 17 30 / 82%));
+  padding: 11px 12px;
+}
+
+.threat-feed-skeleton .line {
+  height: 10px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+  background: rgb(153 199 255 / 16%);
+}
+
+.threat-feed-skeleton .line:last-child { margin-bottom: 0; width: 56%; }
+
+.threat-intel-footer { margin-top: 12px; display: flex; justify-content: flex-end; }
+.threat-intel-cta:focus-visible,
+.threat-intel-controls select:focus-visible {
+  outline: 2px solid #67e8f9;
+  outline-offset: 2px;
+}
+
+@keyframes threat-entry {
+  to { transform: translateY(0); opacity: 1; }
+}
+
 .calculator-result { font-size: 1.2rem; font-weight: 700; color: var(--cl-brand-blue); }
 .nav-cta-secondary { margin-left: 8px; }
 
@@ -309,13 +460,29 @@
   .soc-preview-page .kpis { grid-template-columns: 1fr; }
   .soc-preview-page .panel-head { flex-direction: column; align-items: flex-start; }
   .soc-preview-page .page-hero { padding: 72px 0 40px; }
+
+  .threat-intel-head {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .threat-intel-meta { justify-items: start; }
+
+  .threat-intel-controls {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+
+  .threat-intel-footer { justify-content: stretch; }
+  .threat-intel-footer .btn { width: 100%; text-align: center; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .soc-preview-page .map-node-origin,
   .soc-preview-page .loading-skeleton::after,
   .soc-preview-page .bar,
-  .soc-preview-page .list-item {
+  .soc-preview-page .list-item,
+  .threat-feed-item {
     animation: none;
     transition: none;
   }
