@@ -107,7 +107,14 @@ function mapSvg(events) {
 function renderMapMeta(meta = {}) {
   const source = document.getElementById('threat-map-source');
   const updated = document.getElementById('threat-map-updated');
-  if (source) source.textContent = `Source: ${meta.source || 'mock'}`;
+  const badge = document.getElementById('threat-map-source-badge');
+  const sourceValue = String(meta.source || 'mock');
+  if (source) source.textContent = `Source: ${sourceValue}`;
+  if (badge) {
+    const isMisp = sourceValue.toLowerCase().includes('misp');
+    badge.style.display = isMisp ? 'inline-block' : 'none';
+    badge.textContent = 'MISP';
+  }
   if (updated) {
     const stamp = meta.lastUpdated ? new Date(meta.lastUpdated).toLocaleTimeString() : '-';
     updated.textContent = `Last updated: ${stamp}`;
@@ -276,7 +283,9 @@ async function initThreatFeed() {
   (data?.data?.data || []).slice(0, 5).forEach((item) => {
     const div = document.createElement('div');
     div.className = 'list-item';
-    div.innerHTML = `<strong>${item.threat || item.title}</strong><div class="small">${item.source} · ${item.severity || 'info'}</div>`;
+    const source = String(item.source || 'SOC');
+    const mispBadge = source.toLowerCase().includes('misp') ? ' <span class="badge badge-medium">MISP</span>' : '';
+    div.innerHTML = `<strong>${item.threat || item.title}</strong><div class="small">${source}${mispBadge} · ${item.severity || 'info'}</div>`;
     feed.appendChild(div);
   });
 }

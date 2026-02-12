@@ -45,6 +45,7 @@ Base URL: `http://localhost:3001`
 - `POST /api/crm/webhook/status` (secured by `x-webhook-token`)
 - `GET /api/status`
 - `GET /api/admin/overview` (admin)
+- `GET /api/admin/integrations/misp/status` (admin)
 
 ## Environment variables
 
@@ -60,6 +61,26 @@ Optional integrations:
 - `SMTP_HOST`, `SMTP_PORT`, `SMTP_SECURE`, `SMTP_USER`, `SMTP_PASS`, `SMTP_FROM`
 - `THREAT_GEO_FEED_URL` (optional JSON feed for live geo-threat events)
 - `THREAT_GEO_CACHE_MS` (cache/refresh cadence for geo-threat map, default `45000`)
+- `MISP_BASE_URL`, `MISP_API_KEY`, `MISP_VERIFY_TLS`, `MISP_TIMEOUT_MS`, `MISP_LOOKBACK_HOURS`
+
+## MISP integration (MVP)
+
+Set these env vars to enable live MISP-backed intel:
+
+```bash
+MISP_BASE_URL=https://misp.example.com
+MISP_API_KEY=your-misp-automation-key
+MISP_VERIFY_TLS=true
+MISP_TIMEOUT_MS=8000
+MISP_LOOKBACK_HOURS=24
+```
+
+Behavior:
+- `/api/threat-geo-events` prefers MISP-derived events when available, then external feed, then mock fallback.
+- `/api/threat-feed` merges MISP items with DB seed data (preserving current response shape).
+- `/api/admin/integrations/misp/status` gives admin-only integration health (never leaks API key).
+
+If MISP is not configured/reachable, existing mock/DB behavior stays active.
 
 ## Live threat map feed (SOC preview)
 
