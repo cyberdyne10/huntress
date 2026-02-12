@@ -1,1 +1,60 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Client Portal</title><meta name="description" content="Secure Huntress client portal login."><link rel="stylesheet" href="css/style.css"><link rel="stylesheet" href="css/expansion.css"></head><body><div id="header-placeholder"></div><main><section class="page-hero"><div class="container"><h1>Client Portal Login</h1><p>Secure JWT-based access for client and admin users.</p></div></section><section class="section-block"><div class="container card"><form id="portal-login" class="form-grid"><label>Email<input name="email" class="input" type="email" required></label><label>Password<input name="password" class="input" type="password" required></label><button class="btn btn-primary" type="submit">Sign in</button><p id="portal-result" class="small"></p></form><div id="portal-user" class="small"></div></div></section></main><div id="footer-placeholder"></div><script src="js/components.js"></script><script src="js/expansion.js"></script></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Client Portal | CYBER-LOGIC</title>
+  <meta name="description" content="Secure CYBER-LOGIC client portal login with role-based access.">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/expansion.css">
+</head>
+<body class="portal-page">
+  <div id="header-placeholder"></div>
+
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <div class="portal-status" role="status">🔒 Encrypted session · SOC monitored</div>
+        <h1>Client Portal Access</h1>
+        <p>Sign in to view incidents, threat telemetry, and account-level security operations data.</p>
+      </div>
+    </section>
+
+    <section class="section-block">
+      <div class="container portal-shell">
+        <article class="card portal-auth-card" aria-labelledby="portal-login-title">
+          <h2 id="portal-login-title">Sign in</h2>
+          <p class="small">Use your assigned client or admin credentials.</p>
+
+          <form id="portal-login" class="form-grid" novalidate>
+            <label for="portal-email">Email</label>
+            <input id="portal-email" name="email" class="input" type="email" autocomplete="email" required>
+
+            <label for="portal-password">Password</label>
+            <input id="portal-password" name="password" class="input" type="password" autocomplete="current-password" required>
+
+            <button id="portal-submit" class="btn btn-primary" type="submit">Sign in securely</button>
+            <p id="portal-result" class="small portal-result" role="status" aria-live="polite"></p>
+          </form>
+
+          <div id="portal-user" class="small" aria-live="polite"></div>
+        </article>
+
+        <aside class="card portal-auth-card" aria-label="Portal trust and support details">
+          <h3>Need access help?</h3>
+          <p class="small">If you are locked out or need role updates, contact your CYBER-LOGIC account security lead.</p>
+          <ul class="list" style="margin-top: 8px;">
+            <li class="list-item"><strong>Authentication</strong><span class="small">JWT-backed sessions with role claims.</span></li>
+            <li class="list-item"><strong>Response SLA</strong><span class="small">Critical account access requests triaged 24/7.</span></li>
+            <li class="list-item"><strong>Support channel</strong><span class="small">Portal support linked to incident escalation workflow.</span></li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div id="footer-placeholder"></div>
+  <script src="js/components.js"></script>
+  <script src="js/expansion.js"></script>
+</body>
+</html>
