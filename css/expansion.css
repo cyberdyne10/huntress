@@ -291,11 +291,8 @@
 .threat-intel-section .threat-intel-card {
   padding: clamp(16px, 2.4vw, 24px);
   border-radius: 18px;
-  border-color: rgb(125 211 252 / 28%);
-  background:
-    radial-gradient(circle at 96% 2%, rgb(59 130 246 / 16%), transparent 34%),
-    radial-gradient(circle at 2% 100%, rgb(34 211 238 / 12%), transparent 30%),
-    linear-gradient(165deg, rgb(11 26 46 / 82%), rgb(8 14 26 / 92%));
+  border-color: rgb(125 211 252 / 22%);
+  background: linear-gradient(165deg, rgb(6 18 34 / 56%), rgb(6 14 28 / 52%));
   display: grid;
   gap: 12px;
 }
@@ -368,10 +365,10 @@
 .threat-intel-card #threat-feed-status {
   display: block;
   margin: 0;
-  padding: 8px 10px;
-  border: 1px dashed rgb(125 211 252 / 22%);
-  border-radius: 10px;
-  background: rgb(7 20 37 / 45%);
+  padding: 2px 0 4px;
+  border: none;
+  border-radius: 0;
+  background: transparent;
   color: #b7d5f8;
   line-height: 1.4;
   position: relative !important;
