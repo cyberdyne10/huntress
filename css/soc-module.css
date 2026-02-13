@@ -1,0 +1,217 @@
+/* Homepage SOC premium interactive module */
+.soc-section {
+  padding: clamp(56px, 8vw, 92px) 0;
+  background:
+    radial-gradient(circle at 15% 0%, rgb(64 216 255 / 14%), transparent 48%),
+    radial-gradient(circle at 100% 30%, rgb(255 102 0 / 8%), transparent 42%),
+    var(--secondary-color);
+}
+
+.soc-module {
+  border: 1px solid rgb(64 216 255 / 30%);
+  border-radius: 18px;
+  padding: clamp(18px, 3.6vw, 34px);
+  background: linear-gradient(160deg, rgb(7 20 40 / 92%), rgb(4 11 24 / 96%));
+  box-shadow: 0 26px 58px rgb(2 7 23 / 44%);
+}
+
+.soc-module-header {
+  margin-bottom: 1.2rem;
+}
+
+.soc-kicker {
+  margin: 0 0 .6rem;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--cl-brand-blue);
+  font-size: .76rem;
+  font-weight: 700;
+}
+
+.soc-header-title {
+  margin-bottom: .7rem;
+  text-wrap: balance;
+}
+
+.soc-header-copy {
+  margin: 0;
+  color: var(--text-muted);
+  max-width: 76ch;
+}
+
+.soc-layout {
+  display: grid;
+  gap: 16px;
+}
+
+.soc-capability-rail {
+  display: grid;
+  gap: 10px;
+}
+
+.soc-capability-card {
+  width: 100%;
+  border: 1px solid rgb(147 197 253 / 26%);
+  border-radius: 12px;
+  background: linear-gradient(180deg, rgb(21 34 60 / 66%), rgb(9 18 36 / 88%));
+  color: #edf6ff;
+  text-align: left;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
+  cursor: pointer;
+}
+
+.soc-capability-card:hover {
+  transform: translateY(-1px);
+  border-color: rgb(64 216 255 / 65%);
+  box-shadow: 0 12px 28px rgb(10 83 127 / 28%);
+}
+
+.soc-capability-card[aria-selected="true"],
+.soc-capability-card.is-active {
+  border-color: var(--cl-brand-orange);
+  box-shadow: 0 14px 30px rgb(255 102 0 / 20%);
+  background: linear-gradient(170deg, rgb(40 32 28 / 88%), rgb(18 20 32 / 95%));
+}
+
+.soc-capability-title {
+  display: block;
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.soc-capability-subtitle {
+  display: block;
+  margin-top: 2px;
+  font-size: .82rem;
+  color: #a8bed8;
+}
+
+.soc-capability-action {
+  font-size: .8rem;
+  color: #9bc3f5;
+  white-space: nowrap;
+}
+
+.soc-detail-pane {
+  position: relative;
+}
+
+.soc-detail-card {
+  border: 1px solid rgb(255 255 255 / 10%);
+  border-radius: 14px;
+  background: linear-gradient(180deg, rgb(12 22 39 / 78%), rgb(8 14 28 / 95%));
+  padding: clamp(16px, 3vw, 24px);
+  animation: socFade .24s ease;
+}
+
+.soc-detail-card h3 {
+  margin: 0 0 .9rem;
+  font-size: 1.08rem;
+}
+
+.soc-detail-link {
+  display: inline-flex;
+  align-items: center;
+  margin-top: .85rem;
+  color: var(--cl-brand-blue);
+  font-weight: 600;
+  border-bottom: 1px solid transparent;
+}
+
+.soc-detail-link:hover {
+  border-bottom-color: currentcolor;
+}
+
+.soc-list {
+  margin: 0;
+}
+
+.soc-list li {
+  color: #b7c9de;
+}
+
+.soc-connectors {
+  position: static;
+  margin: 16px 0 4px;
+  height: auto;
+  pointer-events: auto;
+}
+
+.soc-herd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  min-height: 44px;
+  padding: 10px 20px;
+}
+
+.soc-footer {
+  margin-top: 20px;
+  padding-top: 20px;
+}
+
+.soc-capability-card:focus-visible,
+.soc-herd-btn:focus-visible,
+.soc-footer-links a:focus-visible,
+.soc-detail-link:focus-visible {
+  outline: 2px solid var(--cl-brand-blue);
+  outline-offset: 2px;
+}
+
+@keyframes socFade {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (min-width: 900px) {
+  .soc-layout {
+    grid-template-columns: minmax(300px, .9fr) minmax(0, 1.25fr);
+    gap: 20px;
+  }
+
+  .soc-capability-rail {
+    max-height: 560px;
+    overflow: auto;
+    padding-right: 4px;
+  }
+}
+
+@media (max-width: 720px) {
+  .soc-capability-rail {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(86%, 1fr);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 2px;
+  }
+
+  .soc-capability-card {
+    scroll-snap-align: start;
+    grid-template-columns: auto 1fr;
+  }
+
+  .soc-capability-action {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+  .soc-footer,
+  .soc-footer-links {
+    gap: 14px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .soc-capability-card,
+  .soc-detail-card {
+    transition: none;
+    animation: none;
+  }
+}

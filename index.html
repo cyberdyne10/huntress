@@ -21,6 +21,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/home.css">
     <link rel="stylesheet" href="css/expansion.css">
+    <link rel="stylesheet" href="css/soc-module.css">
 </head>
 <body>
 
@@ -96,7 +97,7 @@
                             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
                         </div>
                         <h3>Managed EDR</h3>
-                        <p>Endpoint Detection & Response. Continuous monitoring and rapid response for your endpoints.</p>
+                        <p>Endpoint Detection &amp; Response. Continuous monitoring and rapid response for your endpoints.</p>
                         <a href="/platform/managed-edr.html" class="learn-more">Learn more <span>&rarr;</span></a>
                     </div>
 
@@ -106,7 +107,7 @@
                             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                         </div>
                         <h3>Managed ITDR</h3>
-                        <p>Identity Threat Detection & Response. Secure user identities against compromise.</p>
+                        <p>Identity Threat Detection &amp; Response. Secure user identities against compromise.</p>
                         <a href="/platform/managed-itdr.html" class="learn-more">Learn more <span>&rarr;</span></a>
                     </div>
 
@@ -116,7 +117,7 @@
                             <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
                         </div>
                         <h3>Managed SIEM</h3>
-                        <p>Security Information & Event Management. Centralized visibility and advanced analytics.</p>
+                        <p>Security Information &amp; Event Management. Centralized visibility and advanced analytics.</p>
                         <a href="/platform/managed-siem.html" class="learn-more">Learn more <span>&rarr;</span></a>
                     </div>
 
@@ -200,91 +201,130 @@
         </section>
 
         <!-- SOC Section -->
-        <section class="soc-section">
+        <section class="soc-section" aria-labelledby="soc-module-title">
             <div class="container">
-                <h2 class="soc-header-title">Cyber-Logic 24/7 AI-Assisted SOC</h2>
+                <div class="soc-module" data-soc-module>
+                    <header class="soc-module-header">
+                        <p class="soc-kicker">24/7 Managed Detection &amp; Response</p>
+                        <h2 id="soc-module-title" class="soc-header-title">Cyber-Logic 24/7 AI-Assisted SOC</h2>
+                        <p class="soc-header-copy">Select a capability to view how CYBER-LOGIC analysts detect, validate, contain, and guide recovery with clear operator actions.</p>
+                    </header>
 
-                <div class="soc-container-box">
-                    <div class="soc-grid">
-                        <!-- Card 1: Defender -->
-                        <div class="soc-card highlight">
-                            <div class="soc-card-icon">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
-                            </div>
-                            <h3>Managed Microsoft Defender Antivirus</h3>
-                            <span class="soc-card-subtitle">(Optional)</span>
-                            <ul class="soc-list">
-                                <li>Included for free</li>
-                                <li>Alert Triage & Investigation</li>
-                                <li>Policy Management</li>
-                                <li>Risky Exclusion Management and Detections</li>
-                            </ul>
+                    <div class="soc-layout">
+                        <div class="soc-capability-rail" role="tablist" aria-label="SOC capabilities">
+                            <button type="button" class="soc-capability-card is-active" role="tab" aria-selected="true" aria-controls="soc-panel-defender" id="soc-tab-defender" tabindex="0" data-soc-target="soc-panel-defender">
+                                <span class="soc-card-icon" aria-hidden="true">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                                </span>
+                                <span class="soc-capability-text">
+                                    <span class="soc-capability-title">Managed Microsoft Defender Antivirus</span>
+                                    <span class="soc-capability-subtitle">Optional</span>
+                                </span>
+                                <span class="soc-capability-action">View details</span>
+                            </button>
+
+                            <button type="button" class="soc-capability-card" role="tab" aria-selected="false" aria-controls="soc-panel-endpoint" id="soc-tab-endpoint" tabindex="-1" data-soc-target="soc-panel-endpoint">
+                                <span class="soc-card-icon" aria-hidden="true">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
+                                </span>
+                                <span class="soc-capability-text">
+                                    <span class="soc-capability-title">Fully Managed Endpoint Threat Detection</span>
+                                </span>
+                                <span class="soc-capability-action">View details</span>
+                            </button>
+
+                            <button type="button" class="soc-capability-card" role="tab" aria-selected="false" aria-controls="soc-panel-investigation" id="soc-tab-investigation" tabindex="-1" data-soc-target="soc-panel-investigation">
+                                <span class="soc-card-icon" aria-hidden="true">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                </span>
+                                <span class="soc-capability-text">
+                                    <span class="soc-capability-title">Human-Led Investigation</span>
+                                </span>
+                                <span class="soc-capability-action">View details</span>
+                            </button>
+
+                            <button type="button" class="soc-capability-card" role="tab" aria-selected="false" aria-controls="soc-panel-containment" id="soc-tab-containment" tabindex="-1" data-soc-target="soc-panel-containment">
+                                <span class="soc-card-icon" aria-hidden="true">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+                                </span>
+                                <span class="soc-capability-text">
+                                    <span class="soc-capability-title">Threat Containment &amp; Elimination</span>
+                                </span>
+                                <span class="soc-capability-action">View details</span>
+                            </button>
+
+                            <button type="button" class="soc-capability-card" role="tab" aria-selected="false" aria-controls="soc-panel-recovery" id="soc-tab-recovery" tabindex="-1" data-soc-target="soc-panel-recovery">
+                                <span class="soc-card-icon" aria-hidden="true">
+                                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                </span>
+                                <span class="soc-capability-text">
+                                    <span class="soc-capability-title">Guided Cleanup &amp; Recovery</span>
+                                </span>
+                                <span class="soc-capability-action">View details</span>
+                            </button>
                         </div>
 
-                        <!-- Card 2: Threat Detection -->
-                        <div class="soc-card">
-                            <div class="soc-card-icon">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><circle cx="12" cy="12" r="6"></circle><circle cx="12" cy="12" r="2"></circle></svg>
-                            </div>
-                            <h3>Fully Managed Endpoint Threat Detection</h3>
-                            <span class="soc-card-subtitle"></span>
-                            <ul class="soc-list">
-                                <li>Agents for Windows, macOS and Linux (Open Beta)</li>
-                                <li>Malicious Process Behavior</li>
-                                <li>Persistent Footholds</li>
-                                <li>Ransomware Canaries</li>
-                                <li>XProtect and Defender for Endpoint Alerts</li>
-                            </ul>
-                        </div>
+                        <div class="soc-detail-pane">
+                            <article class="soc-detail-card is-active" id="soc-panel-defender" role="tabpanel" aria-labelledby="soc-tab-defender" tabindex="0" data-soc-panel>
+                                <h3>Managed Microsoft Defender Antivirus <span class="soc-card-subtitle">(Optional)</span></h3>
+                                <ul class="soc-list">
+                                    <li>Included for free</li>
+                                    <li>Alert Triage &amp; Investigation</li>
+                                    <li>Policy Management</li>
+                                    <li>Risky Exclusion Management and Detections</li>
+                                </ul>
+                                <a href="/platform/overview.html" class="soc-detail-link">Explore platform coverage</a>
+                            </article>
 
-                        <!-- Card 3: Investigation -->
-                        <div class="soc-card">
-                            <div class="soc-card-icon">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                            </div>
-                            <h3>Human-Led Investigation</h3>
-                            <span class="soc-card-subtitle"></span>
-                            <ul class="soc-list">
-                                <li>Alert Triage</li>
-                                <li>Incident Investigation</li>
-                                <li>Threat Hunting</li>
-                            </ul>
-                        </div>
+                            <article class="soc-detail-card" id="soc-panel-endpoint" role="tabpanel" aria-labelledby="soc-tab-endpoint" tabindex="0" hidden data-soc-panel>
+                                <h3>Fully Managed Endpoint Threat Detection</h3>
+                                <ul class="soc-list">
+                                    <li>Agents for Windows, macOS and Linux (Open Beta)</li>
+                                    <li>Malicious Process Behavior</li>
+                                    <li>Persistent Footholds</li>
+                                    <li>Ransomware Canaries</li>
+                                    <li>XProtect and Defender for Endpoint Alerts</li>
+                                </ul>
+                                <a href="/platform/managed-edr.html" class="soc-detail-link">See endpoint protection workflow</a>
+                            </article>
 
-                        <!-- Card 4: Containment -->
-                        <div class="soc-card">
-                            <div class="soc-card-icon">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-                            </div>
-                            <h3>Threat Containment & Elimination</h3>
-                            <span class="soc-card-subtitle"></span>
-                            <ul class="soc-list">
-                                <li>Threat Containment</li>
-                                <li>"Stop the Spread"</li>
-                                <li>Active Remediation</li>
-                                <li>"Combat the Threat"</li>
-                            </ul>
-                        </div>
+                            <article class="soc-detail-card" id="soc-panel-investigation" role="tabpanel" aria-labelledby="soc-tab-investigation" tabindex="0" hidden data-soc-panel>
+                                <h3>Human-Led Investigation</h3>
+                                <ul class="soc-list">
+                                    <li>Alert Triage</li>
+                                    <li>Incident Investigation</li>
+                                    <li>Threat Hunting</li>
+                                </ul>
+                                <a href="/about/soc.html" class="soc-detail-link">Meet the SOC team</a>
+                            </article>
 
-                        <!-- Card 5: Recovery -->
-                        <div class="soc-card">
-                            <div class="soc-card-icon">
-                                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-                            </div>
-                            <h3>Guided Cleanup & Recovery</h3>
-                            <span class="soc-card-subtitle"></span>
-                            <ul class="soc-list">
-                                <li>Custom Incident Reports</li>
-                                <li>Easy-to-follow Suggested Next Steps</li>
-                                <li>Multi-channel Communication:</li>
-                                <li>Phone SMS</li>
-                                <li>Email Ticketing Systems</li>
-                            </ul>
-                        </div>
+                            <article class="soc-detail-card" id="soc-panel-containment" role="tabpanel" aria-labelledby="soc-tab-containment" tabindex="0" hidden data-soc-panel>
+                                <h3>Threat Containment &amp; Elimination</h3>
+                                <ul class="soc-list">
+                                    <li>Threat Containment</li>
+                                    <li>"Stop the Spread"</li>
+                                    <li>Active Remediation</li>
+                                    <li>"Combat the Threat"</li>
+                                </ul>
+                                <a href="/soc-preview.html" class="soc-detail-link">View incident response preview</a>
+                            </article>
 
-                         <div class="soc-connectors">
-                            <button class="soc-herd-btn">Herd Immunity Detections</button>
+                            <article class="soc-detail-card" id="soc-panel-recovery" role="tabpanel" aria-labelledby="soc-tab-recovery" tabindex="0" hidden data-soc-panel>
+                                <h3>Guided Cleanup &amp; Recovery</h3>
+                                <ul class="soc-list">
+                                    <li>Custom Incident Reports</li>
+                                    <li>Easy-to-follow Suggested Next Steps</li>
+                                    <li>Multi-channel Communication:</li>
+                                    <li>Phone SMS</li>
+                                    <li>Email Ticketing Systems</li>
+                                </ul>
+                                <a href="/demo.html" class="soc-detail-link">Request guided onboarding</a>
+                            </article>
                         </div>
+                    </div>
+
+                    <div class="soc-connectors">
+                        <a href="/soc-preview.html" class="soc-herd-btn">Herd Immunity Detections</a>
                     </div>
 
                     <div class="soc-footer">
@@ -293,9 +333,9 @@
                             Cyber-Logic Managed Security Platform
                         </div>
                         <div class="soc-footer-links">
-                            <a href="#">Health Dashboard</a>
-                            <a href="#">Management Console</a>
-                            <a href="#">Data Reporting</a>
+                            <a href="/soc-preview.html">Health Dashboard</a>
+                            <a href="/portal.html">Management Console</a>
+                            <a href="/trust-center.html">Data Reporting</a>
                         </div>
                     </div>
                 </div>
@@ -309,7 +349,7 @@
             </div>
 
             <div class="testimonial-container">
-                <button class="slider-prev">&lt;</button>
+                <button type="button" class="slider-prev">&lt;</button>
                 <div class="testimonial-track-wrapper">
                     <div class="testimonial-track">
 
@@ -391,7 +431,7 @@
 
                     </div>
                 </div>
-                <button class="slider-next">&gt;</button>
+                <button type="button" class="slider-next">&gt;</button>
                 <div class="slider-dots"></div>
             </div>
         </section>
@@ -484,5 +524,9 @@
     <script src="js/slider.js"></script>
     <script src="js/rotator.js"></script>
     <script src="js/expansion.js"></script>
+    <script src="js/soc-module.js"></script>
 </body>
 </html>
+
+
+
