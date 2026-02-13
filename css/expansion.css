@@ -497,12 +497,31 @@
   .soc-preview-page .panel-head { flex-direction: column; align-items: flex-start; }
   .soc-preview-page .page-hero { padding: 72px 0 40px; }
 
-  .threat-intel-head {
-    flex-direction: column;
-    align-items: flex-start;
+  .threat-intel-section .threat-intel-card {
+    overflow: visible;
   }
 
-  .threat-intel-meta { justify-items: start; }
+  .threat-intel-head {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    align-items: start;
+  }
+
+  .threat-intel-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 8px;
+    width: 100%;
+    position: static !important;
+  }
+
+  .threat-intel-meta .small {
+    font-size: 0.84rem;
+    line-height: 1.35;
+  }
 
   .threat-intel-controls {
     grid-template-columns: 1fr;
