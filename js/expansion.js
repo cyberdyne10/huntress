@@ -406,8 +406,8 @@ function renderSocTrendChart(rawChart) {
   chartRoot.classList.toggle('reduced-motion', socChartState.reducedMotion);
 
   const width = 640;
-  const height = 210;
-  const padding = { top: 20, right: 20, bottom: 44, left: 18 };
+  const height = 224;
+  const padding = { top: 24, right: 20, bottom: 52, left: 20 };
   const innerWidth = width - padding.left - padding.right;
   const innerHeight = height - padding.top - padding.bottom;
   const max = Math.max(...series.map((point) => point.value), 1);
@@ -418,9 +418,13 @@ function renderSocTrendChart(rawChart) {
   const toX = (index) => padding.left + (innerWidth * index) / Math.max(1, series.length - 1);
   const toY = (value) => padding.top + innerHeight - ((value - min) / range) * innerHeight;
   const baselineY = toY(average);
+  const chartFloorY = height - padding.bottom;
+
+  const gradientId = `socAreaGradient-${Math.random().toString(36).slice(2, 8)}`;
+  const glowId = `socLineGlow-${Math.random().toString(36).slice(2, 8)}`;
 
   const linePoints = series.map((point, index) => `${toX(index)},${toY(point.value)}`).join(' ');
-  const areaPath = `M ${toX(0)} ${height - padding.bottom} L ${linePoints} L ${toX(series.length - 1)} ${height - padding.bottom} Z`;
+  const areaPath = `M ${toX(0)} ${chartFloorY} L ${linePoints} L ${toX(series.length - 1)} ${chartFloorY} Z`;
 
   const last = series[series.length - 1].value;
   const prev = series[Math.max(0, series.length - 2)].value;
@@ -434,20 +438,30 @@ function renderSocTrendChart(rawChart) {
     </div>
     <svg class="soc-chart-svg" viewBox="0 0 ${width} ${height}" preserveAspectRatio="none" aria-hidden="true">
       <defs>
-        <linearGradient id="socAreaGradient" x1="0" x2="0" y1="0" y2="1">
-          <stop offset="0%" stop-color="rgba(77,224,255,0.45)"></stop>
-          <stop offset="100%" stop-color="rgba(77,224,255,0)"></stop>
+        <linearGradient id="${gradientId}" x1="0" x2="0" y1="0" y2="1">
+          <stop offset="0%" stop-color="rgba(109, 240, 255, 0.5)"></stop>
+          <stop offset="70%" stop-color="rgba(64, 216, 255, 0.18)"></stop>
+          <stop offset="100%" stop-color="rgba(64, 216, 255, 0)"></stop>
         </linearGradient>
+        <filter id="${glowId}" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="2.6" result="blur"></feGaussianBlur>
+          <feMerge>
+            <feMergeNode in="blur"></feMergeNode>
+            <feMergeNode in="SourceGraphic"></feMergeNode>
+          </feMerge>
+        </filter>
       </defs>
+      <line class="soc-chart-floor" x1="${padding.left}" y1="${chartFloorY}" x2="${width - padding.right}" y2="${chartFloorY}"></line>
       <line class="soc-chart-baseline" x1="${padding.left}" y1="${baselineY}" x2="${width - padding.right}" y2="${baselineY}"></line>
       ${series.map((point, index) => {
-    const barWidth = Math.max(12, innerWidth / Math.max(7, series.length * 1.7));
+    const barWidth = Math.max(10, innerWidth / Math.max(8, series.length * 1.9));
     const x = toX(index) - barWidth / 2;
     const y = toY(point.value);
-    const h = Math.max(4, height - padding.bottom - y);
+    const h = Math.max(4, chartFloorY - y);
     return `<rect class="soc-chart-bar" x="${x}" y="${y}" width="${barWidth}" height="${h}" rx="4"></rect>`;
   }).join('')}
-      <path class="soc-chart-area" d="${areaPath}"></path>
+      <path class="soc-chart-area" style="fill:url(#${gradientId});" d="${areaPath}"></path>
+      <polyline class="soc-chart-line-glow" style="filter:url(#${glowId});" points="${linePoints}"></polyline>
       <polyline class="soc-chart-line" points="${linePoints}"></polyline>
       ${series.map((point, index) => `<circle class="soc-chart-dot" data-point="${index}" cx="${toX(index)}" cy="${toY(point.value)}" r="4"></circle>`).join('')}
     </svg>
