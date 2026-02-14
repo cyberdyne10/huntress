@@ -23,6 +23,7 @@
     <link rel="stylesheet" href="css/home.css">
     <link rel="stylesheet" href="css/expansion.css">
     <link rel="stylesheet" href="css/soc-module.css">
+    <link rel="stylesheet" href="css/home-premium.css">
 </head>
 <body>
 
@@ -41,6 +42,30 @@
 </div>
 
     <main>
+        <section class="command-strip" aria-label="Live command center metrics">
+            <div class="container command-strip-inner">
+                <p class="command-strip-kicker">Command Center Live</p>
+                <ul class="command-metric-grid">
+                    <li class="command-metric is-active" data-command-metric="incidents">
+                        <p class="metric-label">Active incidents</p>
+                        <p class="metric-value" id="cmd-incidents" data-fallback="5">5</p>
+                    </li>
+                    <li class="command-metric" data-command-metric="blocked">
+                        <p class="metric-label">Blocked attacks (24h)</p>
+                        <p class="metric-value" id="cmd-blocked" data-fallback="184">184</p>
+                    </li>
+                    <li class="command-metric" data-command-metric="mttr">
+                        <p class="metric-label">MTTR</p>
+                        <p class="metric-value" id="cmd-mttr" data-fallback="19">19m</p>
+                    </li>
+                    <li class="command-metric" data-command-metric="analyst">
+                        <p class="metric-label">Analyst on-duty</p>
+                        <p class="metric-value" id="cmd-analyst" data-fallback="7">7</p>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
         <!-- Hero Section -->
         <section class="cl-section text-center py-5">
 
@@ -477,6 +502,70 @@
             </div>
         </section>
 
+        <section class="section-padding attack-ticker-section" aria-labelledby="attack-ticker-title">
+            <div class="container">
+                <article class="attack-ticker-card card">
+                    <header class="attack-ticker-head">
+                        <div>
+                            <p class="threat-intel-kicker">Global activity stream</p>
+                            <h2 id="attack-ticker-title">Interactive Attack Ticker</h2>
+                            <p class="small">Recent threat flows from global telemetry with severity pulse.</p>
+                        </div>
+                        <div class="attack-ticker-controls" role="group" aria-label="Attack ticker controls">
+                            <button type="button" class="btn btn-secondary btn-sm" id="attack-ticker-prev">Previous</button>
+                            <button type="button" class="btn btn-secondary btn-sm" id="attack-ticker-pause" aria-pressed="false">Pause</button>
+                            <button type="button" class="btn btn-secondary btn-sm" id="attack-ticker-next">Next</button>
+                        </div>
+                    </header>
+                    <p id="attack-ticker-status" class="small" role="status">Loading live threat flows…</p>
+                    <div id="attack-ticker-list" class="attack-ticker-list" aria-live="polite"></div>
+                </article>
+            </div>
+        </section>
+
+        <section class="section-padding premium-proof" aria-labelledby="proof-title">
+            <div class="container">
+                <header class="section-header text-center mb-5">
+                    <h2 id="proof-title" class="fs-2 fw-bold">Proof That Protection Performs</h2>
+                    <p class="text-muted" style="max-width: 680px; margin: 0 auto;">Outcomes-led security, validated by operators and customer programs.</p>
+                </header>
+
+                <ul class="proof-outcomes-grid">
+                    <li class="proof-outcome-card">
+                        <p class="proof-outcome-value">67%</p>
+                        <p class="proof-outcome-label">faster triage-to-containment</p>
+                    </li>
+                    <li class="proof-outcome-card">
+                        <p class="proof-outcome-value">99.3%</p>
+                        <p class="proof-outcome-label">known threat block rate</p>
+                    </li>
+                    <li class="proof-outcome-card">
+                        <p class="proof-outcome-value">&lt; 20m</p>
+                        <p class="proof-outcome-label">average response for verified incidents</p>
+                    </li>
+                </ul>
+
+                <ul class="proof-quote-grid">
+                    <li class="proof-quote-card">
+                        <p>“We reduced noise and focused only on incidents that demanded action. The SOC feels like an extension of our team.”</p>
+                        <span>— Senior Security Analyst, FinTech Client</span>
+                    </li>
+                    <li class="proof-quote-card">
+                        <p>“From onboarding to active defense in days—not quarters. We got visibility and confidence without adding headcount.”</p>
+                        <span>— Director of Infrastructure, Healthcare Group</span>
+                    </li>
+                </ul>
+
+                <ul class="proof-logo-strip">
+                    <li class="proof-logo">Customer Logo</li>
+                    <li class="proof-logo">Customer Logo</li>
+                    <li class="proof-logo">Customer Logo</li>
+                    <li class="proof-logo">Customer Logo</li>
+                    <li class="proof-logo">Customer Logo</li>
+                </ul>
+            </div>
+        </section>
+
         <!-- CTA -->
         <section class="section-padding text-center">
             <div class="container">
@@ -490,6 +579,13 @@
         </section>
 
     </main>
+
+    <aside class="conversion-rail" aria-label="Quick actions">
+        <button type="button" class="conversion-rail-dismiss" id="conversion-rail-dismiss" aria-label="Dismiss quick actions">×</button>
+        <a href="/demo.html" class="conversion-cta">Book Demo</a>
+        <a href="/demo.html" class="conversion-cta conversion-cta-primary">Start Trial</a>
+        <a href="/about/soc.html" class="conversion-cta">Talk to SOC</a>
+    </aside>
 
     <div id="footer-placeholder">
     <div class="container skeleton-footer">
@@ -524,6 +620,7 @@
     <script src="js/rotator.js"></script>
     <script src="js/expansion.js"></script>
     <script src="js/soc-module.js"></script>
+    <script src="js/home-premium.js"></script>
 </body>
 </html>
 

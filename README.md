@@ -134,6 +134,7 @@ If live feed retrieval fails or returns no usable events, the API gracefully fal
 - `css/expansion.css` now includes cross-page premium section/card/form styles (`.page-hero`, `.section-block`, `.card-grid`, `.form-grid`) plus portal-specific layout/state classes.
 - Homepage Threat Intel Feed is now upgraded via `index.html` + modular `css/expansion.css` / `js/expansion.js`: premium glass card UI, severity/source quick filters, live refresh metadata, skeleton loading, and graceful empty/error fallback states backed by `/api/threat-feed`.
 - Homepage SOC capability module is upgraded via `css/soc-module.css` + `js/soc-module.js`: interactive selectable capability cards (tablist), dynamic detail panel, keyboard/swipe navigation, focus-visible states, and mobile-first responsive behavior.
+- Homepage premium conversion layer now ships via `css/home-premium.css` + `js/home-premium.js`: sticky command-center strip with rotating KPI counters, global attack ticker powered by `/api/threat-geo-events`, premium proof blocks (quotes/logos/outcomes), and a non-intrusive floating conversion rail with dismiss + mobile layout.
 - Existing page-specific CSS (`home.css`, `pricing.css`) remains in place; premium updates layer on top to avoid route or API coupling risk.
 - Motion effects include `prefers-reduced-motion` fallback to keep interaction subtle and accessible.
 
