@@ -1,6 +1,7 @@
 const express = require('express');
 const helmet = require('helmet');
 const cors = require('cors');
+const { createProxyMiddleware } = require('http-proxy-middleware');
 const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcryptjs');
@@ -54,6 +55,15 @@ app.set('trust proxy', 1);
 app.use(helmet({ contentSecurityPolicy: false, referrerPolicy: { policy: 'strict-origin-when-cross-origin' } }));
 app.use(cors({ origin: process.env.CORS_ORIGIN || '*', methods: ['GET', 'POST', 'PATCH'] }));
 app.use(express.json({ limit: '1mb' }));
+
+const intelDashboardTarget = `http://127.0.0.1:${process.env.INTEL_DASHBOARD_PORT || 9001}`;
+app.use('/intel-dashboard', createProxyMiddleware({
+  target: intelDashboardTarget,
+  changeOrigin: true,
+  ws: true,
+  proxyTimeout: 120000,
+}));
+
 app.use(express.static(STATIC_ROOT, { index: false, extensions: ['html'] }));
 
 function authRequired(req, res, next) {
