@@ -605,6 +605,7 @@ async function initSocPreview() {
 function initThreatMap() {
   const mapRoot = document.getElementById('threat-map');
   if (!mapRoot) return;
+  if (mapRoot.dataset && mapRoot.dataset.liveMap === 'static') return;
 
   ensureLeafletMap();
   window.addEventListener('resize', () => {
