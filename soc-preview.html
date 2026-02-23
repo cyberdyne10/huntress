@@ -10,7 +10,7 @@
     content="SOC dashboard preview with severity/source/status/MITRE filtering, timeline drill-down, and a live threat map."
   >
   <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin>
+  <!-- Leaflet CSS removed for static SVG map -->
   <link rel="stylesheet" href="css/expansion.css">
 </head>
 <body>
@@ -67,62 +67,16 @@
           <div class="panel-head">
             <h2 id="threat-map-title">Live Threat Map</h2>
             <div class="map-meta">
-              <span id="threat-map-source" class="small">Source: -</span>
-              <span id="threat-map-source-badge" class="badge badge-medium" style="display:none;">MISP</span>
-              <span id="threat-map-updated" class="small">Last updated: -</span>
+              <span class="small">Source: Shodan (LiveThreatMap-dashboard)</span>
+              <span class="badge badge-medium">SVG</span>
+              <span class="small">Refresh: every ~6 hours</span>
             </div>
           </div>
 
-          <div class="map-controls map-controls-grid" role="group" aria-label="Threat map controls">
-            <button id="threat-map-toggle" type="button" class="btn btn-outline btn-sm" aria-pressed="false">Pause</button>
-            <button id="threat-map-arcs" type="button" class="btn btn-outline btn-sm" aria-pressed="true">Hide Arcs</button>
+          <p class="small threat-map-caption">Powered by Shodan telemetry via LiveThreatMap-dashboard. Updates every ~6 hours.</p>
 
-            <label class="map-control-inline small" for="threat-map-speed">Playback speed</label>
-            <select id="threat-map-speed" class="input input-sm">
-              <option value="0.5">0.5x</option>
-              <option value="1" selected>1x</option>
-              <option value="1.5">1.5x</option>
-              <option value="2">2x</option>
-            </select>
-
-            <label class="map-control-inline small" for="threat-map-density">Activity density</label>
-            <input id="threat-map-density" type="range" min="20" max="100" value="75" aria-label="Activity density percentage">
-
-            <label class="map-control-inline small" for="threat-map-region">Region focus</label>
-            <select id="threat-map-region" class="input input-sm">
-              <option value="global" selected>Global</option>
-              <option value="americas">Americas</option>
-              <option value="emea">EMEA</option>
-              <option value="apac">APAC</option>
-              <option value="africa">Africa</option>
-            </select>
-
-            <div class="map-severity-group" role="group" aria-label="Severity filters">
-              <button type="button" class="btn btn-outline btn-sm active" data-map-severity="all">All</button>
-              <button type="button" class="btn btn-outline btn-sm active" data-map-severity="critical">Critical</button>
-              <button type="button" class="btn btn-outline btn-sm active" data-map-severity="high">High</button>
-              <button type="button" class="btn btn-outline btn-sm active" data-map-severity="medium">Medium</button>
-              <button type="button" class="btn btn-outline btn-sm active" data-map-severity="low">Low</button>
-            </div>
-          </div>
-
-          <div class="map-live-metrics" aria-live="polite">
-            <div><span class="small">Attacks/min</span><strong id="threat-map-attacks-minute">-</strong></div>
-            <div><span class="small">Active sources</span><strong id="threat-map-active-sources">-</strong></div>
-            <div><span class="small">Top targets</span><strong id="threat-map-top-targets">-</strong></div>
-            <div><span class="small">Last updated</span><strong id="threat-map-last-updated">-</strong></div>
-          </div>
-
-          <p id="threat-map-status" class="small" aria-live="polite">Loading geo telemetry…</p>
-          <div id="threat-map" class="threat-map" role="img" aria-label="Global threat map with animated attack paths, source pulses, and target hotspots"></div>
-
-          <div class="map-legend">
-            <span><i class="dot dot-critical"></i> Critical Event</span>
-            <span><i class="dot dot-high"></i> High Event</span>
-            <span><i class="dot dot-medium"></i> Medium Event</span>
-            <span><i class="dot dot-low"></i> Low Event</span>
-            <span><i class="dot dot-arc"></i> Attack Path Arc</span>
-            <span><i class="dot dot-pulse"></i> Origin Pulse</span>
+          <div id="threat-map" class="threat-map threat-map-static" data-live-map="static" role="img" aria-label="Live threat map generated from Shodan telemetry">
+            <img class="threat-map-embed" src="https://raw.githubusercontent.com/RavinduRathnayaka/LiveThreatMap-dashboard/main/threat-map.svg" alt="Live threat map from Shodan telemetry">
           </div>
         </article>
       </div>
@@ -167,7 +121,7 @@
   <div id="footer-placeholder"></div>
 
   <script src="js/components.js"></script>
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin></script>
+  <!-- Leaflet JS removed for static SVG map -->
   <script src="js/expansion.js"></script>
 </body>
 </html>
