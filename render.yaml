@@ -1,11 +1,10 @@
 services:
   - type: web
     name: huntress-site
-    runtime: node
+    runtime: docker
     plan: free
     autoDeploy: true
-    buildCommand: npm ci
-    startCommand: npm start
+    dockerfilePath: ./Dockerfile
     healthCheckPath: /health
     envVars:
       - key: NODE_ENV
