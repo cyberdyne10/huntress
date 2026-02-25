@@ -1,13 +1,13 @@
 const fs = require('fs');
 const path = require('path');
-const { DatabaseSync } = require('node:sqlite');
+const Database = require('better-sqlite3');
 const bcrypt = require('bcryptjs');
 
 const DB_PATH = process.env.DATABASE_URL || path.resolve(__dirname, '../data/huntress.sqlite');
 const MIGRATIONS_DIR = path.resolve(__dirname, 'migrations');
 
 fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
-const db = new DatabaseSync(DB_PATH);
+const db = new Database(DB_PATH);
 db.exec('PRAGMA journal_mode = WAL;');
 db.exec('PRAGMA foreign_keys = ON;');
 
