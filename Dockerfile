@@ -13,7 +13,7 @@ COPY . .
 
 RUN python3 -m venv /opt/venv \
   && /opt/venv/bin/pip install --no-cache-dir --upgrade pip \
-  && /opt/venv/bin/pip install --no-cache-dir "world-intel-mcp[dashboard] @ git+https://github.com/marc-shade/world-intel-mcp@main"
+  && /opt/venv/bin/pip install --no-cache-dir "world-intel-mcp[dashboard] @ git+https://github.com/marc-shade/world-intel-mcp@master"
 
 ENV PATH="/opt/venv/bin:$PATH"
 ENV NODE_ENV=production
